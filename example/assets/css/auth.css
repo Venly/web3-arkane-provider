@@ -1,0 +1,29 @@
+.auth-logged-in {
+    display: none;
+}
+
+.logged-in .auth-logged-in {
+    display: flex;
+}
+
+.logged-in .auth-not-logged-in {
+    display: none;
+}
+
+#sign {
+    display: none;
+}
+
+#execute {
+    display: none;
+}
+
+
+#auth-logout {
+    font-size: 0.5em;
+}
+
+#auth-token {
+    width: 80%;
+    height: 75px;
+}

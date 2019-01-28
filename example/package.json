@@ -24,18 +24,17 @@
   "bugs": {
     "url": "https://github.com/ArkaneNetwork/web3-arkane-provider-example/issues"
   },
+  "scripts": {
+    "start": "http-server -p 4000 -a localhost -c-1",
+    "start-ext": "http-server -p 4000 -c-1"
+  },
   "homepage": "https://arkane.network",
   "dependencies": {
-    "@arkane-network/arkane-connect": "^1.1.5",
-    "axios": "^0.18.0",
-    "chai": "^4.1.2",
-    "readline-sync": "^1.4.9",
-    "sinon": "6.1.4",
+    "@arkane-network/web3-arkane-provider": "^0.0.1",
     "web3": "^0.20.7",
-    "web3-provider-engine": "^14.1.0"
+    "jquery": "^3.3.1"
   },
   "devDependencies": {
-    "@babel/preset-es2016": "^7.0.0-beta.53",
-    "mocha": "^5.2.0"
+    "http-server": "^0.11.1"
   }
 }
