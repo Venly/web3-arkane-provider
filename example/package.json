@@ -1,14 +1,11 @@
 {
-  "name": "@arkane-network/web3-arkane-provider",
+  "name": "@arkane-network/web3-arkane-provider-example",
   "version": "0.0.1",
-  "description": "Arkane-enabled Web3 Provider for the web",
+  "description": "Example of the Arkane-enabled Web3 Provider for the web",
   "main": "index.js",
-  "scripts": {
-    "test": "mocha --timeout 20000"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArkaneNetwork/web3-arkane-provider"
+    "url": "git+https://github.com/ArkaneNetwork/web3-arkane-provider-example"
   },
   "keywords": [
     "ethereum",
@@ -25,7 +22,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ArkaneNetwork/web3-arkane-provider/issues"
+    "url": "https://github.com/ArkaneNetwork/web3-arkane-provider-example/issues"
   },
   "homepage": "https://arkane.network",
   "dependencies": {
