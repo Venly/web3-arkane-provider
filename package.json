@@ -1,0 +1,46 @@
+{
+  "name": "@arkane-network/web3-arkane-provider",
+  "version": "0.0.1",
+  "description": "Arkane-enabled Web3 Provider for the web",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --timeout 20000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArkaneNetwork/web3-arkane-provider"
+  },
+  "keywords": [
+    "ethereum",
+    "hd",
+    "wallet",
+    "mnemonic",
+    "provider",
+    "arkane",
+    "truffle"
+  ],
+  "author": "Quinten De Swaef <quinten.de.swaef@arkane.network>",
+  "contributors": [
+    "Davy Van Roy <davy.van.roy@arkane.network>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ArkaneNetwork/web3-arkane-provider/issues"
+  },
+  "homepage": "https://arkane.network",
+  "dependencies": {
+    "web3": "^0.20.7",
+    "web3-provider-engine": "^14.0.6",
+    "axios": "^0.18.0",
+    "chai": "^4.1.2",
+    "readline-sync": "^1.4.9",
+    "sinon": "6.1.4"
+  },
+  "devDependencies": {
+    "ganache-core": "^2.1.6",
+    "mocha": "^5.2.0"
+  },
+  "peerDependencies": {
+    "truffle": "4.x"
+  }
+}
