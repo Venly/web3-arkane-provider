@@ -30,17 +30,13 @@
   "homepage": "https://arkane.network",
   "dependencies": {
     "web3": "^0.20.7",
-    "web3-provider-engine": "^14.0.6",
+    "web3-provider-engine": "^14.1.0",
     "axios": "^0.18.0",
     "chai": "^4.1.2",
     "readline-sync": "^1.4.9",
     "sinon": "6.1.4"
   },
   "devDependencies": {
-    "ganache-core": "^2.1.6",
     "mocha": "^5.2.0"
-  },
-  "peerDependencies": {
-    "truffle": "4.x"
   }
 }
