@@ -14,10 +14,9 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     public async loadData() {
         const currentClass = this;
-        console.log('getting wallets async');
         return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM})
             .then(returnedWallets => {
-                currentClass.wallets = returnedWallets;
+                currentClass.wallets = returnedWallets.filter((wallet) => wallet.secretType === SecretType.ETHEREUM);
             });
     }
 
@@ -29,10 +28,9 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return An array of accounts
      */
     public async getAccountsAsync(): Promise<string[]> {
-        return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM})
-            .then(returnedWallets => {
-                return returnedWallets.map(x => x.address);
-            });
+        return new Promise((resolve => {
+            resolve(this.wallets.map((wallet) => wallet.address));
+        }));
     }
 
     /**
@@ -68,7 +66,6 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
             type: 'ETHEREUM_TRANSACTION',
             walletId: this.getWalletIdFrom(txParams.from)
         };
-        console.log(retVal);
         return retVal;
     }
 

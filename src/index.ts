@@ -1,75 +1,63 @@
 import {ArkaneSubProvider} from "./ArkaneSubProvider";
+import {ArkaneConnect, AuthenticationResult} from "@arkane-network/arkane-connect/dist/src/connect/connect";
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
 const FixtureSubprovider = require('web3-provider-engine/subproviders/fixture');
 const FilterSubprovider = require('web3-provider-engine/subproviders/filters');
-// const VmSubprovider = require('web3-provider-engine/subproviders/vm');
 const NonceSubprovider = require('web3-provider-engine/subproviders/nonce-tracker');
 const RpcSubprovider = require('web3-provider-engine/subproviders/rpc');
 
-if (typeof window !== 'undefined') {
-    (window as any).ArkaneSubProvider = ArkaneSubProvider;
+export class Arkane {
 
-    (window as any).createArkaneProviderEngine = function (clientId: string) {
+    public arkaneConnect?: ArkaneConnect;
+
+    public createArkaneProviderEngine(clientId: string) {
         const engine = new ProviderEngine();
-        // engine.addProvider(new FixtureSubprovider({
-        //     web3_clientVersion: 'ProviderEngine/v0.0.0/javascript',
-        //     net_listening: true,
-        //     eth_hashrate: '0x00',
-        //     eth_mining: false,
-        //     eth_syncing: true,
-        // }));
-
-        // // cache layer
-        // engine.addProvider(new CacheSubprovider());
-        //
-        // // filters
-        // engine.addProvider(new FilterSubprovider());
-        // //
-        // // // pending nonce
-        // engine.addProvider(new NonceSubprovider());
-        //
-        // // vm
-        // engine.addProvider(new VmSubprovider());
-        //
-        // engine.addProvider(new RpcSubprovider({
-        //     rpcUrl: 'https://ethereum.arkane.network/',
-        // }));
+        engine.addProvider(new FixtureSubprovider({
+            web3_clientVersion: 'ArkaneProviderEngine/v0.0.1/javascript',
+            net_listening: true,
+            eth_hashrate: '0x00',
+            eth_mining: false,
+            eth_syncing: true,
+        }));
+        engine.addProvider(new CacheSubprovider());
+        engine.addProvider(new FilterSubprovider());
+        engine.addProvider(new NonceSubprovider());
 
         const arkaneSubProvider = new ArkaneSubProvider(clientId);
 
-        (window as any).arkaneConnect = arkaneSubProvider.arkaneConnect;
+        this.arkaneConnect = arkaneSubProvider.arkaneConnect;
 
         return arkaneSubProvider.arkaneConnect.checkAuthenticated()
-            .then(result => {
-            result.authenticated(auth => {
-                console.log("authenticated");
-                console.log(auth);
-            });
-            result.notAuthenticated(noAuth => {
-                console.log("not authenticated");
-                console.log(noAuth);
-            });
-        })
+            .then((result: AuthenticationResult) => {
+                result.authenticated(auth => {
+                    console.log("Already authenticated to Arkane network");
+                }).notAuthenticated(noAuth => {
+                    console.log('not yet authenticated to Arkane Network');
+                    arkaneSubProvider.arkaneConnect.authenticate();
+                });
+            })
             .then(() => {
                 return arkaneSubProvider.loadData();
             })
             .then(() => {
-            engine.addProvider(arkaneSubProvider);
-            engine.addProvider(new RpcSubprovider({rpcUrl: 'https://ethereum.arkane.network'}));
+                engine.addProvider(arkaneSubProvider);
+                engine.addProvider(new RpcSubprovider({rpcUrl: 'https://ethereum.arkane.network'}));
 
-            // log new blocks
+                // network connectivity error
+                engine.on('error', function (err: any) {
+                    // report connectivity errors
+                    console.error(err.stack)
+                });
 
-            // network connectivity error
-            engine.on('error', function (err: any) {
-                // report connectivity errors
-                console.error(err.stack)
+                // start polling for blocks
+                engine.start();
+                return engine;
             });
+    }
+}
 
-            // start polling for blocks
-            engine.start();
-            return engine;
-        });
-    };
+if (typeof window !== 'undefined') {
+    (window as any).Arkane = new Arkane();
 }
