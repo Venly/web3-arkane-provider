@@ -10,7 +10,11 @@ const RpcSubprovider = require('web3-provider-engine/subproviders/rpc');
 
 export class Arkane {
 
-    public arkaneConnect?: ArkaneConnect;
+    private ac?: ArkaneConnect;
+
+    public arkaneConnect() {
+        return this.ac;
+    }
 
     public createArkaneProviderEngine(clientId: string) {
         const engine = new ProviderEngine();
@@ -27,7 +31,7 @@ export class Arkane {
 
         const arkaneSubProvider = new ArkaneSubProvider(clientId);
 
-        this.arkaneConnect = arkaneSubProvider.arkaneConnect;
+        this.ac = arkaneSubProvider.arkaneConnect;
 
         return arkaneSubProvider.arkaneConnect.checkAuthenticated()
             .then((result: AuthenticationResult) => {
