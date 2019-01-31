@@ -2,42 +2,38 @@ var app = app || {};
 app.auth = {};
 
 app.initApp = function () {
-  window.arkaneConnect = new ArkaneConnect('Arketype', {environment: 'staging', signUsing: 'REDIRECT'});
-  window.arkaneConnect
-    .checkAuthenticated()
-    .then((result) => {
-        $('input[name=redirect]').val(window.location.href);
-        return result.authenticated(app.handleAuthenticated)
-          .notAuthenticated((auth) => {
-            document.body.classList.add('not-logged-in');
-          });
-      }
-    )
-    .catch(reason => app.log(reason));
-  app.attachLinkEvents();
-};
 
-app.attachLinkEvents = function () {
-  document.getElementById('auth-loginlink').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.arkaneConnect.authenticate();
+  window.createArkaneProviderEngine('Arketype').then(provider => {
+    window.web3 = new Web3(provider);
+    app.handleAuthenticated(window.web3);
+    app.addConnectEvents();
   });
 
-  document.getElementById('auth-logout').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.arkaneConnect.logout();
-  });
+
+
+
+  //
+  // window.arkaneConnect
+  //   .checkAuthenticated()
+  //   .then((result) => {
+  //       $('input[name=redirect]').val(window.location.href);
+  //       return result.authenticated(app.handleAuthenticated)
+  //         .notAuthenticated((auth) => {
+  //           document.body.classList.add('not-logged-in');
+  //         });
+  //     }
+  //   )
+  //   .catch(reason => app.log(reason));
+  // app.attachLinkEvents();
 };
 
-app.handleAuthenticated = (auth) => {
-  app.auth = auth;
+app.handleAuthenticated = (web3) => {
   document.body.classList.add('logged-in');
-  $('#auth-username').text(app.auth.subject);
+  $('#auth-username').text(web3.eth);
   app.updateToken(app.auth.token);
-  window.arkaneConnect.addOnTokenRefreshCallback(app.updateToken);
-  app.checkResultRequestParams();
-  app.addConnectEvents();
-  app.getWallets();
+  // app.checkResultRequestParams();
+  // app.addConnectEvents();
+  // app.getWallets();
 };
 app.updateToken = (token) => {
   $('input[name="bearer"]').val(app.auth.token);

@@ -30,7 +30,7 @@
   },
   "homepage": "https://arkane.network",
   "dependencies": {
-    "@arkane-network/web3-arkane-provider": "../.",
+    "@arkane-network/web3-arkane-provider": "file:../.",
     "jquery": "^3.3.1",
     "web3": "^0.20.7"
   },
