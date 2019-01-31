@@ -52,7 +52,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
                 } else {
                     throw new Error((result.errors && result.errors.join(", ")));
                 }
-            })
+            });
     }
 
     private constructEthereumTransationSignatureRequest(txParams: PartialTxParams) {
@@ -66,7 +66,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
             value: txParams.value ? parseInt(txParams.value, 16) : 0,
             submit: false,
             type: 'ETHEREUM_TRANSACTION',
-            walletId: this.getWalletIdFrom(txParams)
+            walletId: this.getWalletIdFrom(txParams.from)
         };
         console.log(retVal);
         return retVal;
@@ -83,7 +83,24 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return Signature hex string (order: rsv)
      */
     public async signPersonalMessageAsync(data: string, address: string): Promise<string> {
-        return Promise.reject('not implemented yet');
+        const signer = this.arkaneConnect.createSigner(SignMethod.POPUP);
+        return signer.signTransaction({
+            type: 'ETHEREUM_RAW',
+            walletId: this.getWalletIdFrom(address),
+            data: data
+        })
+            .then((result) => {
+                if (result.status === 'SUCCESS') {
+                    return '0x' + result.result.r + result.result.s + this.toHex(parseInt(result.result.v));
+                } else {
+                    throw new Error((result.errors && result.errors.join(", ")));
+                }
+            });
+    }
+
+    private toHex(myNumber: number) {
+        const hexString = myNumber.toString(16);
+        return (hexString.length % 2) ? '0' + hexString : hexString;
     }
 
     /**
@@ -99,9 +116,10 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         return Promise.reject('Not implemented yet');
     }
 
-    private getWalletIdFrom(txParams: PartialTxParams): string {
+    private getWalletIdFrom(address: string):
+        string {
         let foundWallet = this.wallets.find((wallet) => {
-            return wallet.address === txParams.from;
+            return wallet.address === address;
         });
         return (foundWallet && foundWallet.id) || '';
     }

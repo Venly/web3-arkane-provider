@@ -102,34 +102,27 @@ app.addConnectEvents = function () {
       "gas": 21000
     };
 
-    window.web3.eth.sendTransaction(rawTransaction, (result) => {
-      console.log(result);
+    window.web3.eth.sendTransaction(rawTransaction, (err, result) => {
+      if (err) {
+        app.log("error: " + err);
+      } else {
+        app.log(result);
+      }
     });
-
   });
 
   document.getElementById('sign-ETHEREUM-RAW-form').addEventListener('submit', function (e) {
     e.preventDefault();
     // Sign Ethereum RAW
-    window.arkaneConnect
-      .createSigner()
-      .signTransaction(
-        {
-          type: 'ETHEREUM_RAW',
-          walletId: $("#sign-ETHEREUM-RAW-form select[name='walletId']").val(),
-          data: $("#sign-ETHEREUM-RAW-form textarea[name='data']").val(),
-        },
-        {
-          redirectUri: 'http://localhost:4000',
-          correlationID: `${Date.now()}`
-        }
-      )
-      .then(function (result) {
+
+
+    window.web3.eth.sign($("#sign-ETHEREUM-RAW-form select[name='walletId']").text(), $("#sign-ETHEREUM-RAW-form textarea[name='data']").val(), (err, result) => {
+      if (err) {
+        app.log("error: " + err);
+      } else {
         app.log(result);
-      })
-      .catch(function (err) {
-        app.log(err);
-      });
+      }
+    });
   });
 };
 
