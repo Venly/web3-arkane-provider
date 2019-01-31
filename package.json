@@ -1,6 +1,6 @@
 {
   "name": "@arkane-network/web3-arkane-provider",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Arkane-enabled Web3 Provider for the web",
   "scripts": {
     "clean": "rm -rf dist",
@@ -39,8 +39,8 @@
     "web3-provider-engine": "^14.1.0"
   },
   "devDependencies": {
-    "mocha": "^5.2.0",
     "awesome-typescript-loader": "^5.2.1",
+    "mocha": "^5.2.0",
     "ts-loader": "^5.3.3",
     "typedoc": "^0.14.2",
     "typescript": "^3.2.2",
