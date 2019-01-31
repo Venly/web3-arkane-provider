@@ -51,7 +51,11 @@ if (typeof window !== 'undefined') {
                 console.log("not authenticated");
                 console.log(noAuth);
             });
-        }).then(_ => {
+        })
+            .then(() => {
+                return arkaneSubProvider.loadData();
+            })
+            .then(() => {
             engine.addProvider(arkaneSubProvider);
             engine.addProvider(new RpcSubprovider({rpcUrl: 'https://ethereum.arkane.network'}));
 

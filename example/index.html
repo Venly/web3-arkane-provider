@@ -28,15 +28,6 @@
 <div class="auth-logged-in">
   <div class="left">
 
-    <div id="user">
-      <h1>User <a id="auth-logout" href="javascript:void(0)"><span>Logout</span></a></h1>
-      <div>
-        <a id="get-profile" href="javascript:void(0)"><span>Get Profile</span></a><br/>
-        Userid: <span id="auth-username">Anoniem</span> <br/>
-        Bearer token: <br/><textarea disabled="disabled" id="auth-token"></textarea>
-      </div>
-    </div>
-
     <div id="wallets">
       <h1>Wallets</h1>
       <div class="flex">
@@ -44,9 +35,6 @@
           <h2>Manage Wallets</h2>
           <div>
             <a id="manage-eth-wallets" href="javascript:void(0)"><span>Manage Ethereum Wallets</span></a>
-          </div>
-          <div>
-            <a id="manage-vechain-wallets" href="javascript:void(0)"><span>Manage VeChain Wallets</span></a>
           </div>
         </div>
 
@@ -64,10 +52,10 @@
     </div>
 
     <div id="sign">
-      <h1>Sign</h1>
+      <h1>Sign / Submit</h1>
       <div class="flex">
         <div>
-          <h2>Ethereum</h2>
+          <h2>Transaction Submit</h2>
           <form id="sign-ETHEREUM-form">
             <label for="sign-eth-from">From:</label>
             <select id="sign-eth-from" name="walletId"></select>
@@ -86,54 +74,6 @@
             <label for="sign-eth-RAW-data">Data:</label>
             <textarea id="sign-eth-RAW-data" name="data" rows="4">123456789ABCDEF</textarea>
             <input type="submit" value="Sign ETHEREUM RAW transaction"/>
-          </form>
-        </div>
-      </div>
-      <div class="flex">
-        <div>
-          <h2>VeChain</h2>
-          <form id="sign-VECHAIN-form">
-            <label for="sign-vechain-from">From:</label>
-            <select id="sign-vechain-from" name="walletId"></select>
-            <label for="sign-vechain-to">To:</label>
-            <input type="text" id="sign-vechain-to" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
-            <label for="sign-vechain-amount">Amount:</label>
-            <input type="text" id="sign-vechain-amount" name="value" placeholder="value" value="31400000000000000"/>
-            <input type="submit" value="Sign VECHAIN transaction"/>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <div id="execute">
-      <h1>Execute</h1>
-      <div class="flex">
-        <div>
-          <h2>Ethereum</h2>
-          <form id="execute-ETHEREUM-form">
-            <label for="exec-eth-from">From:</label>
-            <select id="exec-eth-from" name="walletId"></select>
-            <label for="exec-eth-to">To:</label>
-            <input type="text" id="exec-eth-to" name="to" placeholder="to" value="0x680800Dd4913021821A9C08D569eF4338dB8E9f6"/>
-            <label for="exec-eth-token-address">Token address (optional):</label>
-            <input type="text" id="exec-eth-token-address" name="tokenAddress" placeholder="token address" value=""/>
-            <label for="exec-eth-amount">Amount:</label>
-            <input type="text" id="exec-eth-amount" name="value" placeholder="value" value="31400000000000000"/>
-            <input type="submit" value="Execute ETHEREUM transaction"/>
-          </form>
-        </div>
-        <div>
-          <h2>VeChain</h2>
-          <form id="execute-VECHAIN-form">
-            <label for="exec-vechain-from">From:</label>
-            <select id="exec-vechain-from" name="walletId"></select>
-            <label for="exec-vechain-to">To:</label>
-            <input type="text" id="exec-vechain-to" name="to" placeholder="to" value="0x937bBAc40dA751Ff4C72297DD377Cd4da3Ac1AEE"/>
-            <label for="exec-eth-token-address">Token address (optional):</label>
-            <input type="text" id="exec-vechain-token-address" name="tokenAddress" placeholder="token address" value=""/>
-            <label for="exec-vechain-amount">Amount:</label>
-            <input type="text" id="exec-vechain-amount" name="value" placeholder="value" value="31400000000000000"/>
-            <input type="submit" value="Execute VECHAIN transaction"/>
           </form>
         </div>
       </div>
