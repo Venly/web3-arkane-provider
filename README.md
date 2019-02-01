@@ -48,6 +48,8 @@ Arkane.arkaneConnect().linkWallets();
 
 # Example Project
 
+[As an example](https://github.com/ArkaneNetwork/web3-arkane-provider/tree/master/example), we transformed our *Arketype* demo to sign transactions and data using web3. 
+
 # What is Arkane Network
 Not sure yet what Arkane Network is all about, where are some resources to help you get a better view:
 * [An eli5 about Arkane](https://medium.com/arkane-network/eli5-arkane-network-44bb10d0e68f)
