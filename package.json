@@ -1,7 +1,9 @@
 {
   "name": "@arkane-network/web3-arkane-provider",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Arkane-enabled Web3 Provider for the web",
+  "main": "dist/web3-arkane-provider.js",
+  "unpkg": "dist/web3-arkane-provider.js",
   "scripts": {
     "clean": "rm -rf dist",
     "build-ts": "npx tsc -p .",
@@ -10,6 +12,9 @@
     "test": "mocha --timeout 20000",
     "typedoc": "npx typedoc --out './docs' './src' --excludeExternals --target 'ES5' --theme 'minimal' --hideGenerator"
   },
+  "files": [
+    "dist/web3-arkane-provider.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ArkaneNetwork/web3-arkane-provider"
