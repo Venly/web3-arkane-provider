@@ -88,7 +88,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         })
             .then((result) => {
                 if (result.status === 'SUCCESS') {
-                    return '0x' + result.result.r + result.result.s + this.toHex(parseInt(result.result.v));
+                    return result.result.signature;
                 } else {
                     throw new Error((result.errors && result.errors.join(", ")));
                 }
