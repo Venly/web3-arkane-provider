@@ -80,7 +80,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return Signature hex string (order: rsv)
      */
     public async signPersonalMessageAsync(data: string, address: string): Promise<string> {
-        const signer = this.arkaneConnect.createSigner(SignMethod.POPUP);
+        const signer = this.arkaneConnect.createSigner();
         return signer.signTransaction({
             type: 'ETHEREUM_RAW',
             walletId: this.getWalletIdFrom(address),
