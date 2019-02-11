@@ -42,7 +42,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return Signed transaction hex string
      */
     public async signTransactionAsync(txParams: PartialTxParams): Promise<string> {
-        let signer = this.arkaneConnect.createSigner(SignMethod.POPUP);
+        let signer = this.arkaneConnect.createSigner();
         return signer.signTransaction(this.constructEthereumTransationSignatureRequest(txParams))
             .then((result) => {
                 if (result.status === 'SUCCESS') {
