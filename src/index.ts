@@ -1,5 +1,5 @@
 import {ArkaneSubProvider} from "./ArkaneSubProvider";
-import {ArkaneConnect, AuthenticationResult} from "@arkane-network/arkane-connect/dist/src/connect/connect";
+import {ArkaneConnect, AuthenticationResult} from "@arkane-network/arkane-connect/dist/connect.js";
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
