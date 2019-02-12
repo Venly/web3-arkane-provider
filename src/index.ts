@@ -16,7 +16,7 @@ export class Arkane {
         return this.ac;
     }
 
-    public createArkaneProviderEngine(clientId: string) {
+    public createArkaneProviderEngine(options: ArkaneSubProviderOptions) {
         const engine = new ProviderEngine();
         engine.addProvider(new FixtureSubprovider({
             web3_clientVersion: 'ArkaneProviderEngine/v0.0.1/javascript',
@@ -29,7 +29,7 @@ export class Arkane {
         engine.addProvider(new FilterSubprovider());
         engine.addProvider(new NonceSubprovider());
 
-        const arkaneSubProvider = new ArkaneSubProvider(clientId);
+        const arkaneSubProvider = new ArkaneSubProvider(options.clientId);
 
         this.ac = arkaneSubProvider.arkaneConnect;
 
@@ -47,7 +47,7 @@ export class Arkane {
             })
             .then(() => {
                 engine.addProvider(arkaneSubProvider);
-                engine.addProvider(new RpcSubprovider({rpcUrl: 'https://ethereum.arkane.network'}));
+                engine.addProvider(new RpcSubprovider({rpcUrl: options.rpcUrl || 'https://ethereum.arkane.network'}));
 
                 // network connectivity error
                 engine.on('error', function (err: any) {
@@ -60,6 +60,11 @@ export class Arkane {
                 return engine;
             });
     }
+}
+
+export interface ArkaneSubProviderOptions {
+    clientId: string;
+    rpcUrl?: string;
 }
 
 if (typeof window !== 'undefined') {
