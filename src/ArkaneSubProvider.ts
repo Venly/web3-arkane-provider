@@ -1,15 +1,16 @@
 import {ArkaneConnect, SecretType, SignMethod, Wallet} from "@arkane-network/arkane-connect"
 import {EIP712TypedData, PartialTxParams} from "@0x/subproviders";
 import {BaseWalletSubprovider} from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
+import {ArkaneSubProviderOptions} from "./index";
 
 export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     readonly arkaneConnect: ArkaneConnect;
     private wallets: Wallet[] = [];
 
-    constructor(clientId: string, options?: ArkaneSubProviderOptions) {
+    constructor(options: ArkaneSubProviderOptions) {
         super();
-        this.arkaneConnect = new ArkaneConnect(clientId, {environment: (options && options.environment) || 'staging'});
+        this.arkaneConnect = new ArkaneConnect(options.clientId, {environment: options.environment || 'production'});
     }
 
     public async loadData() {
@@ -120,8 +121,4 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         });
         return (foundWallet && foundWallet.id) || '';
     }
-}
-
-export interface ArkaneSubProviderOptions {
-    environment?: string
 }

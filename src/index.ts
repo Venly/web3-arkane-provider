@@ -1,5 +1,5 @@
 import {ArkaneSubProvider} from "./ArkaneSubProvider";
-import {ArkaneConnect, AuthenticationResult} from "@arkane-network/arkane-connect/dist/connect.js";
+import {ArkaneConnect, AuthenticationResult} from "@arkane-network/arkane-connect/dist/src/connect/connect";
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
@@ -29,7 +29,7 @@ export class Arkane {
         engine.addProvider(new FilterSubprovider());
         engine.addProvider(new NonceSubprovider());
 
-        const arkaneSubProvider = new ArkaneSubProvider(options.clientId);
+        const arkaneSubProvider = new ArkaneSubProvider(options);
 
         this.ac = arkaneSubProvider.arkaneConnect;
 
@@ -65,6 +65,7 @@ export class Arkane {
 export interface ArkaneSubProviderOptions {
     clientId: string;
     rpcUrl?: string;
+    environment?: string;
 }
 
 if (typeof window !== 'undefined') {
