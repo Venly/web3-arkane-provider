@@ -1,4 +1,4 @@
-Arkane Web3 Provider
+Arkane Web3 Provider<img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
 ===
 
 > The Arkane Web3 provider is a smart wrapper around the existing Web3 Ethereum JavaScript API.
