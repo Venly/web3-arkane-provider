@@ -7,10 +7,12 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     readonly arkaneConnect: ArkaneConnect;
     private wallets: Wallet[] = [];
+    private signMethod: SignMethod;
 
     constructor(options: ArkaneSubProviderOptions) {
         super();
         this.arkaneConnect = new ArkaneConnect(options.clientId, {environment: options.environment || 'production'});
+        this.signMethod = options.signMethod == 'POPUP' ? SignMethod.POPUP : SignMethod.REDIRECT;
     }
 
     public async loadData() {
@@ -43,7 +45,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return Signed transaction hex string
      */
     public async signTransactionAsync(txParams: PartialTxParams): Promise<string> {
-        let signer = this.arkaneConnect.createSigner();
+        let signer = this.arkaneConnect.createSigner(this.signMethod);
         return signer.signTransaction(this.constructEthereumTransationSignatureRequest(txParams))
             .then((result) => {
                 if (result.status === 'SUCCESS') {
@@ -81,7 +83,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return Signature hex string (order: rsv)
      */
     public async signPersonalMessageAsync(data: string, address: string): Promise<string> {
-        const signer = this.arkaneConnect.createSigner();
+        const signer = this.arkaneConnect.createSigner(this.signMethod);
         return signer.signTransaction({
             type: 'ETHEREUM_RAW',
             walletId: this.getWalletIdFrom(address),

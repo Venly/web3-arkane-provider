@@ -65,7 +65,8 @@ export class Arkane {
 export interface ArkaneSubProviderOptions {
     clientId: string;
     rpcUrl?: string;
-    environment?: string;
+    environment?: string,
+    signMethod?: string
 }
 
 if (typeof window !== 'undefined') {

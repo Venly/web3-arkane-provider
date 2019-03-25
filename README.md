@@ -32,7 +32,8 @@ After adding the javascript file to your page, a global *Arkane* object is added
 const options = {
   clientId: 'YOUR_CLIENT_ID',
   rpcUrl: 'https://kovan.infura.io/v3/YOUR-PROJECT-ID', //optional
-  environment: 'staging' //optional, production by default  
+  environment: 'staging', //optional, production by default  
+  signMethod: 'POPUP' //optional, REDIRECT by default
 };
 Arkane.createArkaneProviderEngine(options).then(provider => {
     web3 = new Web3(provider);
