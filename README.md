@@ -1,4 +1,4 @@
-Arkane Web3 Provider
+Arkane Web3 Provider<img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
 ===
 
 > The Arkane Web3 provider is a smart wrapper around the existing Web3 Ethereum JavaScript API.
@@ -55,7 +55,7 @@ Arkane.arkaneConnect().linkWallets();
 
 # Example Project
 
-[As an example](https://github.com/ArkaneNetwork/web3-arkane-provider/tree/master/example), we transformed our *Arketype* demo to sign transactions and data using web3. 
+[As an example](https://github.com/ArkaneNetwork/web3-arkane-provider-example), we transformed our *Arketype* demo to sign transactions and data using web3. 
 
 # What is Arkane Network
 Not sure yet what Arkane Network is all about, where are some resources to help you get a better view:
