@@ -11,7 +11,11 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     constructor(options: ArkaneSubProviderOptions) {
         super();
-        this.arkaneConnect = new ArkaneConnect(options.clientId, {environment: options.environment || 'production'});
+        this.arkaneConnect = new ArkaneConnect(options.clientId,
+            {
+                environment: options.environment || 'production',
+                bearerTokenProvider: options.bearerTokenProvider
+            });
         this.signMethod = options.signMethod == 'POPUP' ? SignMethod.POPUP : SignMethod.REDIRECT;
     }
 
