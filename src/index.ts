@@ -66,7 +66,8 @@ export interface ArkaneSubProviderOptions {
     clientId: string;
     rpcUrl?: string;
     environment?: string,
-    signMethod?: string
+    signMethod?: string,
+    bearerTokenProvider?: () => string
 }
 
 if (typeof window !== 'undefined') {
