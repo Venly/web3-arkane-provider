@@ -33,7 +33,8 @@ const options = {
   clientId: 'YOUR_CLIENT_ID',
   rpcUrl: 'https://kovan.infura.io/v3/YOUR-PROJECT-ID', //optional
   environment: 'staging', //optional, production by default  
-  signMethod: 'POPUP' //optional, REDIRECT by default
+  signMethod: 'POPUP', //optional, REDIRECT by default
+  bearerTokenProvider: () => 'obtained_bearer_token' //optional, default undefined
 };
 Arkane.createArkaneProviderEngine(options).then(provider => {
     web3 = new Web3(provider);
@@ -41,6 +42,8 @@ Arkane.createArkaneProviderEngine(options).then(provider => {
 ```
 
 The web3 instance now works as if it was [injected by parity or metamask](https://github.com/ethereum/wiki/wiki/JavaScript-API). You can fetch your wallets or sign transactions and messages. 
+
+If you provide your own implementation of `bearerTokenProvider`, the web3 provider will not attempt to obtain an authentication code, but rather use the one provided by you.
 
 ### Using Arkane Connect JS natively
 
