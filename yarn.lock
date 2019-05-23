@@ -106,12 +106,13 @@
     ethers "~4.0.4"
     lodash "^4.17.11"
 
-"@arkane-network/arkane-connect@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-1.1.7.tgz#1878f752345c762bbfaa915067abdbc5b0d3b990"
-  integrity sha512-za2Z1RNXF7gMbfrQ27Vg6hAeNyGP96xikviJtdeFV++pSXrD8kIGZsBh2rMMRovtV/kRaJodr9Nbz9kvZ3v27A==
+"@arkane-network/arkane-connect@^1.1.12":
+  version "1.1.12"
+  resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-1.1.12.tgz#d86aa3bbc9a2eb71078d1e0b41b7b072228477b5"
+  integrity sha512-ckq3P+3XVFnmTzxEWDMwyZJba6jrCMSZzYfhvsIOf8nlueWdogaNgbvq9v5/WvXBgLGq9MDUU3mXNRFbNamqUA==
   dependencies:
     axios "^0.18.0"
+    core-js "^2.6.5"
     es6-promise "^4.2.5"
     keycloak-js "4.3.0"
     querystring "^0.2.0"
@@ -1702,6 +1703,11 @@ copy-descriptor@^0.1.0:
 core-js@^2.4.0, core-js@^2.5.0:
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.3.tgz#4b70938bdffdaf64931e66e2db158f0892289c49"
+
+core-js@^2.6.5:
+  version "2.6.8"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.8.tgz#dc3a1e633a04267944e0cb850d3880f340248139"
+  integrity sha512-RWlREFU74TEkdXzyl1bka66O3kYp8jeTXrvJZDzVVMH8AiHUSOFpL1yfhQJ+wHocAm1m+4971W1PPzfLuCv1vg==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"

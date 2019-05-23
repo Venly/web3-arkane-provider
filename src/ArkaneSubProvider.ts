@@ -1,22 +1,27 @@
-import {ArkaneConnect, SecretType, SignMethod, Wallet} from "@arkane-network/arkane-connect"
-import {EIP712TypedData, PartialTxParams} from "@0x/subproviders";
-import {BaseWalletSubprovider} from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
-import {ArkaneSubProviderOptions} from "./index";
+import { ArkaneConnect, SecretType, SignatureRequestType, SignMethod, Wallet, WindowMode } from "@arkane-network/arkane-connect"
+import { EIP712TypedData, PartialTxParams }                                                from "@0x/subproviders";
+import { BaseWalletSubprovider }                                                           from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
+import { ArkaneSubProviderOptions }                                                        from "./index";
+import { ConstructorOptions }                                                              from '@arkane-network/arkane-connect/dist/src/connect/connect';
 
 export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     readonly arkaneConnect: ArkaneConnect;
     private wallets: Wallet[] = [];
-    private signMethod: SignMethod;
 
     constructor(options: ArkaneSubProviderOptions) {
         super();
-        this.arkaneConnect = new ArkaneConnect(options.clientId,
-            {
-                environment: options.environment || 'production',
-                bearerTokenProvider: options.bearerTokenProvider
-            });
-        this.signMethod = options.signMethod == 'POPUP' ? SignMethod.POPUP : SignMethod.REDIRECT;
+        const connectConstructorOptions: ConstructorOptions = {
+            environment: options.environment || 'production',
+            bearerTokenProvider: options.bearerTokenProvider,
+        };
+        if (options.signMethod) {
+            Object.assign(connectConstructorOptions, {signUsing: options.signMethod == 'POPUP' ? SignMethod.POPUP : SignMethod.REDIRECT});
+        }
+        if (options.windowMode) {
+            Object.assign(connectConstructorOptions, {windowMode: options.windowMode == 'POPUP' ? WindowMode.POPUP : WindowMode.REDIRECT});
+        }
+        this.arkaneConnect = new ArkaneConnect(options.clientId, connectConstructorOptions);
     }
 
     public async loadData() {
@@ -49,7 +54,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return Signed transaction hex string
      */
     public async signTransactionAsync(txParams: PartialTxParams): Promise<string> {
-        let signer = this.arkaneConnect.createSigner(this.signMethod);
+        let signer = this.arkaneConnect.createSigner();
         return signer.signTransaction(this.constructEthereumTransationSignatureRequest(txParams))
             .then((result) => {
                 if (result.status === 'SUCCESS') {
@@ -70,7 +75,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
             data: (txParams.data) || '0x',
             value: txParams.value ? parseInt(txParams.value, 16) : 0,
             submit: false,
-            type: 'ETHEREUM_TRANSACTION',
+            type: SignatureRequestType.ETHEREUM_TRANSACTION,
             walletId: this.getWalletIdFrom(txParams.from)
         };
         return retVal;
@@ -87,9 +92,9 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return Signature hex string (order: rsv)
      */
     public async signPersonalMessageAsync(data: string, address: string): Promise<string> {
-        const signer = this.arkaneConnect.createSigner(this.signMethod);
+        const signer = this.arkaneConnect.createSigner();
         return signer.signTransaction({
-            type: 'ETHEREUM_RAW',
+            type: SignatureRequestType.ETHEREUM_RAW,
             walletId: this.getWalletIdFrom(address),
             data: data
         })
