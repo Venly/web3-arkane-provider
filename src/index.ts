@@ -1,5 +1,5 @@
-import {ArkaneSubProvider} from "./ArkaneSubProvider";
-import {ArkaneConnect, AuthenticationResult} from "@arkane-network/arkane-connect/dist/src/connect/connect";
+import { ArkaneSubProvider }                   from "./ArkaneSubProvider";
+import { ArkaneConnect, AuthenticationResult } from "@arkane-network/arkane-connect/dist/src/connect/connect";
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
@@ -34,31 +34,42 @@ export class Arkane {
         this.ac = arkaneSubProvider.arkaneConnect;
 
         return arkaneSubProvider.arkaneConnect.checkAuthenticated()
-            .then((result: AuthenticationResult) => {
-                result.authenticated(auth => {
-                    console.log("Already authenticated to Arkane network");
-                }).notAuthenticated(noAuth => {
-                    console.log('not yet authenticated to Arkane Network');
-                    arkaneSubProvider.arkaneConnect.authenticate();
-                });
-            })
-            .then(() => {
-                return arkaneSubProvider.loadData();
-            })
-            .then(() => {
-                engine.addProvider(arkaneSubProvider);
-                engine.addProvider(new RpcSubprovider({rpcUrl: options.rpcUrl || 'https://ethereum.arkane.network'}));
+                                .then(async (result: AuthenticationResult) => {
+                                    return await new Promise((resolve, reject) => {
+                                        result.authenticated(auth => {
+                                                  console.log("Authenticated to Arkane network");
+                                                  resolve();
+                                              })
+                                              .notAuthenticated(async noAuth => {
+                                                  console.log('Not yet authenticated to Arkane Network');
+                                                  arkaneSubProvider.arkaneConnect.authenticate()
+                                                                   .then((result: AuthenticationResult) => {
+                                                                       return result.authenticated(auth => {
+                                                                           console.log("Authenticated to Arkane network");
+                                                                           resolve();
+                                                                       });
+                                                                   })
+                                                                   .catch(err => reject(err))
+                                              })
+                                    });
+                                })
+                                .then(() => {
+                                    return arkaneSubProvider.loadData();
+                                })
+                                .then(() => {
+                                    engine.addProvider(arkaneSubProvider);
+                                    engine.addProvider(new RpcSubprovider({rpcUrl: options.rpcUrl || 'https://ethereum.arkane.network'}));
 
-                // network connectivity error
-                engine.on('error', function (err: any) {
-                    // report connectivity errors
-                    console.error(err.stack)
-                });
+                                    // network connectivity error
+                                    engine.on('error', function(err: any) {
+                                        // report connectivity errors
+                                        console.error(err.stack)
+                                    });
 
-                // start polling for blocks
-                engine.start();
-                return engine;
-            });
+                                    // start polling for blocks
+                                    engine.start();
+                                    return engine;
+                                });
     }
 }
 
