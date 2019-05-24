@@ -1,6 +1,6 @@
 {
   "name": "@arkane-network/web3-arkane-provider",
-  "version": "0.0.17",
+  "version": "0.0.17-develop-3",
   "description": "Arkane-enabled Web3 Provider for the web",
   "main": "dist/web3-arkane-provider.js",
   "unpkg": "dist/web3-arkane-provider.js",
@@ -38,14 +38,14 @@
   },
   "homepage": "https://arkane.network",
   "dependencies": {
-    "@0x/subproviders": "^4.0.4",
+    "@0x/subproviders": "^4.0.6",
     "@arkane-network/arkane-connect": "^1.1.12",
     "web3": "^0.20.7",
     "web3-provider-engine": "^14.2.0"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.1",
-    "mocha": "^6.0.2",
+    "mocha": "^6.1.4",
     "ts-loader": "^5.3.3",
     "typedoc": "^0.14.2",
     "typescript": "^3.2.2",
