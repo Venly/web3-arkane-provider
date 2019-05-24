@@ -36,20 +36,20 @@ export class Arkane {
         return arkaneSubProvider.arkaneConnect.checkAuthenticated()
                                 .then(async (result: AuthenticationResult) => {
                                     return await new Promise((resolve, reject) => {
-                                        result.authenticated(auth => {
+                                        result.authenticated(() => {
                                                   console.log("Authenticated to Arkane network");
                                                   resolve();
                                               })
-                                              .notAuthenticated(async noAuth => {
+                                              .notAuthenticated(() => {
                                                   console.log('Not yet authenticated to Arkane Network');
                                                   arkaneSubProvider.arkaneConnect.authenticate()
                                                                    .then((result: AuthenticationResult) => {
-                                                                       return result.authenticated(auth => {
+                                                                       return result.authenticated(() => {
                                                                            console.log("Authenticated to Arkane network");
                                                                            resolve();
                                                                        });
                                                                    })
-                                                                   .catch(err => reject(err))
+                                                                   .catch((err: any) => reject(err))
                                               })
                                     });
                                 })
@@ -61,7 +61,7 @@ export class Arkane {
                                     engine.addProvider(new RpcSubprovider({rpcUrl: options.rpcUrl || 'https://ethereum.arkane.network'}));
 
                                     // network connectivity error
-                                    engine.on('error', function(err: any) {
+                                    engine.on('error', (err: any) => {
                                         // report connectivity errors
                                         console.error(err.stack)
                                     });
