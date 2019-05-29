@@ -27,9 +27,9 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     public async loadData() {
         const currentClass = this;
         return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM})
-            .then(returnedWallets => {
-                currentClass.wallets = returnedWallets.filter((wallet) => wallet.secretType === SecretType.ETHEREUM);
-            });
+                   .then(returnedWallets => {
+                       currentClass.wallets = returnedWallets;
+                   });
     }
 
     /**
@@ -40,9 +40,10 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return An array of accounts
      */
     public async getAccountsAsync(): Promise<string[]> {
-        return new Promise((resolve => {
-            resolve(this.wallets.map((wallet) => wallet.address));
-        }));
+        return this.loadData()
+                   .then(() => {
+                       return this.wallets.map((wallet) => wallet.address)
+                   });
     }
 
     /**
@@ -56,13 +57,13 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     public async signTransactionAsync(txParams: PartialTxParams): Promise<string> {
         let signer = this.arkaneConnect.createSigner();
         return signer.signTransaction(this.constructEthereumTransationSignatureRequest(txParams))
-            .then((result) => {
-                if (result.status === 'SUCCESS') {
-                    return result.result.signedTransaction;
-                } else {
-                    throw new Error((result.errors && result.errors.join(", ")));
-                }
-            });
+                     .then((result) => {
+                         if (result.status === 'SUCCESS') {
+                             return result.result.signedTransaction;
+                         } else {
+                             throw new Error((result.errors && result.errors.join(", ")));
+                         }
+                     });
     }
 
     private constructEthereumTransationSignatureRequest(txParams: PartialTxParams) {
@@ -94,22 +95,17 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     public async signPersonalMessageAsync(data: string, address: string): Promise<string> {
         const signer = this.arkaneConnect.createSigner();
         return signer.signTransaction({
-            type: SignatureRequestType.ETHEREUM_RAW,
-            walletId: this.getWalletIdFrom(address),
-            data: data
-        })
-            .then((result) => {
-                if (result.status === 'SUCCESS') {
-                    return result.result.signature;
-                } else {
-                    throw new Error((result.errors && result.errors.join(", ")));
-                }
-            });
-    }
-
-    private toHex(myNumber: number) {
-        const hexString = myNumber.toString(16);
-        return (hexString.length % 2) ? '0' + hexString : hexString;
+                         type: SignatureRequestType.ETHEREUM_RAW,
+                         walletId: this.getWalletIdFrom(address),
+                         data: data
+                     })
+                     .then((result) => {
+                         if (result.status === 'SUCCESS') {
+                             return result.result.signature;
+                         } else {
+                             throw new Error((result.errors && result.errors.join(", ")));
+                         }
+                     });
     }
 
     /**
