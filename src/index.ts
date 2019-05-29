@@ -33,24 +33,17 @@ export class Arkane {
 
         this.ac = arkaneSubProvider.arkaneConnect;
 
-        return arkaneSubProvider.arkaneConnect.checkAuthenticated()
+        return arkaneSubProvider.arkaneConnect.authenticate()
                                 .then(async (result: AuthenticationResult) => {
                                     return await new Promise((resolve, reject) => {
                                         result.authenticated(() => {
-                                                  console.log("Authenticated to Arkane network");
+                                                  console.log("Authenticated to Arkane Network");
                                                   resolve();
                                               })
                                               .notAuthenticated(() => {
-                                                  console.log('Not yet authenticated to Arkane Network');
-                                                  arkaneSubProvider.arkaneConnect.authenticate()
-                                                                   .then((result: AuthenticationResult) => {
-                                                                       return result.authenticated(() => {
-                                                                           console.log("Authenticated to Arkane network");
-                                                                           resolve();
-                                                                       });
-                                                                   })
-                                                                   .catch((err: any) => reject(err))
-                                              })
+                                                  console.log('Not authenticated to Arkane Network');
+                                                  reject('Something went wrong or the user aborted login');
+                                              });
                                     });
                                 })
                                 .then(() => {

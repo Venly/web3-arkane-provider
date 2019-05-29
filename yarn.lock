@@ -106,10 +106,10 @@
     ethers "~4.0.4"
     lodash "^4.17.11"
 
-"@arkane-network/arkane-connect@^1.1.12":
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-1.1.12.tgz#d86aa3bbc9a2eb71078d1e0b41b7b072228477b5"
-  integrity sha512-ckq3P+3XVFnmTzxEWDMwyZJba6jrCMSZzYfhvsIOf8nlueWdogaNgbvq9v5/WvXBgLGq9MDUU3mXNRFbNamqUA==
+"@arkane-network/arkane-connect@^1.1.15":
+  version "1.1.15"
+  resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-1.1.15.tgz#1d748e22d3be0c01e75e42fbd8cfb771020f9ae5"
+  integrity sha512-e9TY/aDICJDFkiU/JMC1LyK33FXSFPS8uTG0k9STsJ/KdNu6+vkxhjKftQUGOWGYWB0RePZ3WQqb/6r3tvUFIw==
   dependencies:
     axios "^0.18.0"
     core-js "^2.6.5"
