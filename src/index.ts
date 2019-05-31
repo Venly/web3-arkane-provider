@@ -42,7 +42,7 @@ export class Arkane {
                                               })
                                               .notAuthenticated(() => {
                                                   console.log('Not authenticated to Arkane Network');
-                                                  reject('Something went wrong or the user aborted login');
+                                                  reject();
                                               });
                                     });
                                 })

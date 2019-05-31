@@ -23,10 +23,10 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/subproviders@^4.0.6":
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/@0x/subproviders/-/subproviders-4.0.6.tgz#4e7c9e9c43d8cf53593215c9614f47ffefde3e82"
-  integrity sha512-c1+fibacmJHy2RYa9YLBGA/0b1HFe6kJm/GVutUOBdIgZlsr4TSBJ8cT9KYm3rXY4u2uN8XPXQ6WCjuPMEhsdw==
+"@0x/subproviders@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@0x/subproviders/-/subproviders-4.1.0.tgz#15fc94793c20d9c9c05f9c965e613db8ceaff79a"
+  integrity sha512-l1CLMoLwLI5OZplExoNhcEPp5QGdiuet4xR2hZxB/+ZnpDTHwQQ6k6dNyoUvmQWud47Q9jTq57YSsj6HpyX3Pw==
   dependencies:
     "@0x/assert" "^2.0.10"
     "@0x/types" "^2.2.2"
@@ -106,7 +106,7 @@
     ethers "~4.0.4"
     lodash "^4.17.11"
 
-"@arkane-network/arkane-connect@^1.1.15":
+"@arkane-network/arkane-connect@latest":
   version "1.1.15"
   resolved "https://registry.yarnpkg.com/@arkane-network/arkane-connect/-/arkane-connect-1.1.15.tgz#1d748e22d3be0c01e75e42fbd8cfb771020f9ae5"
   integrity sha512-e9TY/aDICJDFkiU/JMC1LyK33FXSFPS8uTG0k9STsJ/KdNu6+vkxhjKftQUGOWGYWB0RePZ3WQqb/6r3tvUFIw==
