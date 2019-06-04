@@ -1,6 +1,6 @@
 {
   "name": "@arkane-network/web3-arkane-provider",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Arkane-enabled Web3 Provider for the web",
   "main": "dist/web3-arkane-provider.js",
   "unpkg": "dist/web3-arkane-provider.js",
