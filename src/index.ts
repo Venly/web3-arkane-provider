@@ -1,5 +1,7 @@
-import { ArkaneSubProvider }                   from "./ArkaneSubProvider";
-import { ArkaneConnect, AuthenticationResult } from "@arkane-network/arkane-connect/dist/src/connect/connect";
+import { ArkaneSubProvider } from "./ArkaneSubProvider";
+import { ArkaneConnect }     from "@arkane-network/arkane-connect/dist/src/connect/connect";
+import { SecretType }        from '@arkane-network/arkane-connect/dist/src/models/SecretType';
+import { Account }           from '@arkane-network/arkane-connect/dist/src/models/Account';
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
@@ -33,17 +35,19 @@ export class Arkane {
 
         this.ac = arkaneSubProvider.arkaneConnect;
 
-        return arkaneSubProvider.arkaneConnect.authenticate()
-                                .then(async (result: AuthenticationResult) => {
+        return arkaneSubProvider.arkaneConnect.flows.getAccount(SecretType.ETHEREUM)
+                                .then(async (account: Account) => {
                                     return await new Promise((resolve, reject) => {
-                                        result.authenticated(() => {
-                                                  console.log("Authenticated to Arkane Network");
-                                                  resolve();
-                                              })
-                                              .notAuthenticated(() => {
-                                                  console.log('Not authenticated to Arkane Network');
-                                                  reject();
-                                              });
+                                        if (!account.isAuthenticated) {
+                                            console.log('Not authenticated to Arkane Network');
+                                            reject();
+                                        }
+                                        if (account.wallets.length <= 0) {
+                                            console.log('No wallet has been selected');
+                                            reject();
+                                        }
+                                        console.log("Authenticated to Arkane Network && has at least one wallet");
+                                        resolve();
                                     });
                                 })
                                 .then(() => {
