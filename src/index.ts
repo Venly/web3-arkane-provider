@@ -38,16 +38,19 @@ export class Arkane {
         return arkaneSubProvider.arkaneConnect.flows.getAccount(SecretType.ETHEREUM)
                                 .then(async (account: Account) => {
                                     return await new Promise((resolve, reject) => {
+                                        let rejected = false;
                                         if (!account.isAuthenticated) {
                                             console.log('Not authenticated to Arkane Network');
-                                            reject();
+                                            reject('not-authenticated');
+                                            rejected = true;
                                         }
-                                        if (account.wallets.length <= 0) {
-                                            console.log('No wallet has been selected');
-                                            reject();
+                                        if (account.wallets && account.wallets.length <= 0) {
+                                            console.log('No wallet has been linked to this application');
+                                            reject('no-wallet-linked');
+                                            rejected = true;
                                         }
-                                        if (account.isAuthenticated && account.wallets.length > 0) {
-                                            console.log("Authenticated to Arkane Network && has at least one wallet");
+                                        if (!rejected) {
+                                            console.log("Authenticated to Arkane Network and at least one wallet is linked to this application");
                                             resolve();
                                         }
                                     });
