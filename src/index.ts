@@ -46,8 +46,10 @@ export class Arkane {
                                             console.log('No wallet has been selected');
                                             reject();
                                         }
-                                        console.log("Authenticated to Arkane Network && has at least one wallet");
-                                        resolve();
+                                        if (account.isAuthenticated && account.wallets.length > 0) {
+                                            console.log("Authenticated to Arkane Network && has at least one wallet");
+                                            resolve();
+                                        }
                                     });
                                 })
                                 .then(() => {
