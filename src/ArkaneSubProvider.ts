@@ -67,7 +67,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     }
 
     private constructEthereumTransationSignatureRequest(txParams: PartialTxParams) {
-        console.log(txParams);
+        console.debug(txParams);
         const retVal = {
             gasPrice: txParams.gasPrice ? parseInt(txParams.gasPrice, 16) : txParams.gasPrice,
             gas: txParams.gas ? parseInt(txParams.gas, 16) : txParams.gas,
