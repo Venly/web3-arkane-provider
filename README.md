@@ -1,4 +1,4 @@
-Arkane Web3 Provider
+Arkane Web3 Provider<img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
 ===
 
 > The Arkane Web3 provider is a smart wrapper around the existing Web3 Ethereum JavaScript API.
@@ -28,12 +28,22 @@ After adding the javascript file to your page, a global *Arkane* object is added
 ### Adding the web3 provider
 
 ```javascript
-Arkane.createArkaneProviderEngine('YOUR_CLIENT_ID').then(provider => {
+
+const options = {
+  clientId: 'YOUR_CLIENT_ID',
+  rpcUrl: 'https://kovan.infura.io/v3/YOUR-PROJECT-ID', //optional
+  environment: 'staging', //optional, production by default  
+  signMethod: 'POPUP', //optional, REDIRECT by default
+  bearerTokenProvider: () => 'obtained_bearer_token' //optional, default undefined
+};
+Arkane.createArkaneProviderEngine(options).then(provider => {
     web3 = new Web3(provider);
   });
 ```
 
 The web3 instance now works as if it was [injected by parity or metamask](https://github.com/ethereum/wiki/wiki/JavaScript-API). You can fetch your wallets or sign transactions and messages. 
+
+If you provide your own implementation of `bearerTokenProvider`, the web3 provider will not attempt to obtain an authentication code, but rather use the one provided by you.
 
 ### Using Arkane Connect JS natively
 
@@ -48,7 +58,7 @@ Arkane.arkaneConnect().linkWallets();
 
 # Example Project
 
-[As an example](https://github.com/ArkaneNetwork/web3-arkane-provider/tree/master/example), we transformed our *Arketype* demo to sign transactions and data using web3. 
+[As an example](https://github.com/ArkaneNetwork/web3-arkane-provider-example), we transformed our *Arketype* demo to sign transactions and data using web3. 
 
 # What is Arkane Network
 Not sure yet what Arkane Network is all about, where are some resources to help you get a better view:

@@ -1,6 +1,8 @@
-import {ArkaneSubProvider} from "./ArkaneSubProvider";
 import {ArkaneConnect, AuthenticationResult} from "@arkane-network/arkane-connect/dist/src/connect/connect";
 import {Network} from "@arkane-network/arkane-connect/dist/src/models/Network";
+import { ArkaneSubProvider } from "./ArkaneSubProvider";
+import { SecretType }        from '@arkane-network/arkane-connect/dist/src/models/SecretType';
+import { Account }           from '@arkane-network/arkane-connect/dist/src/models/Account';
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
@@ -64,34 +66,38 @@ export class Arkane {
 
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
-        return this.arkaneSubProvider.arkaneConnect.checkAuthenticated()
-            .then((result: AuthenticationResult) => {
-                result.authenticated(auth => {
-                    console.log("Already authenticated to Arkane network");
-                }).notAuthenticated(noAuth => {
-                    console.log('not yet authenticated to Arkane Network');
-                    this.arkaneSubProvider.arkaneConnect.authenticate();
-                });
-            })
-            .then(() => {
-                return this.arkaneSubProvider.loadData();
-            })
-            .then(() => {
-                engine.addProvider(this.arkaneSubProvider);
+        return this.arkaneSubProvider.arkaneConnect.flows.getAccount(SecretType.ETHEREUM)
+                                .then(async (account: Account) => {
+                                    return await new Promise((resolve, reject) => {
+                                        if (!account.isAuthenticated) {
+                                            console.debug('Not authenticated to Arkane Network');
+                                            reject('not-authenticated');
+                                        } else if (account.wallets && account.wallets.length <= 0) {
+                                            console.debug('No wallet has been linked to this application');
+                                            reject('no-wallet-linked');
+                                        } else {
+                                            console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
+                                            resolve();
+                                        }
+                                    });
+                                })
+                                .then(() => {
+                                    return this.rpcSubprovider.loadData();
+                                })
+                                .then(() => {
+                                    engine.addProvider(this.arkaneSubProvider);
+                                    engine.addProvider(this.rpcSubprovider);
 
+                                    // network connectivity error
+                                    engine.on('error', (err: any) => {
+                                        // report connectivity errors
+                                        console.error(err.stack)
+                                    });
 
-                engine.addProvider(this.rpcSubprovider);
-
-                // network connectivity error
-                engine.on('error', function (err: any) {
-                    // report connectivity errors
-                    console.error(err.stack)
-                });
-
-                // start polling for blocks
-                engine.start();
-                return engine;
-            });
+                                    // start polling for blocks
+                                    engine.start();
+                                    return engine;
+                                });
     }
 }
 
@@ -100,6 +106,10 @@ export interface ArkaneSubProviderOptions {
     /** @deprecated Use network instead. */
     rpcUrl?: string;
     environment?: string;
+    /** Deprecated, use windowMode instead */
+    signMethod?: string;
+    windowMode?: string;
+    bearerTokenProvider?: () => string;
     network?: Network;
 }
 
