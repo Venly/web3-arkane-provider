@@ -1,16 +1,20 @@
-import {ArkaneConnect, SecretType, SignMethod, Wallet} from "@arkane-network/arkane-connect"
+import {ArkaneConnect, SecretType, SignatureRequestType, Wallet} from "@arkane-network/arkane-connect"
 import {EIP712TypedData, PartialTxParams} from "@0x/subproviders";
 import {BaseWalletSubprovider} from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
 import {ArkaneSubProviderOptions} from "./index";
+import {GenericSignatureRequest} from "@arkane-network/arkane-connect/dist/src/models/transaction/GenericSignatureRequest";
+import {Network} from "@arkane-network/arkane-connect/dist/src/models/Network";
 
 export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     readonly arkaneConnect: ArkaneConnect;
     private wallets: Wallet[] = [];
+    public network?: Network;
 
     constructor(options: ArkaneSubProviderOptions) {
         super();
         this.arkaneConnect = new ArkaneConnect(options.clientId, {environment: options.environment || 'production'});
+        this.network = options.network;
     }
 
     public async loadData() {
@@ -55,8 +59,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     }
 
     private constructEthereumTransationSignatureRequest(txParams: PartialTxParams) {
-        console.log(txParams);
-        const retVal = {
+        const retVal:GenericSignatureRequest = {
             gasPrice: txParams.gasPrice ? parseInt(txParams.gasPrice, 16) : txParams.gasPrice,
             gas: txParams.gas ? parseInt(txParams.gas, 16) : txParams.gas,
             to: txParams.to,
@@ -64,8 +67,9 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
             data: (txParams.data) || '0x',
             value: txParams.value ? parseInt(txParams.value, 16) : 0,
             submit: false,
-            type: 'ETHEREUM_TRANSACTION',
-            walletId: this.getWalletIdFrom(txParams.from)
+            type: SignatureRequestType.ETHEREUM_TRANSACTION,
+            walletId: this.getWalletIdFrom(txParams.from),
+            network: this.network
         };
         return retVal;
     }
@@ -83,7 +87,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     public async signPersonalMessageAsync(data: string, address: string): Promise<string> {
         const signer = this.arkaneConnect.createSigner();
         return signer.signTransaction({
-            type: 'ETHEREUM_RAW',
+            type: SignatureRequestType.ETHEREUM_RAW,
             walletId: this.getWalletIdFrom(address),
             data: data
         })

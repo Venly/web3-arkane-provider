@@ -1,19 +1,43 @@
 import {ArkaneSubProvider} from "./ArkaneSubProvider";
 import {ArkaneConnect, AuthenticationResult} from "@arkane-network/arkane-connect/dist/src/connect/connect";
+import {Network} from "@arkane-network/arkane-connect/dist/src/models/Network";
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
 const FixtureSubprovider = require('web3-provider-engine/subproviders/fixture');
 const FilterSubprovider = require('web3-provider-engine/subproviders/filters');
-const NonceSubprovider = require('web3-provider-engine/subproviders/nonce-tracker');
+const NonceSubprovider = require('../nonce-tracker');
 const RpcSubprovider = require('web3-provider-engine/subproviders/rpc');
 
 export class Arkane {
 
     private ac?: ArkaneConnect;
+    private network?: Network;
+    private originalNetwork?: Network;
+    private rpcSubprovider: any;
+    private nonceSubProvider: any;
+    private arkaneSubProvider: any ;
 
-    public arkaneConnect() {
+    public arkaneConnect(network?: Network) {
+        this.network = network;
+        this.originalNetwork = network;
         return this.ac;
+    }
+
+    public changeNetwork(network: Network) {
+        if (network && network.nodeUrl) {
+            this.network = network;
+            this.nonceSubProvider.rpcUrl = network.nodeUrl;
+            this.rpcSubprovider.rpcUrl = network.nodeUrl;
+            this.arkaneSubProvider.network = network;
+        } else {
+            console.warn("Not changing to network, not sufficient data: resetting network", network);
+            this.resetNetwork();
+        }
+    }
+
+    public resetNetwork() {
+        this.network = this.originalNetwork;
     }
 
     public createArkaneProviderEngine(options: ArkaneSubProviderOptions) {
@@ -27,27 +51,36 @@ export class Arkane {
         }));
         engine.addProvider(new CacheSubprovider());
         engine.addProvider(new FilterSubprovider());
-        engine.addProvider(new NonceSubprovider());
 
-        const arkaneSubProvider = new ArkaneSubProvider(options);
+        console.log("Arkane is using options", options);
+        let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || 'https://ethereum.arkane.network';
+        console.log('Arkane initialized with endpoint: ', endpoint);
+        this.nonceSubProvider = new NonceSubprovider({rpcUrl: endpoint});
+        engine.addProvider(this.nonceSubProvider);
 
-        this.ac = arkaneSubProvider.arkaneConnect;
+        this.arkaneSubProvider = new ArkaneSubProvider(options);
 
-        return arkaneSubProvider.arkaneConnect.checkAuthenticated()
+        this.ac = this.arkaneSubProvider.arkaneConnect;
+
+        this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
+
+        return this.arkaneSubProvider.arkaneConnect.checkAuthenticated()
             .then((result: AuthenticationResult) => {
                 result.authenticated(auth => {
                     console.log("Already authenticated to Arkane network");
                 }).notAuthenticated(noAuth => {
                     console.log('not yet authenticated to Arkane Network');
-                    arkaneSubProvider.arkaneConnect.authenticate();
+                    this.arkaneSubProvider.arkaneConnect.authenticate();
                 });
             })
             .then(() => {
-                return arkaneSubProvider.loadData();
+                return this.arkaneSubProvider.loadData();
             })
             .then(() => {
-                engine.addProvider(arkaneSubProvider);
-                engine.addProvider(new RpcSubprovider({rpcUrl: options.rpcUrl || 'https://ethereum.arkane.network'}));
+                engine.addProvider(this.arkaneSubProvider);
+
+
+                engine.addProvider(this.rpcSubprovider);
 
                 // network connectivity error
                 engine.on('error', function (err: any) {
@@ -64,8 +97,10 @@ export class Arkane {
 
 export interface ArkaneSubProviderOptions {
     clientId: string;
+    /** @deprecated Use network instead. */
     rpcUrl?: string;
     environment?: string;
+    network?: Network;
 }
 
 if (typeof window !== 'undefined') {
