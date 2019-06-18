@@ -82,7 +82,7 @@ export class Arkane {
                                     });
                                 })
                                 .then(() => {
-                                    return this.rpcSubprovider.loadData();
+                                    return this.arkaneSubProvider.loadData();
                                 })
                                 .then(() => {
                                     engine.addProvider(this.arkaneSubProvider);
