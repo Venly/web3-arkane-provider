@@ -3,11 +3,13 @@ import { EIP712TypedData, PartialTxParams }                                     
 import { BaseWalletSubprovider }                                                           from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
 import { ArkaneSubProviderOptions }                                                        from "./index";
 import { ConstructorOptions }                                                              from '@arkane-network/arkane-connect/dist/src/connect/connect';
+import {Network}                                                                           from "@arkane-network/arkane-connect/dist/src/models/Network";
 
 export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     readonly arkaneConnect: ArkaneConnect;
     private wallets: Wallet[] = [];
+    public network?: Network;
 
     constructor(options: ArkaneSubProviderOptions) {
         super();
@@ -22,6 +24,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
             Object.assign(connectConstructorOptions, {windowMode: options.windowMode == 'POPUP' ? WindowMode.POPUP : WindowMode.REDIRECT});
         }
         this.arkaneConnect = new ArkaneConnect(options.clientId, connectConstructorOptions);
+        this.network = options.network;
     }
 
     public async loadData() {
@@ -77,7 +80,8 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
             value: txParams.value ? parseInt(txParams.value, 16) : 0,
             submit: false,
             type: SignatureRequestType.ETHEREUM_TRANSACTION,
-            walletId: this.getWalletIdFrom(txParams.from)
+            walletId: this.getWalletIdFrom(txParams.from),
+            network: this.network
         };
         return retVal;
     }
