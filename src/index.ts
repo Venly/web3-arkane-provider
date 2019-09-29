@@ -3,15 +3,15 @@ import {Network} from "@arkane-network/arkane-connect/dist/src/models/Network";
 import { ArkaneSubProvider } from "./ArkaneSubProvider";
 import { SecretType }        from '@arkane-network/arkane-connect/dist/src/models/SecretType';
 import { Account }           from '@arkane-network/arkane-connect/dist/src/models/Account';
+import {NonceTrackerSubprovider} from "./NonceTracker";
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
 const FixtureSubprovider = require('web3-provider-engine/subproviders/fixture');
 const FilterSubprovider = require('web3-provider-engine/subproviders/filters');
-const NonceSubprovider = require('../nonce-tracker');
 const RpcSubprovider = require('web3-provider-engine/subproviders/rpc');
 
-export class Arkane {
+export default class Arkane {
 
     private ac?: ArkaneConnect;
     private network?: Network;
@@ -57,7 +57,7 @@ export class Arkane {
         console.log("Arkane is using options", options);
         let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || 'https://ethereum.arkane.network';
         console.log('Arkane initialized with endpoint: ', endpoint);
-        this.nonceSubProvider = new NonceSubprovider({rpcUrl: endpoint});
+        this.nonceSubProvider = new NonceTrackerSubprovider({rpcUrl: endpoint});
         engine.addProvider(this.nonceSubProvider);
 
         this.arkaneSubProvider = new ArkaneSubProvider(options);
