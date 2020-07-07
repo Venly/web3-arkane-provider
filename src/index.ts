@@ -1,5 +1,5 @@
-import {ArkaneConnect, AuthenticationResult} from "@arkane-network/arkane-connect/dist/src/connect/connect";
-import {Network} from "@arkane-network/arkane-connect/dist/src/models/Network";
+import { ArkaneConnect, AuthenticationOptions, AuthenticationResult } from "@arkane-network/arkane-connect/dist/src/connect/connect";
+import {Network}                                                      from "@arkane-network/arkane-connect/dist/src/models/Network";
 import { ArkaneSubProvider } from "./ArkaneSubProvider";
 import { SecretType }        from '@arkane-network/arkane-connect/dist/src/models/SecretType';
 import { Account }           from '@arkane-network/arkane-connect/dist/src/models/Account';
@@ -66,7 +66,7 @@ export default class Arkane {
 
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
-        return this.arkaneSubProvider.arkaneConnect.flows.getAccount(SecretType.ETHEREUM)
+        return this.arkaneSubProvider.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, options.authenticationOptions)
                                 .then(async (account: Account) => {
                                     return await new Promise((resolve, reject) => {
                                         if (!account.isAuthenticated) {
@@ -111,6 +111,7 @@ export interface ArkaneSubProviderOptions {
     windowMode?: string;
     bearerTokenProvider?: () => string;
     network?: Network;
+    authenticationOptions?: AuthenticationOptions
 }
 
 if (typeof window !== 'undefined') {
