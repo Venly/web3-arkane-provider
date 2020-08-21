@@ -67,7 +67,7 @@ export default class Arkane {
 
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
-        return this.startEngine(engine);
+        return Promise.resolve(this.startEngine(engine));
     }
 
     private startEngine(engine: any) {
