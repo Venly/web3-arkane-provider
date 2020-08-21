@@ -74,7 +74,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         let promise: Promise<any>;
         if (this.walletsFromFlow && this.walletsFromFlow.length > 0) {
             promise = Promise.resolve(() => {
-                that.wallets = that.walletsFromFlow;
+                that.wallets = [...that.walletsFromFlow];
                 that.walletsFromFlow = [];
             });
         } else if (this.authenticated) {
