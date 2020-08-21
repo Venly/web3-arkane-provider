@@ -45,6 +45,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
                            } else {
                                console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
                                this.authenticated = true;
+                               this.wallets = account.wallets;
                                resolve();
                            }
                        });
@@ -55,19 +56,21 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         if (!this.authenticated) {
             return this.authenticate()
                        .then(() => {
-                           return this.loadWallets();
+                           return this.getWallets();
                        });
         } else {
-            return this.loadWallets();
+            return this.getWallets();
         }
     }
 
-    public async loadWallets() {
+    public async getWallets() {
         const currentClass = this;
-        return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM})
-                   .then(returnedWallets => {
-                       currentClass.wallets = returnedWallets;
-                   });
+        return this.wallets
+            ? Promise.resolve(this.wallets)
+            : this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM})
+                  .then(returnedWallets => {
+                      currentClass.wallets = returnedWallets;
+                  });
     }
 
     /**
