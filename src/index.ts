@@ -68,7 +68,7 @@ export default class Arkane {
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
         return options.authenticateOnLoad == null || !options.authenticateOnLoad
-            ? this.arkaneSubProvider.loadData().then(() => {
+            ? this.arkaneSubProvider.authenticate().then(() => {
                 return this.startEngine(engine);
             })
             : this.startEngine(engine);
