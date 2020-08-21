@@ -73,8 +73,10 @@ export default class Arkane {
         this.ac = this.arkaneSubProvider.arkaneConnect;
 
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
-        return this.checkAuthenticated()
-                   .then(() => this.startEngine(engine));
+
+        return options.skipAuthentication
+            ? Promise.resolve(this.startEngine(engine))
+            : this.arkaneSubProvider.getAccountsAsync().then(() => this.startEngine(engine));
     }
 
     private startEngine(engine: any) {
@@ -106,6 +108,7 @@ export interface ArkaneSubProviderOptions {
     bearerTokenProvider?: () => string;
     network?: Network;
     authenticationOptions?: AuthenticationOptions
+    skipAuthentication: boolean;
 }
 
 if (typeof window !== 'undefined') {
