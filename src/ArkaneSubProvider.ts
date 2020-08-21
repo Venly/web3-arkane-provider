@@ -31,7 +31,8 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         this.options = options;
     }
 
-    public async authenticate() {
+    private async authenticateWithWallets() {
+        let that = this;
         return this.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, this.options.authenticationOptions)
                    .then(async (account: Account) => {
                        return await new Promise((resolve,
@@ -44,33 +45,20 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
                                reject('no-wallet-linked');
                            } else {
                                console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
-                               this.authenticated = true;
-                               this.wallets = account.wallets;
+                               that.authenticated = true;
+                               that.wallets = account.wallets;
                                resolve();
                            }
                        });
                    });
     }
 
-    public async loadData() {
-        if (!this.authenticated) {
-            return this.authenticate()
-                       .then(() => {
-                           return this.getWallets();
-                       });
-        } else {
-            return this.getWallets();
-        }
-    }
-
-    public async getWallets() {
-        const currentClass = this;
-        return this.wallets
-            ? Promise.resolve(this.wallets)
-            : this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM})
-                  .then(returnedWallets => {
-                      currentClass.wallets = returnedWallets;
-                  });
+    private async refreshWalletsFromApi() {
+        let that = this;
+        return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM})
+                   .then(returnedWallets => {
+                       that.wallets = returnedWallets;
+                   });
     }
 
     /**
@@ -81,10 +69,13 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return An array of accounts
      */
     public async getAccountsAsync(): Promise<string[]> {
-        return this.loadData()
-                   .then(() => {
-                       return this.wallets.map((wallet) => wallet.address)
-                   });
+        let promise: Promise<any> = this.authenticated
+            ? this.refreshWalletsFromApi()
+            : this.authenticateWithWallets();
+
+        return promise.then(() => {
+            return this.wallets.map((wallet) => wallet.address)
+        });
     }
 
     /**
