@@ -72,12 +72,10 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     public async getAccountsAsync(): Promise<string[]> {
         let that = this;
         let promise: Promise<any>;
-        console.log(that.walletsFromFlow, that.wallets);
         if (this.walletsFromFlow && this.walletsFromFlow.length > 0) {
-            promise = Promise.resolve(() => {
-                that.wallets = [...that.walletsFromFlow];
-                that.walletsFromFlow = [];
-            });
+            that.wallets = [...that.walletsFromFlow];
+            that.walletsFromFlow = [];
+            promise = Promise.resolve();
         } else if (this.authenticated) {
             promise = this.refreshWalletsFromApi();
         } else {
