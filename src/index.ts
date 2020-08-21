@@ -39,6 +39,10 @@ export default class Arkane {
         }
     }
 
+    public async checkAuthenticated(): Promise<AuthenticationResult> {
+        return this.arkaneSubProvider.checkAuthenticated();
+    }
+
     public resetNetwork() {
         this.network = this.originalNetwork;
     }
