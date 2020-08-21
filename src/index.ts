@@ -67,6 +67,7 @@ export default class Arkane {
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
         if (options.authenticateOnLoad == null || !options.authenticateOnLoad) {
+            console.log('authenticating and setting engine');
             this.arkaneSubProvider.loadData().then(() => {
                 return this.startEngine(engine);
             });
@@ -76,6 +77,7 @@ export default class Arkane {
     }
 
     private startEngine(engine: any) {
+        console.log('setting engine');
         engine.addProvider(this.arkaneSubProvider);
         engine.addProvider(this.rpcSubprovider);
 
@@ -87,6 +89,7 @@ export default class Arkane {
 
         // start polling for blocks
         engine.start();
+        console.log('returning engine', engine);
         return engine;
     }
 }
