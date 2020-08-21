@@ -53,10 +53,10 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     public async loadData() {
         if (!this.authenticated) {
-            this.authenticate()
-                .then(() => {
-                    return this.loadWallets();
-                });
+            return this.authenticate()
+                       .then(() => {
+                           return this.loadWallets();
+                       });
         } else {
             return this.loadWallets();
         }
