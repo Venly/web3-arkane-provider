@@ -2,7 +2,7 @@ import { ArkaneConnect, SecretType, SignatureRequestType, SignMethod, Wallet, Wi
 import { EIP712TypedData, PartialTxParams }                                                from "@0x/subproviders";
 import { BaseWalletSubprovider }                                                           from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
 import { ArkaneSubProviderOptions }                                                        from "./index";
-import { ConstructorOptions }                                                              from '@arkane-network/arkane-connect/dist/src/connect/connect';
+import { AuthenticationResult, ConstructorOptions }                                        from '@arkane-network/arkane-connect/dist/src/connect/connect';
 import { Network }                                                                         from "@arkane-network/arkane-connect/dist/src/models/Network";
 import { Account }                                                                         from '@arkane-network/arkane-connect/dist/src/models/Account';
 
@@ -75,6 +75,13 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
 
         return promise.then(() => {
             return this.wallets.map((wallet) => wallet.address)
+        });
+    }
+
+    public async checkAuthenticated(): Promise<AuthenticationResult> {
+        return this.arkaneConnect.checkAuthenticated().then(authResult => {
+            this.authenticated = authResult.isAuthenticated;
+            return authResult;
         });
     }
 
