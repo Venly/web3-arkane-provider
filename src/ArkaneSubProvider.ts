@@ -10,6 +10,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     readonly arkaneConnect: ArkaneConnect;
     private wallets: Wallet[] = [];
+    private walletsFromFlow: Wallet[] = [];
     public network?: Network;
     private options: ArkaneSubProviderOptions;
     private authenticated: boolean = false;
@@ -31,7 +32,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         this.options = options;
     }
 
-    private async authenticateWithWallets() {
+    private async startGetAccountFlow() {
         let that = this;
         return this.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, this.options.authenticationOptions)
                    .then(async (account: Account) => {
@@ -46,7 +47,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
                            } else {
                                console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
                                that.authenticated = true;
-                               that.wallets = account.wallets;
+                               that.walletsFromFlow = account.wallets;
                                resolve();
                            }
                        });
@@ -69,10 +70,18 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return An array of accounts
      */
     public async getAccountsAsync(): Promise<string[]> {
-        let promise: Promise<any> = this.authenticated
-            ? this.refreshWalletsFromApi()
-            : this.authenticateWithWallets();
-
+        let that = this;
+        let promise: Promise<any>;
+        if (this.walletsFromFlow && this.walletsFromFlow.length > 0) {
+            promise = Promise.resolve(() => {
+                that.wallets = that.walletsFromFlow;
+                that.walletsFromFlow = [];
+            });
+        } else if (this.authenticated) {
+            promise = this.refreshWalletsFromApi();
+        } else {
+            promise = this.startGetAccountFlow();
+        }
         return promise.then(() => {
             return this.wallets.map((wallet) => wallet.address)
         });
