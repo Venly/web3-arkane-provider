@@ -40,6 +40,9 @@ export default class Arkane {
     }
 
     public async checkAuthenticated(): Promise<AuthenticationResult> {
+        if (!this.arkaneSubProvider) {
+            throw new Error("Please initialise provider first (Arkane.createArkaneProviderEngine)");
+        }
         return this.arkaneSubProvider.checkAuthenticated();
     }
 
@@ -70,8 +73,8 @@ export default class Arkane {
         this.ac = this.arkaneSubProvider.arkaneConnect;
 
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
-
-        return Promise.resolve(this.startEngine(engine));
+        return this.checkAuthenticated()
+                   .then(() => this.startEngine(engine));
     }
 
     private startEngine(engine: any) {
