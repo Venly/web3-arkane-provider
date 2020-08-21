@@ -4,6 +4,7 @@ import { ArkaneSubProvider }                                          from "./Ar
 import { SecretType }                                                 from '@arkane-network/arkane-connect/dist/src/models/SecretType';
 import { Account }                                                    from '@arkane-network/arkane-connect/dist/src/models/Account';
 import { NonceTrackerSubprovider }                                    from "./NonceTracker";
+import { Provider }                                                   from 'ethereum-types';
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
@@ -42,7 +43,7 @@ export default class Arkane {
         this.network = this.originalNetwork;
     }
 
-    public createArkaneProviderEngine(options: ArkaneSubProviderOptions) {
+    public createArkaneProviderEngine(options: ArkaneSubProviderOptions): Promise<Provider> {
         const engine = new ProviderEngine();
         engine.addProvider(new FixtureSubprovider({
             web3_clientVersion: 'ArkaneProviderEngine/v0.0.1/javascript',
@@ -66,14 +67,11 @@ export default class Arkane {
 
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
-        if (options.authenticateOnLoad == null || !options.authenticateOnLoad) {
-            console.log('authenticating and setting engine');
-            this.arkaneSubProvider.loadData().then(() => {
+        return options.authenticateOnLoad == null || !options.authenticateOnLoad
+            ? this.arkaneSubProvider.loadData().then(() => {
                 return this.startEngine(engine);
-            });
-        } else {
-            return this.startEngine(engine);
-        }
+            })
+            : this.startEngine(engine);
     }
 
     private startEngine(engine: any) {
