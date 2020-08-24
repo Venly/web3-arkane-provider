@@ -32,7 +32,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         this.options = options;
     }
 
-    private async startGetAccountFlow() {
+    public async startGetAccountFlow() {
         let that = this;
         return this.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, this.options.authenticationOptions)
                    .then(async (account: Account) => {
