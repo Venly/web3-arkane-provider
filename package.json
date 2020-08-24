@@ -37,7 +37,7 @@
   "homepage": "https://arkane.network",
   "dependencies": {
     "@0x/subproviders": "^4.1.0",
-    "@arkane-network/arkane-connect": "1.15.0",
+    "@arkane-network/arkane-connect": "1.15.0-develop.2",
     "web3": "^0.20.7",
     "web3-provider-engine": "^14.2.0"
   },
