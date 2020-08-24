@@ -32,7 +32,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         this.options = options;
     }
 
-    public async startGetAccountFlow() {
+    public async startGetAccountFlow(): Promise<Account | {}> {
         let that = this;
         return this.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, this.options.authenticationOptions)
                    .then(async (account: Account) => {
@@ -48,7 +48,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
                                console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
                                that.authenticated = true;
                                that.walletsFromFlow = account.wallets;
-                               resolve();
+                               resolve(account);
                            }
                        });
                    });

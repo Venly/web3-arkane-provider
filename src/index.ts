@@ -46,7 +46,7 @@ export default class Arkane {
         return this.arkaneSubProvider.checkAuthenticated();
     }
 
-    public async authenticate(): Promise<AuthenticationResult> {
+    public async authenticate(): Promise<Account | {}> {
         if (!this.arkaneSubProvider) {
             throw new Error("Please initialise provider first (Arkane.createArkaneProviderEngine)");
         }
