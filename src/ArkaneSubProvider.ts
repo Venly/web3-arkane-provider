@@ -1,15 +1,19 @@
-import {ArkaneConnect, SecretType, SignatureRequestType, SignMethod, Wallet, WindowMode} from "@arkane-network/arkane-connect"
-import {EIP712TypedData, PartialTxParams} from "@0x/subproviders";
-import {BaseWalletSubprovider} from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
-import {ArkaneSubProviderOptions} from "./index";
-import {ConstructorOptions} from '@arkane-network/arkane-connect/dist/src/connect/connect';
-import {Network} from "@arkane-network/arkane-connect/dist/src/models/Network";
+import { ArkaneConnect, SecretType, SignatureRequestType, SignMethod, Wallet, WindowMode } from "@arkane-network/arkane-connect"
+import { EIP712TypedData, PartialTxParams }                                                from "@0x/subproviders";
+import { BaseWalletSubprovider }                                                           from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
+import { ArkaneSubProviderOptions }                                                        from "./index";
+import { AuthenticationResult, ConstructorOptions }                                        from '@arkane-network/arkane-connect/dist/src/connect/connect';
+import { Network }                                                                         from "@arkane-network/arkane-connect/dist/src/models/Network";
+import { Account }                                                                         from '@arkane-network/arkane-connect/dist/src/models/Account';
 
 export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     readonly arkaneConnect: ArkaneConnect;
     private wallets: Wallet[] = [];
+    private walletsFromFlow: Wallet[] = [];
     public network?: Network;
+    private options: ArkaneSubProviderOptions;
+    private authenticated: boolean = false;
 
     constructor(options: ArkaneSubProviderOptions) {
         super();
@@ -25,14 +29,37 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         }
         this.arkaneConnect = new ArkaneConnect(options.clientId, connectConstructorOptions);
         this.network = options.network;
+        this.options = options;
     }
 
-    public async loadData() {
-        const currentClass = this;
-        return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM})
-            .then(returnedWallets => {
-                currentClass.wallets = returnedWallets;
-            });
+    public async startGetAccountFlow(): Promise<Account | {}> {
+        let that = this;
+        return this.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, this.options.authenticationOptions)
+                   .then(async (account: Account) => {
+                       return await new Promise((resolve,
+                                                 reject) => {
+                           if (!account.isAuthenticated) {
+                               console.debug('Not authenticated to Arkane Network');
+                               reject('not-authenticated');
+                           } else if (account.wallets && account.wallets.length <= 0) {
+                               console.debug('No wallet has been linked to this application');
+                               reject('no-wallet-linked');
+                           } else {
+                               console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
+                               that.authenticated = true;
+                               that.walletsFromFlow = account.wallets;
+                               resolve(account);
+                           }
+                       });
+                   });
+    }
+
+    private async refreshWalletsFromApi() {
+        let that = this;
+        return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM, includeBalance: false})
+                   .then(returnedWallets => {
+                       that.wallets = returnedWallets;
+                   });
     }
 
     /**
@@ -43,10 +70,27 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return An array of accounts
      */
     public async getAccountsAsync(): Promise<string[]> {
-        return this.loadData()
-            .then(() => {
-                return this.wallets.map((wallet) => wallet.address)
-            });
+        let that = this;
+        let promise: Promise<any>;
+        if (this.walletsFromFlow && this.walletsFromFlow.length > 0) {
+            that.wallets = [...that.walletsFromFlow];
+            that.walletsFromFlow = [];
+            promise = Promise.resolve();
+        } else if (this.authenticated) {
+            promise = this.refreshWalletsFromApi();
+        } else {
+            promise = this.startGetAccountFlow();
+        }
+        return promise.then(() => {
+            return this.wallets.map((wallet) => wallet.address)
+        });
+    }
+
+    public async checkAuthenticated(): Promise<AuthenticationResult> {
+        return this.arkaneConnect.checkAuthenticated().then(authResult => {
+            this.authenticated = authResult.isAuthenticated;
+            return authResult;
+        });
     }
 
     /**
@@ -60,13 +104,13 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     public async signTransactionAsync(txParams: PartialTxParams): Promise<string> {
         let signer = this.arkaneConnect.createSigner();
         return signer.signTransaction(this.constructEthereumTransationSignatureRequest(txParams))
-            .then((result) => {
-                if (result.status === 'SUCCESS') {
-                    return result.result.signedTransaction;
-                } else {
-                    throw new Error((result.errors && result.errors.join(", ")));
-                }
-            });
+                     .then((result) => {
+                         if (result.status === 'SUCCESS') {
+                             return result.result.signedTransaction;
+                         } else {
+                             throw new Error((result.errors && result.errors.join(", ")));
+                         }
+                     });
     }
 
     private constructEthereumTransationSignatureRequest(txParams: PartialTxParams) {
@@ -96,20 +140,21 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @param address Address of the account to sign with
      * @return Signature hex string (order: rsv)
      */
-    public async signPersonalMessageAsync(data: string, address: string): Promise<string> {
+    public async signPersonalMessageAsync(data: string,
+                                          address: string): Promise<string> {
         const signer = this.arkaneConnect.createSigner();
         return signer.signTransaction({
-            type: SignatureRequestType.ETHEREUM_RAW,
-            walletId: this.getWalletIdFrom(address),
-            data: data
-        })
-            .then((result) => {
-                if (result.status === 'SUCCESS') {
-                    return result.result.signature;
-                } else {
-                    throw new Error((result.errors && result.errors.join(", ")));
-                }
-            });
+                         type: SignatureRequestType.ETHEREUM_RAW,
+                         walletId: this.getWalletIdFrom(address),
+                         data: data
+                     })
+                     .then((result) => {
+                         if (result.status === 'SUCCESS') {
+                             return result.result.signature;
+                         } else {
+                             throw new Error((result.errors && result.errors.join(", ")));
+                         }
+                     });
     }
 
     /**
@@ -121,7 +166,8 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @param data the typed data object
      * @return Signature hex string (order: rsv)
      */
-    public async signTypedDataAsync(address: string, typedData: EIP712TypedData): Promise<string> {
+    public async signTypedDataAsync(address: string,
+                                    typedData: EIP712TypedData): Promise<string> {
         return Promise.reject('Not implemented yet');
     }
 

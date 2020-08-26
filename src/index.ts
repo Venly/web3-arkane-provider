@@ -1,9 +1,10 @@
 import { ArkaneConnect, AuthenticationOptions, AuthenticationResult } from "@arkane-network/arkane-connect/dist/src/connect/connect";
-import {Network}                                                      from "@arkane-network/arkane-connect/dist/src/models/Network";
-import { ArkaneSubProvider } from "./ArkaneSubProvider";
-import { SecretType }        from '@arkane-network/arkane-connect/dist/src/models/SecretType';
-import { Account }           from '@arkane-network/arkane-connect/dist/src/models/Account';
-import {NonceTrackerSubprovider} from "./NonceTracker";
+import { Network }                                                    from "@arkane-network/arkane-connect/dist/src/models/Network";
+import { ArkaneSubProvider }                                          from "./ArkaneSubProvider";
+import { SecretType }                                                 from '@arkane-network/arkane-connect/dist/src/models/SecretType';
+import { Account }                                                    from '@arkane-network/arkane-connect/dist/src/models/Account';
+import { NonceTrackerSubprovider }                                    from "./NonceTracker";
+import { Provider }                                                   from 'ethereum-types';
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
@@ -18,7 +19,7 @@ export default class Arkane {
     private originalNetwork?: Network;
     private rpcSubprovider: any;
     private nonceSubProvider: any;
-    private arkaneSubProvider: any ;
+    private arkaneSubProvider: any;
 
     public arkaneConnect(network?: Network) {
         this.network = network;
@@ -38,11 +39,25 @@ export default class Arkane {
         }
     }
 
+    public async checkAuthenticated(): Promise<AuthenticationResult> {
+        if (!this.arkaneSubProvider) {
+            throw new Error("Please initialise provider first (Arkane.createArkaneProviderEngine)");
+        }
+        return this.arkaneSubProvider.checkAuthenticated();
+    }
+
+    public async authenticate(): Promise<Account | {}> {
+        if (!this.arkaneSubProvider) {
+            throw new Error("Please initialise provider first (Arkane.createArkaneProviderEngine)");
+        }
+        return this.arkaneSubProvider.startGetAccountFlow();
+    }
+
     public resetNetwork() {
         this.network = this.originalNetwork;
     }
 
-    public createArkaneProviderEngine(options: ArkaneSubProviderOptions) {
+    public createArkaneProviderEngine(options: ArkaneSubProviderOptions): Promise<Provider> {
         const engine = new ProviderEngine();
         engine.addProvider(new FixtureSubprovider({
             web3_clientVersion: 'ArkaneProviderEngine/v0.0.1/javascript',
@@ -54,9 +69,7 @@ export default class Arkane {
         engine.addProvider(new CacheSubprovider());
         engine.addProvider(new FilterSubprovider());
 
-        console.log("Arkane is using options", options);
         let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || 'https://ethereum.arkane.network';
-        console.log('Arkane initialized with endpoint: ', endpoint);
         this.nonceSubProvider = new NonceTrackerSubprovider({rpcUrl: endpoint});
         engine.addProvider(this.nonceSubProvider);
 
@@ -66,38 +79,24 @@ export default class Arkane {
 
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
-        return this.arkaneSubProvider.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, options.authenticationOptions)
-                                .then(async (account: Account) => {
-                                    return await new Promise((resolve, reject) => {
-                                        if (!account.isAuthenticated) {
-                                            console.debug('Not authenticated to Arkane Network');
-                                            reject('not-authenticated');
-                                        } else if (account.wallets && account.wallets.length <= 0) {
-                                            console.debug('No wallet has been linked to this application');
-                                            reject('no-wallet-linked');
-                                        } else {
-                                            console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
-                                            resolve();
-                                        }
-                                    });
-                                })
-                                .then(() => {
-                                    return this.arkaneSubProvider.loadData();
-                                })
-                                .then(() => {
-                                    engine.addProvider(this.arkaneSubProvider);
-                                    engine.addProvider(this.rpcSubprovider);
+        return options.skipAuthentication
+            ? Promise.resolve(this.startEngine(engine))
+            : this.arkaneSubProvider.getAccountsAsync().then(() => this.startEngine(engine));
+    }
 
-                                    // network connectivity error
-                                    engine.on('error', (err: any) => {
-                                        // report connectivity errors
-                                        console.error(err.stack)
-                                    });
+    private startEngine(engine: any) {
+        engine.addProvider(this.arkaneSubProvider);
+        engine.addProvider(this.rpcSubprovider);
 
-                                    // start polling for blocks
-                                    engine.start();
-                                    return engine;
-                                });
+        // network connectivity error
+        engine.on('error', (err: any) => {
+            // report connectivity errors
+            console.error(err.stack)
+        });
+
+        // start polling for blocks
+        engine.start();
+        return engine;
     }
 }
 
@@ -112,6 +111,7 @@ export interface ArkaneSubProviderOptions {
     bearerTokenProvider?: () => string;
     network?: Network;
     authenticationOptions?: AuthenticationOptions
+    skipAuthentication: boolean;
 }
 
 if (typeof window !== 'undefined') {
