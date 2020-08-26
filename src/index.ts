@@ -69,9 +69,7 @@ export default class Arkane {
         engine.addProvider(new CacheSubprovider());
         engine.addProvider(new FilterSubprovider());
 
-        console.log("Arkane is using options", options);
         let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || 'https://ethereum.arkane.network';
-        console.log('Arkane initialized with endpoint: ', endpoint);
         this.nonceSubProvider = new NonceTrackerSubprovider({rpcUrl: endpoint});
         engine.addProvider(this.nonceSubProvider);
 
@@ -87,7 +85,6 @@ export default class Arkane {
     }
 
     private startEngine(engine: any) {
-        console.log('setting engine');
         engine.addProvider(this.arkaneSubProvider);
         engine.addProvider(this.rpcSubprovider);
 
@@ -99,7 +96,6 @@ export default class Arkane {
 
         // start polling for blocks
         engine.start();
-        console.log('returning engine', engine);
         return engine;
     }
 }
