@@ -69,7 +69,7 @@ export default class Arkane {
         engine.addProvider(new CacheSubprovider());
         engine.addProvider(new FilterSubprovider());
 
-        let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || 'https://ethereum.arkane.network';
+        let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || this.getDefaultEndpoint(options);
         this.nonceSubProvider = new NonceTrackerSubprovider({rpcUrl: endpoint});
         engine.addProvider(this.nonceSubProvider);
 
@@ -82,6 +82,13 @@ export default class Arkane {
         return options.skipAuthentication
             ? Promise.resolve(this.startEngine(engine))
             : this.arkaneSubProvider.getAccountsAsync().then(() => this.startEngine(engine));
+    }
+
+    private getDefaultEndpoint(options: ArkaneSubProviderOptions) {
+        if (options.environment && (options.environment === 'qa' || options.environment === 'staging')) {
+            return 'https://rinkeby.arkane.network';
+        }
+        return 'https://ethereum.arkane.network';
     }
 
     private startEngine(engine: any) {
