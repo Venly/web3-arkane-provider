@@ -76,6 +76,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         if (!this.authenticated) {
             promise = this.startGetAccountFlow();
         } else if (this.shouldRefreshWallets()) {
+            this.lastWalletsFetch = Date.now();
             promise = this.refreshWalletsFromApi();
         } else {
             promise = Promise.resolve();
@@ -87,7 +88,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     private shouldRefreshWallets(): boolean {
         return !this.lastWalletsFetch
-            || (Date.now() - this.lastWalletsFetch) > 5000;
+            || (Date.now() - this.lastWalletsFetch) > 10000;
     }
 
     public async checkAuthenticated(): Promise<AuthenticationResult> {
