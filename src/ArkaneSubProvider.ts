@@ -2,7 +2,7 @@ import { ArkaneConnect, SecretType, SignatureRequestType, SignMethod, Wallet, Wi
 import { EIP712TypedData, PartialTxParams }                                                from "@0x/subproviders";
 import { BaseWalletSubprovider }                                                           from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
 import { ArkaneSubProviderOptions }                                                        from "./index";
-import { AuthenticationResult, ConstructorOptions }                                        from '@arkane-network/arkane-connect/dist/src/connect/connect';
+import { AuthenticationOptions, AuthenticationResult, ConstructorOptions }                 from '@arkane-network/arkane-connect/dist/src/connect/connect';
 import { Network }                                                                         from "@arkane-network/arkane-connect/dist/src/models/Network";
 import { Account }                                                                         from '@arkane-network/arkane-connect/dist/src/models/Account';
 
@@ -32,7 +32,10 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         this.options = options;
     }
 
-    public async startGetAccountFlow(): Promise<Account | {}> {
+    public async startGetAccountFlow(authenticationOptions?: AuthenticationOptions): Promise<Account | {}> {
+        if (authenticationOptions) {
+            this.options.authenticationOptions = authenticationOptions;
+        }
         let that = this;
         return this.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, this.options.authenticationOptions)
                    .then(async (account: Account) => {
@@ -88,7 +91,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     private shouldRefreshWallets(): boolean {
         return !this.lastWalletsFetch
-            || (Date.now() - this.lastWalletsFetch) > 10000;
+            || (Date.now() - this.lastWalletsFetch) > 5000;
     }
 
     public async checkAuthenticated(): Promise<AuthenticationResult> {

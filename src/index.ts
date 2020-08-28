@@ -46,11 +46,11 @@ export default class Arkane {
         return this.arkaneSubProvider.checkAuthenticated();
     }
 
-    public async authenticate(): Promise<Account | {}> {
+    public async authenticate(authenticationOptions?:AuthenticationOptions): Promise<Account | {}> {
         if (!this.arkaneSubProvider) {
             throw new Error("Please initialise provider first (Arkane.createArkaneProviderEngine)");
         }
-        return this.arkaneSubProvider.startGetAccountFlow();
+        return this.arkaneSubProvider.startGetAccountFlow(authenticationOptions);
     }
 
     public resetNetwork() {
