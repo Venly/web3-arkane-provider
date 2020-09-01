@@ -2,7 +2,7 @@ import { ArkaneConnect, SecretType, SignatureRequestType, SignMethod, Wallet, Wi
 import { EIP712TypedData, PartialTxParams }                                                from "@0x/subproviders";
 import { BaseWalletSubprovider }                                                           from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
 import { ArkaneSubProviderOptions }                                                        from "./index";
-import { AuthenticationResult, ConstructorOptions }                                        from '@arkane-network/arkane-connect/dist/src/connect/connect';
+import { AuthenticationOptions, AuthenticationResult, ConstructorOptions }                 from '@arkane-network/arkane-connect/dist/src/connect/connect';
 import { Network }                                                                         from "@arkane-network/arkane-connect/dist/src/models/Network";
 import { Account }                                                                         from '@arkane-network/arkane-connect/dist/src/models/Account';
 
@@ -10,10 +10,10 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
 
     readonly arkaneConnect: ArkaneConnect;
     private wallets: Wallet[] = [];
-    private walletsFromFlow: Wallet[] = [];
     public network?: Network;
     private options: ArkaneSubProviderOptions;
     private authenticated: boolean = false;
+    private lastWalletsFetch?: number;
 
     constructor(options: ArkaneSubProviderOptions) {
         super();
@@ -32,7 +32,10 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         this.options = options;
     }
 
-    public async startGetAccountFlow(): Promise<Account | {}> {
+    public async startGetAccountFlow(authenticationOptions?: AuthenticationOptions): Promise<Account | {}> {
+        if (authenticationOptions) {
+            this.options.authenticationOptions = authenticationOptions;
+        }
         let that = this;
         return this.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, this.options.authenticationOptions)
                    .then(async (account: Account) => {
@@ -47,7 +50,8 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
                            } else {
                                console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
                                that.authenticated = true;
-                               that.walletsFromFlow = account.wallets;
+                               that.wallets = account.wallets;
+                               that.lastWalletsFetch = Date.now();
                                resolve(account);
                            }
                        });
@@ -72,18 +76,22 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     public async getAccountsAsync(): Promise<string[]> {
         let that = this;
         let promise: Promise<any>;
-        if (this.walletsFromFlow && this.walletsFromFlow.length > 0) {
-            that.wallets = [...that.walletsFromFlow];
-            that.walletsFromFlow = [];
-            promise = Promise.resolve();
-        } else if (this.authenticated) {
+        if (!this.authenticated) {
+            promise = this.startGetAccountFlow();
+        } else if (this.shouldRefreshWallets()) {
+            this.lastWalletsFetch = Date.now();
             promise = this.refreshWalletsFromApi();
         } else {
-            promise = this.startGetAccountFlow();
+            promise = Promise.resolve();
         }
         return promise.then(() => {
             return this.wallets.map((wallet) => wallet.address)
         });
+    }
+
+    private shouldRefreshWallets(): boolean {
+        return !this.lastWalletsFetch
+            || (Date.now() - this.lastWalletsFetch) > 5000;
     }
 
     public async checkAuthenticated(): Promise<AuthenticationResult> {
