@@ -18,6 +18,7 @@ pipeline {
             steps {
                 sh "git config --global user.email \"jenkins@arkane.network\""
                 sh "git config --global user.name \"Jenkins\""
+                sh "printf '//registry.npmjs.org/:_authToken=' > .npmrc && printf '${NPM_KEY}' >> .npmrc"
                 sh "npm version prerelease --preid=develop"
             }
         }
@@ -46,6 +47,11 @@ pipeline {
                     sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/ArkaneNetwork/web3-arkane-provider.git --tags'
                 }
             }
+        }
+    }
+    post {
+        always {
+            sh "rm .npmrc"
         }
     }
 }
