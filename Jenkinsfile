@@ -3,6 +3,7 @@ pipeline {
     agent any
     environment {
         GITHUB_CREDS = credentials('GITHUB_CRED')
+        NPM_KEY = credentials('NPM_KEY')
     }
     options {
         disableConcurrentBuilds()
@@ -18,7 +19,6 @@ pipeline {
             steps {
                 sh "git config --global user.email \"jenkins@arkane.network\""
                 sh "git config --global user.name \"Jenkins\""
-                sh "printf '//registry.npmjs.org/:_authToken=' > .npmrc && printf '${NPM_KEY}' >> .npmrc"
                 sh "npm version prerelease --preid=develop"
             }
         }
@@ -30,9 +30,6 @@ pipeline {
             }
         }
         stage ('Publish (develop)') {
-            environment {
-                NPM_KEY = credentials('NPM_KEY')
-            }
             when {
                 expression {
                     GIT_BRANCH = env.BRANCH_NAME
