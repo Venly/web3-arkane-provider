@@ -3,6 +3,7 @@ pipeline {
     agent any
     environment {
         GITHUB_CREDS = credentials('GITHUB_CRED')
+        NPM_KEY = credentials('NPM_KEY')
     }
     options {
         disableConcurrentBuilds()
@@ -29,9 +30,6 @@ pipeline {
             }
         }
         stage ('Publish (develop)') {
-            environment {
-                NPM_KEY = credentials('NPM_KEY')
-            }
             when {
                 expression {
                     GIT_BRANCH = env.BRANCH_NAME

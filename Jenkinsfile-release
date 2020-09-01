@@ -35,6 +35,7 @@ pipeline {
                 sh "printf '//registry.npmjs.org/:_authToken=' > .npmrc && printf '${NPM_KEY}' >> .npmrc"
                 sh 'npm publish'
                 withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    sh 'rm .npmrc'
                     sh 'git add .'
                     sh 'git commit -m "changes during ${RELEASE_BRANCH}"'
                     sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/ArkaneNetwork/web3-arkane-provider.git HEAD:refs/heads/master'
@@ -48,6 +49,8 @@ pipeline {
                 sh "git checkout develop"
                 sh "git merge --no-ff master"
                 sh "npm version preminor --preid=develop --git-tag-version=false"
+                sh 'git add .'
+                sh 'git commit -m "bump develop version after ${RELEASE_BRANCH}"'
                 withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/ArkaneNetwork/web3-arkane-provider.git HEAD:refs/heads/develop'
                 }
