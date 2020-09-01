@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         GITHUB_CREDS = credentials('GITHUB_CRED')
-        RELEASE_BRANCH = "release-${env.BUILD_NUMBER}"
+        RELEASE_BRANCH = "release-${env.BUILD_DATE}"
     }
     options {
         disableConcurrentBuilds()
