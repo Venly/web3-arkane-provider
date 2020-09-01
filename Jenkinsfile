@@ -46,9 +46,4 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            sh "rm .npmrc"
-        }
-    }
 }
