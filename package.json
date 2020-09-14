@@ -26,10 +26,7 @@
     "arkane",
     "truffle"
   ],
-  "author": "Quinten De Swaef <quinten.de.swaef@arkane.network>",
-  "contributors": [
-    "Davy Van Roy <davy.van.roy@arkane.network>"
-  ],
+  "author": "Davy Van Roy <davy.van.roy@arkane.network>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ArkaneNetwork/web3-arkane-provider/issues"
@@ -37,7 +34,7 @@
   "homepage": "https://arkane.network",
   "dependencies": {
     "@0x/subproviders": "^4.1.0",
-    "@arkane-network/arkane-connect": "1.19.0-develop.4",
+    "@arkane-network/arkane-connect": "1.19.0",
     "web3": "^0.20.7",
     "web3-provider-engine": "^14.2.0"
   },
