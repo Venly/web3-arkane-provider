@@ -178,8 +178,11 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return Signature hex string (order: rsv)
      */
     public async signTypedDataAsync(address: string,
-                                    typedData: EIP712TypedData): Promise<string> {
+                                    typedData: any): Promise<string> {
         const signer = this.arkaneConnect.createSigner();
+        if(typeof typedData === 'string') {
+            typedData = JSON.parse(typedData);
+        }
         const request: BuildEip712SignRequestDto = {
             data: typedData,
             walletId: this.getWalletIdFrom(address),
