@@ -79,7 +79,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      *
      * @return An array of accounts
      */
-    public async getAccountsAsync(): Promise<string[]> {
+    public getAccountsAsync(): Promise<string[]> {
         console.log('getting accounts');
         let that = this;
         let promise: Promise<any>;
