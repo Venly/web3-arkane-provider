@@ -1,6 +1,6 @@
 {
   "name": "@arkane-network/web3-arkane-provider",
-  "version": "0.12.0-develop.5",
+  "version": "0.12.0-develop.6",
   "description": "Arkane-enabled Web3 Provider for the web",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
