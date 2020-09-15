@@ -5,6 +5,9 @@ import { ArkaneSubProviderOptions }                                             
 import { AuthenticationOptions, AuthenticationResult, ConstructorOptions }                 from '@arkane-network/arkane-connect/dist/src/connect/connect';
 import { Network }                                                                         from "@arkane-network/arkane-connect/dist/src/models/Network";
 import { Account }                                                                         from '@arkane-network/arkane-connect/dist/src/models/Account';
+import { BuildEip712SignRequestDto }                                                       from '@arkane-network/arkane-connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
+import { JSONRPCRequestPayload }                                                           from 'ethereum-types';
+import { Callback, ErrorCallback }                                                         from '@0x/subproviders/lib/src/types';
 
 export class ArkaneSubProvider extends BaseWalletSubprovider {
 
@@ -176,7 +179,43 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      */
     public async signTypedDataAsync(address: string,
                                     typedData: EIP712TypedData): Promise<string> {
-        return Promise.reject('Not implemented yet');
+        const signer = this.arkaneConnect.createSigner();
+        const request: BuildEip712SignRequestDto = {
+            data: typedData,
+            walletId: this.getWalletIdFrom(address),
+            secretType: SecretType.ETHEREUM
+        }
+        return signer.signEip712(request)
+                     .then((result) => {
+                         if (result.status === 'SUCCESS') {
+                             return result.result.signature;
+                         } else {
+                             throw new Error((result.errors && result.errors.join(", ")));
+                         }
+                     });
+    }
+
+    /**
+     * This method conforms to the web3-provider-engine interface.
+     * It is called internally by the ProviderEngine when it is this subproviders
+     * turn to handle a JSON RPC request.
+     * @param payload JSON RPC payload
+     * @param next Callback to call if this subprovider decides not to handle the request
+     * @param end Callback to call if subprovider handled the request and wants to pass back the request.
+     */
+    // tslint:disable-next-line:prefer-function-over-method async-suffix
+    public async handleRequest(payload: JSONRPCRequestPayload, next: Callback, end: ErrorCallback): Promise<void> {
+        switch (payload.method) {
+            case 'eth_signTypedData_v2':
+            case 'eth_signTypedData_v3':
+                console.log('calling signedTypedData', payload);
+                end(null, 'todo');
+                return;
+
+            default:
+                next();
+                return;
+        }
     }
 
     private getWalletIdFrom(address: string):
