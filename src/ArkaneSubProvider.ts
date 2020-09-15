@@ -54,8 +54,6 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
                                console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
                                that.authenticated = true;
                                that.wallets = account.wallets;
-                               console.log(account.wallets);
-                               console.log(that.wallets);
                                that.lastWalletsFetch = Date.now();
                                resolve(account);
                            }
@@ -67,7 +65,6 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         let that = this;
         return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM, includeBalance: false})
                    .then(returnedWallets => {
-                       console.log(returnedWallets);
                        that.wallets = returnedWallets;
                    });
     }
@@ -79,12 +76,25 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      *
      * @return An array of accounts
      */
-    public getAccountsAsync(): Promise<string[]> {
-        return Promise.resolve(["0xf7C8c57186004aeBAe44e5c60716E5fd4BC76663"]);
+    public async getAccountsAsync(): Promise<string[]> {
+        let that = this;
+        let promise: Promise<any>;
+        if (!this.authenticated) {
+            promise = this.startGetAccountFlow();
+        } else if (this.shouldRefreshWallets()) {
+            this.lastWalletsFetch = Date.now();
+            promise = this.refreshWalletsFromApi();
+        } else {
+            promise = Promise.resolve();
+        }
+        return promise.then(() => {
+            return this.wallets.map((wallet) => wallet.address)
+        });
     }
 
     private shouldRefreshWallets(): boolean {
-        return true;
+        return !this.lastWalletsFetch
+            || (Date.now() - this.lastWalletsFetch) > 5000;
     }
 
     public async checkAuthenticated(): Promise<AuthenticationResult> {
@@ -194,9 +204,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @param end Callback to call if subprovider handled the request and wants to pass back the request.
      */
     // tslint:disable-next-line:prefer-function-over-method async-suffix
-    public async handleRequest(payload: JSONRPCRequestPayload,
-                               next: Callback,
-                               end: ErrorCallback): Promise<void> {
+    public async handleRequest(payload: JSONRPCRequestPayload, next: Callback, end: ErrorCallback): Promise<void> {
         switch (payload.method) {
             case 'eth_signTypedData_v2':
             case 'eth_signTypedData_v3':
