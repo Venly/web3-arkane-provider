@@ -195,29 +195,6 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
                      });
     }
 
-    /**
-     * This method conforms to the web3-provider-engine interface.
-     * It is called internally by the ProviderEngine when it is this subproviders
-     * turn to handle a JSON RPC request.
-     * @param payload JSON RPC payload
-     * @param next Callback to call if this subprovider decides not to handle the request
-     * @param end Callback to call if subprovider handled the request and wants to pass back the request.
-     */
-    // tslint:disable-next-line:prefer-function-over-method async-suffix
-    public async handleRequest(payload: JSONRPCRequestPayload, next: Callback, end: ErrorCallback): Promise<void> {
-        switch (payload.method) {
-            case 'eth_signTypedData_v2':
-            case 'eth_signTypedData_v3':
-                console.log('calling signedTypedData', payload);
-                end(null, 'todo');
-                return;
-
-            default:
-                next();
-                return;
-        }
-    }
-
     private getWalletIdFrom(address: string):
         string {
         let foundWallet = this.wallets.find((wallet) => {
