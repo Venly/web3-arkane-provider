@@ -65,6 +65,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         let that = this;
         return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM, includeBalance: false})
                    .then(returnedWallets => {
+                       console.log(returnedWallets);
                        that.wallets = returnedWallets;
                    });
     }
