@@ -85,7 +85,12 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         let promise: Promise<any>;
         if (!this.authenticated) {
             console.log('account flow');
-            promise = this.startGetAccountFlow();
+            return this.startGetAccountFlow().then(account => {
+                if (account) {
+                    return (account as Account).wallets.map((wallet) => wallet.address);
+                }
+                return [];
+            });
         } else if (this.shouldRefreshWallets()) {
             console.log('refresh from api');
             this.lastWalletsFetch = Date.now();
@@ -94,8 +99,9 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
             console.log('no refresh');
             promise = Promise.resolve();
         }
-        await promise;
-        return this.wallets.map((wallet) => wallet.address)
+        return promise.then(() => {
+            return this.wallets.map((wallet) => wallet.address)
+        });
     }
 
     private shouldRefreshWallets(): boolean {
@@ -209,7 +215,9 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @param end Callback to call if subprovider handled the request and wants to pass back the request.
      */
     // tslint:disable-next-line:prefer-function-over-method async-suffix
-    public async handleRequest(payload: JSONRPCRequestPayload, next: Callback, end: ErrorCallback): Promise<void> {
+    public async handleRequest(payload: JSONRPCRequestPayload,
+                               next: Callback,
+                               end: ErrorCallback): Promise<void> {
         switch (payload.method) {
             case 'eth_signTypedData_v2':
             case 'eth_signTypedData_v3':
