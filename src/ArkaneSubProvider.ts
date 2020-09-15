@@ -54,6 +54,8 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
                                console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
                                that.authenticated = true;
                                that.wallets = account.wallets;
+                               console.log(account.wallets);
+                               console.log(that.wallets);
                                that.lastWalletsFetch = Date.now();
                                resolve(account);
                            }
@@ -82,16 +84,18 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         let that = this;
         let promise: Promise<any>;
         if (!this.authenticated) {
+            console.log('account flow');
             promise = this.startGetAccountFlow();
         } else if (this.shouldRefreshWallets()) {
+            console.log('refresh from api');
             this.lastWalletsFetch = Date.now();
             promise = this.refreshWalletsFromApi();
         } else {
+            console.log('no refresh');
             promise = Promise.resolve();
         }
-        return promise.then(() => {
-            return this.wallets.map((wallet) => wallet.address)
-        });
+        await promise;
+        return this.wallets.map((wallet) => wallet.address)
     }
 
     private shouldRefreshWallets(): boolean {
