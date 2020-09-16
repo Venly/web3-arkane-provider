@@ -180,7 +180,7 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
     public async signTypedDataAsync(address: string,
                                     typedData: any): Promise<string> {
         const signer = this.arkaneConnect.createSigner();
-        if(typeof typedData === 'string') {
+        if (typeof typedData === 'string') {
             typedData = JSON.parse(typedData);
         }
         const request: BuildEip712SignRequestDto = {
@@ -206,4 +206,5 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         });
         return (foundWallet && foundWallet.id) || '';
     }
+
 }
