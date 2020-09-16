@@ -188,7 +188,6 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
             walletId: this.getWalletIdFrom(address),
             secretType: SecretType.ETHEREUM
         }
-        console.log('eip712', request);
         return signer.signEip712(request)
                      .then((result) => {
                          if (result.status === 'SUCCESS') {
