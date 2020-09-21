@@ -5,6 +5,9 @@ import { ArkaneSubProviderOptions }                                             
 import { AuthenticationOptions, AuthenticationResult, ConstructorOptions }                 from '@arkane-network/arkane-connect/dist/src/connect/connect';
 import { Network }                                                                         from "@arkane-network/arkane-connect/dist/src/models/Network";
 import { Account }                                                                         from '@arkane-network/arkane-connect/dist/src/models/Account';
+import { BuildEip712SignRequestDto }                                                       from '@arkane-network/arkane-connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
+import { JSONRPCRequestPayload }                                                           from 'ethereum-types';
+import { Callback, ErrorCallback }                                                         from '@0x/subproviders/lib/src/types';
 
 export class ArkaneSubProvider extends BaseWalletSubprovider {
 
@@ -175,8 +178,24 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
      * @return Signature hex string (order: rsv)
      */
     public async signTypedDataAsync(address: string,
-                                    typedData: EIP712TypedData): Promise<string> {
-        return Promise.reject('Not implemented yet');
+                                    typedData: any): Promise<string> {
+        const signer = this.arkaneConnect.createSigner();
+        if (typeof typedData === 'string') {
+            typedData = JSON.parse(typedData);
+        }
+        const request: BuildEip712SignRequestDto = {
+            data: typedData,
+            walletId: this.getWalletIdFrom(address),
+            secretType: SecretType.ETHEREUM
+        }
+        return signer.signEip712(request)
+                     .then((result) => {
+                         if (result.status === 'SUCCESS') {
+                             return result.result.signature;
+                         } else {
+                             throw new Error((result.errors && result.errors.join(", ")));
+                         }
+                     });
     }
 
     private getWalletIdFrom(address: string):
@@ -186,4 +205,5 @@ export class ArkaneSubProvider extends BaseWalletSubprovider {
         });
         return (foundWallet && foundWallet.id) || '';
     }
+
 }

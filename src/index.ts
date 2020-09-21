@@ -5,6 +5,7 @@ import { SecretType }                                                 from '@ark
 import { Account }                                                    from '@arkane-network/arkane-connect/dist/src/models/Account';
 import { NonceTrackerSubprovider }                                    from "./NonceTracker";
 import { Provider }                                                   from 'ethereum-types';
+import { SignedVersionedTypedDataSubProvider }                        from './SignedVersionedTypedDataSubProvider';
 
 const ProviderEngine = require('web3-provider-engine');
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
@@ -19,6 +20,7 @@ export default class Arkane {
     private originalNetwork?: Network;
     private rpcSubprovider: any;
     private nonceSubProvider: any;
+    private signedVersionedTypedDataSubProvider: any;
     private arkaneSubProvider: any;
 
     public arkaneConnect(network?: Network) {
@@ -73,11 +75,15 @@ export default class Arkane {
         this.nonceSubProvider = new NonceTrackerSubprovider({rpcUrl: endpoint});
         engine.addProvider(this.nonceSubProvider);
 
+
         this.arkaneSubProvider = new ArkaneSubProvider(options);
 
         this.ac = this.arkaneSubProvider.arkaneConnect;
 
         this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
+
+        this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.arkaneSubProvider);
+        engine.addProvider(this.signedVersionedTypedDataSubProvider);
 
         return options.skipAuthentication
             ? Promise.resolve(this.startEngine(engine))
