@@ -1,6 +1,6 @@
 {
   "name": "@arkane-network/web3-arkane-provider",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "Arkane-enabled Web3 Provider for the web",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -34,7 +34,7 @@
   "homepage": "https://arkane.network",
   "dependencies": {
     "@0x/subproviders": "6.1.1",
-    "@arkane-network/arkane-connect": "1.20.0-develop.2",
+    "@arkane-network/arkane-connect": "1.20.0",
     "web3-provider-engine": "^14.2.0"
   },
   "devDependencies": {
