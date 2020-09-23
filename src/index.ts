@@ -1,7 +1,6 @@
 import { ArkaneConnect, AuthenticationOptions, AuthenticationResult } from "@arkane-network/arkane-connect/dist/src/connect/connect";
 import { Network }                                                    from "@arkane-network/arkane-connect/dist/src/models/Network";
 import { ArkaneSubProvider }                                          from "./ArkaneSubProvider";
-import { SecretType }                                                 from '@arkane-network/arkane-connect/dist/src/models/SecretType';
 import { Account }                                                    from '@arkane-network/arkane-connect/dist/src/models/Account';
 import { NonceTrackerSubprovider }                                    from "./NonceTracker";
 import { Provider }                                                   from 'ethereum-types';
@@ -12,6 +11,7 @@ const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
 const FixtureSubprovider = require('web3-provider-engine/subproviders/fixture');
 const FilterSubprovider = require('web3-provider-engine/subproviders/filters');
 const RpcSubprovider = require('web3-provider-engine/subproviders/rpc');
+const SubscriptionsSubprovider = require('web3-provider-engine/subproviders/subscriptions');
 
 export default class Arkane {
 
@@ -48,7 +48,7 @@ export default class Arkane {
         return this.arkaneSubProvider.checkAuthenticated();
     }
 
-    public async authenticate(authenticationOptions?:AuthenticationOptions): Promise<Account | {}> {
+    public async authenticate(authenticationOptions?: AuthenticationOptions): Promise<Account | {}> {
         if (!this.arkaneSubProvider) {
             throw new Error("Please initialise provider first (Arkane.createArkaneProviderEngine)");
         }
@@ -70,11 +70,12 @@ export default class Arkane {
         }));
         engine.addProvider(new CacheSubprovider());
         engine.addProvider(new FilterSubprovider());
-
         let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || this.getDefaultEndpoint(options);
         this.nonceSubProvider = new NonceTrackerSubprovider({rpcUrl: endpoint});
         engine.addProvider(this.nonceSubProvider);
 
+
+        engine.addProvider(new SubscriptionsSubprovider());
 
         this.arkaneSubProvider = new ArkaneSubProvider(options);
 
