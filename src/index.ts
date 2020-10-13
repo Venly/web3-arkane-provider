@@ -14,6 +14,7 @@ const RpcSubprovider = require('@arkane-network/web3-provider-engine/subprovider
 const SubscriptionsSubprovider = require('@arkane-network/web3-provider-engine/subproviders/subscriptions');
 const SanitizingSubprovider = require('@arkane-network/web3-provider-engine/subproviders/sanitizer');
 const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
+const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subproviders/websocket');
 
 export default class Arkane {
 
@@ -79,10 +80,13 @@ export default class Arkane {
 
         engine.addProvider(new CacheSubprovider());
 
-        engine.addProvider(new SubscriptionsSubprovider());
-        engine.addProvider(new FilterSubprovider());
 
         engine.addProvider(new InflightCacheSubprovider());
+
+        // engine.addProvider(new WebsocketSubprovider({rpcUrl:"wss://eth-mainnet.ws.alchemyapi.io/v2/Of66PGXKLmO_-_B_H3D4mL5h9UyZimgy"}));
+        //
+        engine.addProvider(new SubscriptionsSubprovider());
+        engine.addProvider(new FilterSubprovider());
 
         this.arkaneSubProvider = new ArkaneSubProvider(options);
         this.ac = this.arkaneSubProvider.arkaneConnect;
