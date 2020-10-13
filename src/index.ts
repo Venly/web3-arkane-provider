@@ -6,12 +6,14 @@ import { NonceTrackerSubprovider }                                    from "./No
 import { Provider }                                                   from 'ethereum-types';
 import { SignedVersionedTypedDataSubProvider }                        from './SignedVersionedTypedDataSubProvider';
 
-const ProviderEngine = require('web3-provider-engine');
-const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
-const FixtureSubprovider = require('web3-provider-engine/subproviders/fixture');
-const FilterSubprovider = require('web3-provider-engine/subproviders/filters');
-const RpcSubprovider = require('web3-provider-engine/subproviders/rpc');
-const SubscriptionsSubprovider = require('web3-provider-engine/subproviders/subscriptions');
+const ProviderEngine = require('@arkane-network/web3-provider-engine');
+const CacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/cache');
+const FixtureSubprovider = require('@arkane-network/web3-provider-engine/subproviders/fixture');
+const FilterSubprovider = require('@arkane-network/web3-provider-engine/subproviders/filters');
+const RpcSubprovider = require('@arkane-network/web3-provider-engine/subproviders/rpc');
+const SubscriptionsSubprovider = require('@arkane-network/web3-provider-engine/subproviders/subscriptions');
+const SanitizingSubprovider = require('@arkane-network/web3-provider-engine/subproviders/sanitizer');
+const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
 
 export default class Arkane {
 
@@ -60,7 +62,8 @@ export default class Arkane {
     }
 
     public createArkaneProviderEngine(options: ArkaneSubProviderOptions): Promise<Provider> {
-        const engine = new ProviderEngine();
+        let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || this.getDefaultEndpoint(options);
+        const engine = new ProviderEngine({pollingInterval: options.pollingInterval || 150000});
         engine.addProvider(new FixtureSubprovider({
             web3_clientVersion: 'ArkaneProviderEngine/v0.0.1/javascript',
             net_listening: true,
@@ -68,23 +71,26 @@ export default class Arkane {
             eth_mining: false,
             eth_syncing: true,
         }));
-        engine.addProvider(new CacheSubprovider());
-        engine.addProvider(new FilterSubprovider());
-        let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || this.getDefaultEndpoint(options);
+
         this.nonceSubProvider = new NonceTrackerSubprovider({rpcUrl: endpoint});
         engine.addProvider(this.nonceSubProvider);
 
+        engine.addProvider(new SanitizingSubprovider());
+
+        engine.addProvider(new CacheSubprovider());
 
         engine.addProvider(new SubscriptionsSubprovider());
+        engine.addProvider(new FilterSubprovider());
+
+        engine.addProvider(new InflightCacheSubprovider());
 
         this.arkaneSubProvider = new ArkaneSubProvider(options);
-
         this.ac = this.arkaneSubProvider.arkaneConnect;
-
-        this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
         this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.arkaneSubProvider);
         engine.addProvider(this.signedVersionedTypedDataSubProvider);
+
+        this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
         return options.skipAuthentication
             ? Promise.resolve(this.startEngine(engine))
@@ -126,6 +132,7 @@ export interface ArkaneSubProviderOptions {
     network?: Network;
     authenticationOptions?: AuthenticationOptions
     skipAuthentication: boolean;
+    pollingInterval?: number;
 }
 
 if (typeof window !== 'undefined') {
