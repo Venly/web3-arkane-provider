@@ -83,10 +83,13 @@ export default class Arkane {
 
         engine.addProvider(new InflightCacheSubprovider());
 
-        // engine.addProvider(new WebsocketSubprovider({rpcUrl:"wss://eth-mainnet.ws.alchemyapi.io/v2/Of66PGXKLmO_-_B_H3D4mL5h9UyZimgy"}));
-        //
-        engine.addProvider(new SubscriptionsSubprovider());
-        engine.addProvider(new FilterSubprovider());
+        if(options.network && options.network.nodeUrl) {
+            engine.addProvider(new SubscriptionsSubprovider());
+            engine.addProvider(new FilterSubprovider());
+        } else {
+            let wsEndpoint = options.wsNodeUrl || this.getDefaultWssEndpoint(options);
+            engine.addProvider(new WebsocketSubprovider({rpcUrl:wsEndpoint}));
+        }
 
         this.arkaneSubProvider = new ArkaneSubProvider(options);
         this.ac = this.arkaneSubProvider.arkaneConnect;
@@ -106,6 +109,13 @@ export default class Arkane {
             return 'https://rinkeby.arkane.network';
         }
         return 'https://ethereum.arkane.network';
+    }
+
+    private getDefaultWssEndpoint(options: ArkaneSubProviderOptions) {
+        if (options.environment && (options.environment === 'qa' || options.environment === 'staging')) {
+            return 'wss://rinkeby-ws.arkane.network';
+        }
+        return 'https://ethereum-ws.arkane.network';
     }
 
     private startEngine(engine: any) {
@@ -137,6 +147,7 @@ export interface ArkaneSubProviderOptions {
     authenticationOptions?: AuthenticationOptions
     skipAuthentication: boolean;
     pollingInterval?: number;
+    wsNodeUrl?: string;
 }
 
 if (typeof window !== 'undefined') {
