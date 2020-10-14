@@ -26,6 +26,7 @@ export class SignedVersionedTypedDataSubProvider extends Subprovider {
                                end: ErrorCallback): Promise<void> {
 
         switch (payload.method) {
+            case 'eth_signTypedData_v4':
             case 'eth_signTypedData_v3':
             case 'eth_signTypedData_v2':
                 if (!payload.params[0] || !payload.params[1]) {
