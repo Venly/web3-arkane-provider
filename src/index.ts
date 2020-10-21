@@ -14,6 +14,7 @@ const RpcSubprovider = require('@arkane-network/web3-provider-engine/subprovider
 const SubscriptionsSubprovider = require('@arkane-network/web3-provider-engine/subproviders/subscriptions');
 const SanitizingSubprovider = require('@arkane-network/web3-provider-engine/subproviders/sanitizer');
 const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
+const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subproviders/websocket');
 
 export default class Arkane {
 
@@ -79,10 +80,16 @@ export default class Arkane {
 
         engine.addProvider(new CacheSubprovider());
 
-        engine.addProvider(new SubscriptionsSubprovider());
-        engine.addProvider(new FilterSubprovider());
 
         engine.addProvider(new InflightCacheSubprovider());
+
+        if(options.network && options.network.nodeUrl) {
+            engine.addProvider(new SubscriptionsSubprovider());
+            engine.addProvider(new FilterSubprovider());
+        } else {
+            let wsEndpoint = options.wsNodeUrl || this.getDefaultWssEndpoint(options);
+            engine.addProvider(new WebsocketSubprovider({rpcUrl:wsEndpoint}));
+        }
 
         this.arkaneSubProvider = new ArkaneSubProvider(options);
         this.ac = this.arkaneSubProvider.arkaneConnect;
@@ -102,6 +109,13 @@ export default class Arkane {
             return 'https://rinkeby.arkane.network';
         }
         return 'https://ethereum.arkane.network';
+    }
+
+    private getDefaultWssEndpoint(options: ArkaneSubProviderOptions) {
+        if (options.environment && (options.environment === 'qa' || options.environment === 'staging')) {
+            return 'wss://rinkeby-ws.arkane.network';
+        }
+        return 'https://ethereum-ws.arkane.network';
     }
 
     private startEngine(engine: any) {
@@ -133,6 +147,7 @@ export interface ArkaneSubProviderOptions {
     authenticationOptions?: AuthenticationOptions
     skipAuthentication: boolean;
     pollingInterval?: number;
+    wsNodeUrl?: string;
 }
 
 if (typeof window !== 'undefined') {
