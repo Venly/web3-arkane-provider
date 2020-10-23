@@ -115,7 +115,7 @@ export default class Arkane {
         if (options.environment && (options.environment === 'qa' || options.environment === 'staging')) {
             return 'wss://rinkeby-ws.arkane.network';
         }
-        return 'https://ethereum-ws.arkane.network';
+        return 'wss://ethereum-ws.arkane.network';
     }
 
     private startEngine(engine: any) {
