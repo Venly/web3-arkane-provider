@@ -1,8 +1,8 @@
 const inherits = require('util').inherits
 const Transaction = require('ethereumjs-tx')
 const ethUtil = require('ethereumjs-util')
-const Subprovider = require('web3-provider-engine/subproviders/subprovider')
-const blockTagForPayload = require('web3-provider-engine/util/rpc-cache-utils').blockTagForPayload
+const Subprovider = require('@arkane-network/web3-provider-engine/subproviders/subprovider')
+const blockTagForPayload = require('@arkane-network/web3-provider-engine/util/rpc-cache-utils').blockTagForPayload
 
 export class NonceTrackerSubprovider extends Subprovider {
 

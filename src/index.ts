@@ -6,12 +6,15 @@ import { NonceTrackerSubprovider }                                    from "./No
 import { Provider }                                                   from 'ethereum-types';
 import { SignedVersionedTypedDataSubProvider }                        from './SignedVersionedTypedDataSubProvider';
 
-const ProviderEngine = require('web3-provider-engine');
-const CacheSubprovider = require('web3-provider-engine/subproviders/cache');
-const FixtureSubprovider = require('web3-provider-engine/subproviders/fixture');
-const FilterSubprovider = require('web3-provider-engine/subproviders/filters');
-const RpcSubprovider = require('web3-provider-engine/subproviders/rpc');
-const SubscriptionsSubprovider = require('web3-provider-engine/subproviders/subscriptions');
+const ProviderEngine = require('@arkane-network/web3-provider-engine');
+const CacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/cache');
+const FixtureSubprovider = require('@arkane-network/web3-provider-engine/subproviders/fixture');
+const FilterSubprovider = require('@arkane-network/web3-provider-engine/subproviders/filters');
+const RpcSubprovider = require('@arkane-network/web3-provider-engine/subproviders/rpc');
+const SubscriptionsSubprovider = require('@arkane-network/web3-provider-engine/subproviders/subscriptions');
+const SanitizingSubprovider = require('@arkane-network/web3-provider-engine/subproviders/sanitizer');
+const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
+const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subproviders/websocket');
 
 export default class Arkane {
 
@@ -60,7 +63,8 @@ export default class Arkane {
     }
 
     public createArkaneProviderEngine(options: ArkaneSubProviderOptions): Promise<Provider> {
-        const engine = new ProviderEngine();
+        let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || this.getDefaultEndpoint(options);
+        const engine = new ProviderEngine({pollingInterval: options.pollingInterval || 150000});
         engine.addProvider(new FixtureSubprovider({
             web3_clientVersion: 'ArkaneProviderEngine/v0.0.1/javascript',
             net_listening: true,
@@ -68,23 +72,32 @@ export default class Arkane {
             eth_mining: false,
             eth_syncing: true,
         }));
-        engine.addProvider(new CacheSubprovider());
-        engine.addProvider(new FilterSubprovider());
-        let endpoint = (options.rpcUrl || (options.network ? options.network.nodeUrl : undefined)) || this.getDefaultEndpoint(options);
+
         this.nonceSubProvider = new NonceTrackerSubprovider({rpcUrl: endpoint});
         engine.addProvider(this.nonceSubProvider);
 
+        engine.addProvider(new SanitizingSubprovider());
 
-        engine.addProvider(new SubscriptionsSubprovider());
+        engine.addProvider(new CacheSubprovider());
+
+
+        engine.addProvider(new InflightCacheSubprovider());
+
+        if(options.network && options.network.nodeUrl) {
+            engine.addProvider(new SubscriptionsSubprovider());
+            engine.addProvider(new FilterSubprovider());
+        } else {
+            let wsEndpoint = options.wsNodeUrl || this.getDefaultWssEndpoint(options);
+            engine.addProvider(new WebsocketSubprovider({rpcUrl:wsEndpoint}));
+        }
 
         this.arkaneSubProvider = new ArkaneSubProvider(options);
-
         this.ac = this.arkaneSubProvider.arkaneConnect;
-
-        this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
         this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.arkaneSubProvider);
         engine.addProvider(this.signedVersionedTypedDataSubProvider);
+
+        this.rpcSubprovider = new RpcSubprovider({rpcUrl: endpoint});
 
         return options.skipAuthentication
             ? Promise.resolve(this.startEngine(engine))
@@ -96,6 +109,13 @@ export default class Arkane {
             return 'https://rinkeby.arkane.network';
         }
         return 'https://ethereum.arkane.network';
+    }
+
+    private getDefaultWssEndpoint(options: ArkaneSubProviderOptions) {
+        if (options.environment && (options.environment === 'qa' || options.environment === 'staging')) {
+            return 'wss://rinkeby-ws.arkane.network';
+        }
+        return 'https://ethereum-ws.arkane.network';
     }
 
     private startEngine(engine: any) {
@@ -126,6 +146,8 @@ export interface ArkaneSubProviderOptions {
     network?: Network;
     authenticationOptions?: AuthenticationOptions
     skipAuthentication: boolean;
+    pollingInterval?: number;
+    wsNodeUrl?: string;
 }
 
 if (typeof window !== 'undefined') {
