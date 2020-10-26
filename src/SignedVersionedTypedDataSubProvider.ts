@@ -1,15 +1,15 @@
 import { JSONRPCRequestPayload }   from 'ethereum-types';
 import { Callback, ErrorCallback } from '@0x/subproviders/lib/src/types';
 import { Subprovider }             from '@0x/subproviders';
-import { ArkaneSubProvider }       from './ArkaneSubProvider';
+import { ArkaneWalletSubProvider } from './ArkaneWalletSubProvider';
 
 export class SignedVersionedTypedDataSubProvider extends Subprovider {
 
-    private arkaneSubProvider: ArkaneSubProvider;
+    private arkaneWalletSubProvider: ArkaneWalletSubProvider;
 
-    constructor(arkaneSubProvider: ArkaneSubProvider) {
+    constructor(arkaneWalletSubProvider: ArkaneWalletSubProvider) {
         super();
-        this.arkaneSubProvider = arkaneSubProvider;
+        this.arkaneWalletSubProvider = arkaneWalletSubProvider;
     }
 
     /**
@@ -32,7 +32,7 @@ export class SignedVersionedTypedDataSubProvider extends Subprovider {
                 if (!payload.params[0] || !payload.params[1]) {
                     end(new Error('Missing parameters for signing data, 2 params needed: address, eip712Data'));
                 } else {
-                    let result = await this.arkaneSubProvider.signTypedDataAsync(payload.params[0], payload.params[1]);
+                    let result = await this.arkaneWalletSubProvider.signTypedDataAsync(payload.params[0], payload.params[1]);
                     end(null, result);
                 }
                 return;

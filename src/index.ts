@@ -1,6 +1,6 @@
 import { ArkaneConnect, AuthenticationOptions, AuthenticationResult } from "@arkane-network/arkane-connect/dist/src/connect/connect";
 import { Network }                                                    from "@arkane-network/arkane-connect/dist/src/models/Network";
-import { ArkaneSubProvider }                                          from "./ArkaneSubProvider";
+import { ArkaneWalletSubProvider }                                    from "./ArkaneWalletSubProvider";
 import { Account }                                                    from '@arkane-network/arkane-connect/dist/src/models/Account';
 import { NonceTrackerSubprovider }                                    from "./NonceTracker";
 import { Provider }                                                   from 'ethereum-types';
@@ -16,7 +16,7 @@ const SanitizingSubprovider = require('@arkane-network/web3-provider-engine/subp
 const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
 const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subproviders/websocket');
 
-export default class Arkane {
+class ArkaneSubProvider {
 
     private ac?: ArkaneConnect;
     private network?: Network;
@@ -83,15 +83,15 @@ export default class Arkane {
 
         engine.addProvider(new InflightCacheSubprovider());
 
-        if(options.network && options.network.nodeUrl) {
+        if (options.network && options.network.nodeUrl) {
             engine.addProvider(new SubscriptionsSubprovider());
             engine.addProvider(new FilterSubprovider());
         } else {
             let wsEndpoint = options.wsNodeUrl || this.getDefaultWssEndpoint(options);
-            engine.addProvider(new WebsocketSubprovider({rpcUrl:wsEndpoint}));
+            engine.addProvider(new WebsocketSubprovider({rpcUrl: wsEndpoint}));
         }
 
-        this.arkaneSubProvider = new ArkaneSubProvider(options);
+        this.arkaneSubProvider = new ArkaneWalletSubProvider(options);
         this.ac = this.arkaneSubProvider.arkaneConnect;
 
         this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.arkaneSubProvider);
@@ -151,5 +151,7 @@ export interface ArkaneSubProviderOptions {
 }
 
 if (typeof window !== 'undefined') {
-    (window as any).Arkane = new Arkane();
+    (window as any).Arkane = new ArkaneSubProvider();
 }
+
+export const Arkane = ArkaneSubProvider.prototype;
