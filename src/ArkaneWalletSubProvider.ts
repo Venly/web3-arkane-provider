@@ -9,7 +9,7 @@ import { BuildEip712SignRequestDto }                                            
 import { JSONRPCRequestPayload }                                                           from 'ethereum-types';
 import { Callback, ErrorCallback }                                                         from '@0x/subproviders/lib/src/types';
 
-export class ArkaneSubProvider extends BaseWalletSubprovider {
+export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
 
     readonly arkaneConnect: ArkaneConnect;
     private wallets: Wallet[] = [];
