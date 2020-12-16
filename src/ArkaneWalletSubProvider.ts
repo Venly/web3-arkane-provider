@@ -45,13 +45,10 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
                        return await new Promise((resolve,
                                                  reject) => {
                            if (!account.isAuthenticated) {
-                               console.debug('Not authenticated to Arkane Network');
                                reject('not-authenticated');
                            } else if (account.wallets && account.wallets.length <= 0) {
-                               console.debug('No wallet has been linked to this application');
                                reject('no-wallet-linked');
                            } else {
-                               console.debug("Authenticated to Arkane Network and at least one wallet is linked to this application");
                                that.authenticated = true;
                                that.wallets = account.wallets;
                                that.lastWalletsFetch = Date.now();
@@ -125,7 +122,6 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
     }
 
     private constructEthereumTransationSignatureRequest(txParams: PartialTxParams) {
-        console.debug(txParams);
         const retVal = {
             gasPrice: txParams.gasPrice ? parseInt(txParams.gasPrice, 16) : txParams.gasPrice,
             gas: txParams.gas ? parseInt(txParams.gas, 16) : txParams.gas,
