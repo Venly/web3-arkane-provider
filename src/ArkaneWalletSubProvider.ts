@@ -1,13 +1,11 @@
 import { ArkaneConnect, SecretType, SignatureRequestType, SignMethod, Wallet, WindowMode } from "@arkane-network/arkane-connect"
-import { EIP712TypedData, PartialTxParams }                                                from "@0x/subproviders";
-import { BaseWalletSubprovider }                                                           from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
-import { ArkaneSubProviderOptions }                                                        from "./index";
-import { AuthenticationOptions, AuthenticationResult, ConstructorOptions }                 from '@arkane-network/arkane-connect/dist/src/connect/connect';
-import { Network }                                                                         from "@arkane-network/arkane-connect/dist/src/models/Network";
-import { Account }                                                                         from '@arkane-network/arkane-connect/dist/src/models/Account';
-import { BuildEip712SignRequestDto }                                                       from '@arkane-network/arkane-connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
-import { JSONRPCRequestPayload }                                                           from 'ethereum-types';
-import { Callback, ErrorCallback }                                                         from '@0x/subproviders/lib/src/types';
+import { PartialTxParams } from "@0x/subproviders";
+import { BaseWalletSubprovider } from "@0x/subproviders/lib/src/subproviders/base_wallet_subprovider";
+import { ArkaneSubProviderOptions } from "./index";
+import { AuthenticationOptions, AuthenticationResult, ConstructorOptions } from '@arkane-network/arkane-connect/dist/src/connect/connect';
+import { Network } from "@arkane-network/arkane-connect/dist/src/models/Network";
+import { Account } from '@arkane-network/arkane-connect/dist/src/models/Account';
+import { BuildEip712SignRequestDto } from '@arkane-network/arkane-connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
 
 export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
 
@@ -40,7 +38,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
             this.options.authenticationOptions = authenticationOptions;
         }
         let that = this;
-        return this.arkaneConnect.flows.getAccount(SecretType.ETHEREUM, this.options.authenticationOptions)
+        return this.arkaneConnect.flows.getAccount(this.options.secretType || SecretType.ETHEREUM, this.options.authenticationOptions)
                    .then(async (account: Account) => {
                        return await new Promise((resolve,
                                                  reject) => {
@@ -58,12 +56,14 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
                    });
     }
 
-    private async refreshWalletsFromApi() {
-        let that = this;
-        return this.arkaneConnect.api.getWallets({secretType: SecretType.ETHEREUM, includeBalance: false})
-                   .then(returnedWallets => {
-                       that.wallets = returnedWallets;
-                   });
+    private async refreshWallets() {
+      let newWallets = await this.arkaneConnect.api.getWallets({ secretType: this.options.secretType || SecretType.ETHEREUM, includeBalance: false });
+      if (!newWallets || newWallets.length < 1) {
+        let account = await this.arkaneConnect.flows.getAccount(this.options.secretType || SecretType.ETHEREUM, this.options.authenticationOptions);
+        newWallets = account.wallets;
+      }
+      this.wallets = newWallets;
+      return newWallets;
     }
 
     /**
@@ -80,7 +80,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
             promise = this.startGetAccountFlow();
         } else if (this.shouldRefreshWallets()) {
             this.lastWalletsFetch = Date.now();
-            promise = this.refreshWalletsFromApi();
+            promise = this.refreshWallets();
         } else {
             promise = Promise.resolve();
         }
@@ -122,6 +122,14 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
     }
 
     private constructEthereumTransationSignatureRequest(txParams: PartialTxParams) {
+        let type = SignatureRequestType.ETHEREUM_TRANSACTION;
+        if(this.options.secretType && this.options.secretType == SecretType.ETHEREUM) {
+            type = SignatureRequestType.ETHEREUM_TRANSACTION;
+        } else if(this.options.secretType && this.options.secretType == SecretType.MATIC) {
+            type = SignatureRequestType.MATIC_TRANSACTION;
+        } else if(this.options.secretType && this.options.secretType == SecretType.BSC) {
+            type = SignatureRequestType.BSC_TRANSACTION;
+        }
         const retVal = {
             gasPrice: txParams.gasPrice ? parseInt(txParams.gasPrice, 16) : txParams.gasPrice,
             gas: txParams.gas ? parseInt(txParams.gas, 16) : txParams.gas,
@@ -130,7 +138,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
             data: (txParams.data) || '0x',
             value: txParams.value ? parseInt(txParams.value, 16) : 0,
             submit: false,
-            type: SignatureRequestType.ETHEREUM_TRANSACTION,
+            type: type,
             walletId: this.getWalletIdFrom(txParams.from),
             network: this.network
         };
@@ -150,8 +158,16 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
     public async signPersonalMessageAsync(data: string,
                                           address: string): Promise<string> {
         const signer = this.arkaneConnect.createSigner();
+        let type = SignatureRequestType.ETHEREUM_RAW;
+        if(this.options.secretType && this.options.secretType == SecretType.ETHEREUM) {
+            type = SignatureRequestType.ETHEREUM_RAW;
+        } else if(this.options.secretType && this.options.secretType == SecretType.MATIC) {
+            type = SignatureRequestType.MATIC_RAW;
+        } else if(this.options.secretType && this.options.secretType == SecretType.BSC) {
+            type = SignatureRequestType.BSC_RAW;
+        }
         return signer.signTransaction({
-                         type: SignatureRequestType.ETHEREUM_RAW,
+                         type: type,
                          walletId: this.getWalletIdFrom(address),
                          data: data
                      })
@@ -182,7 +198,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
         const request: BuildEip712SignRequestDto = {
             data: typedData,
             walletId: this.getWalletIdFrom(address),
-            secretType: SecretType.ETHEREUM
+            secretType: this.options.secretType || SecretType.ETHEREUM
         }
         return signer.signEip712(request)
                      .then((result) => {
