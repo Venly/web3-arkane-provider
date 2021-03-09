@@ -65,7 +65,7 @@ class ArkaneSubProvider {
 
   public createArkaneProviderEngine(options: ArkaneSubProviderOptions): Promise<Provider> {
     let connectionDetails = this.getConnectionDetails(options);
-    const engine = new ProviderEngine({ pollingInterval: options.pollingInterval || 150000 });
+    const engine = new ProviderEngine({ pollingInterval: options.pollingInterval || 15000 });
     engine.addProvider(new FixtureSubprovider({
       web3_clientVersion: 'ArkaneProviderEngine/v0.0.1/javascript',
       net_listening: true,
@@ -111,12 +111,6 @@ class ArkaneSubProvider {
     }
     let secretType = options.secretType ? options.secretType : SecretType.ETHEREUM;
     let endpoint = `${secretType.toLowerCase()}-node${options.environment && !options.environment.startsWith('prod') ? '-' + options.environment : ''}.arkane.network`;
-    if (secretType == SecretType.ETHEREUM || secretType == SecretType.MATIC) {
-      return {
-        endpointHttpUrl: 'https://' + endpoint,
-        endpointWsUrl: 'wss://ws-' + endpoint
-      }
-    }
     return {
       endpointHttpUrl: 'https://' + endpoint
     }
