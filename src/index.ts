@@ -1,5 +1,4 @@
 import { ArkaneConnect, AuthenticationOptions, AuthenticationResult } from "@arkane-network/arkane-connect/dist/src/connect/connect";
-import { Network } from "@arkane-network/arkane-connect/dist/src/models/Network";
 import { ArkaneWalletSubProvider } from "./ArkaneWalletSubProvider";
 import { Account } from '@arkane-network/arkane-connect/dist/src/models/Account';
 import { NonceTrackerSubprovider } from "./NonceTracker";
@@ -20,28 +19,22 @@ const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subpr
 class ArkaneSubProvider {
 
   private ac?: ArkaneConnect;
-  private network?: Network;
-  private originalNetwork?: Network;
   private rpcSubprovider: any;
   private nonceSubProvider: any;
   private signedVersionedTypedDataSubProvider: any;
-  private arkaneSubProvider: any;
+  private arkaneSubProvider?: ArkaneWalletSubProvider;
+  private engine?: any;
 
-  public arkaneConnect(network?: Network) {
-    this.network = network;
-    this.originalNetwork = network;
+  public arkaneConnect() {
     return this.ac;
   }
 
-  public changeNetwork(network: Network) {
-    if (network && network.nodeUrl) {
-      this.network = network;
-      this.nonceSubProvider.rpcUrl = network.nodeUrl;
-      this.rpcSubprovider.rpcUrl = network.nodeUrl;
-      this.arkaneSubProvider.network = network;
-    } else {
-      console.warn("Not changing to network, not sufficient data: resetting network", network);
-      this.resetNetwork();
+  public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM): Promise<Provider | undefined> {
+    if (this.arkaneSubProvider && this.arkaneSubProvider.options) {
+      this.arkaneSubProvider.options.secretType = secretType;
+      this.arkaneSubProvider.lastWalletsFetch = undefined;
+      this.engine.stop();
+      return this.createArkaneProviderEngine(this.arkaneSubProvider.options);
     }
   }
 
@@ -59,15 +52,11 @@ class ArkaneSubProvider {
     return this.arkaneSubProvider.startGetAccountFlow(authenticationOptions);
   }
 
-  public resetNetwork() {
-    this.network = this.originalNetwork;
-  }
-
   public createArkaneProviderEngine(options: ArkaneSubProviderOptions): Promise<Provider> {
     let connectionDetails = this.getConnectionDetails(options);
-    const engine = new ProviderEngine({ pollingInterval: options.pollingInterval || 15000 });
-    engine.addProvider(new FixtureSubprovider({
-      web3_clientVersion: 'ArkaneProviderEngine/v0.0.1/javascript',
+    this.engine = new ProviderEngine({ pollingInterval: options.pollingInterval || 15000 });
+    this.engine.addProvider(new FixtureSubprovider({
+      web3_clientVersion: 'ArkaneProviderEngine/v0.21.0/javascript',
       net_listening: true,
       eth_hashrate: '0x00',
       eth_mining: false,
@@ -75,40 +64,39 @@ class ArkaneSubProvider {
     }));
 
     this.nonceSubProvider = new NonceTrackerSubprovider({ rpcUrl: connectionDetails.endpointHttpUrl });
-    engine.addProvider(this.nonceSubProvider);
+    this.engine.addProvider(this.nonceSubProvider);
 
-    engine.addProvider(new SanitizingSubprovider());
+    this.engine.addProvider(new SanitizingSubprovider());
 
-    engine.addProvider(new CacheSubprovider());
+    this.engine.addProvider(new CacheSubprovider());
 
-    engine.addProvider(new InflightCacheSubprovider());
+    this.engine.addProvider(new InflightCacheSubprovider());
 
     if (!connectionDetails.endpointWsUrl) {
-      engine.addProvider(new SubscriptionsSubprovider());
-      engine.addProvider(new FilterSubprovider());
+      this.engine.addProvider(new SubscriptionsSubprovider());
+      this.engine.addProvider(new FilterSubprovider());
     } else {
-      engine.addProvider(new WebsocketSubprovider({ rpcUrl: connectionDetails.endpointWsUrl }));
+      this.engine.addProvider(new WebsocketSubprovider({ rpcUrl: connectionDetails.endpointWsUrl }));
     }
 
-    this.arkaneSubProvider = new ArkaneWalletSubProvider(options);
+    if (!this.arkaneSubProvider) {
+      this.arkaneSubProvider = new ArkaneWalletSubProvider(options);
+    }
     this.ac = this.arkaneSubProvider.arkaneConnect;
 
     this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.arkaneSubProvider);
-    engine.addProvider(this.signedVersionedTypedDataSubProvider);
+    this.engine.addProvider(this.signedVersionedTypedDataSubProvider);
 
     this.rpcSubprovider = new RpcSubprovider({ rpcUrl: connectionDetails.endpointHttpUrl });
+    this.engine.addProvider(this.arkaneSubProvider);
+    this.engine.addProvider(this.rpcSubprovider);
 
     return options.skipAuthentication
-      ? Promise.resolve(this.startEngine(engine))
-      : this.arkaneSubProvider.getAccountsAsync().then(() => this.startEngine(engine));
+      ? Promise.resolve(this.startEngine(this.engine))
+      : this.arkaneSubProvider.getAccountsAsync().then(() => this.startEngine(this.engine));
   }
 
   private getConnectionDetails(options: ArkaneSubProviderOptions): ConnectionDetails {
-    if (options.network && options.network.nodeUrl) {
-      return {
-        endpointHttpUrl: options.network.nodeUrl
-      }
-    }
     let secretType = options.secretType ? options.secretType : SecretType.ETHEREUM;
     let endpoint = `${secretType.toLowerCase()}-node${options.environment && !options.environment.startsWith('prod') ? '-' + options.environment : ''}.arkane.network`;
     return {
@@ -117,15 +105,11 @@ class ArkaneSubProvider {
   }
 
   private startEngine(engine: any) {
-    engine.addProvider(this.arkaneSubProvider);
-    engine.addProvider(this.rpcSubprovider);
-
     // network connectivity error
     engine.on('error', (err: any) => {
       // report connectivity errors
       console.error(err.stack)
     });
-
     // start polling for blocks
     engine.start();
     return engine;
@@ -150,7 +134,6 @@ export interface ArkaneSubProviderOptions {
   windowMode?: string;
   bearerTokenProvider?: () => string;
   secretType?: SecretType;
-  network?: Network;
   authenticationOptions?: AuthenticationOptions
   skipAuthentication: boolean;
   pollingInterval?: number;
