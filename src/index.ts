@@ -5,6 +5,7 @@ import { NonceTrackerSubprovider } from "./NonceTracker";
 import { Provider } from 'ethereum-types';
 import { SignedVersionedTypedDataSubProvider } from './SignedVersionedTypedDataSubProvider';
 import { SecretType } from '@arkane-network/arkane-connect';
+import { EmptyEstimateGasProvider } from './EmptyEstimateGasProvider';
 
 const ProviderEngine = require('@arkane-network/web3-provider-engine');
 const CacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/cache');
@@ -62,30 +63,33 @@ class ArkaneSubProvider {
       eth_mining: false,
       eth_syncing: true,
     }));
-
-    this.nonceSubProvider = new NonceTrackerSubprovider({ rpcUrl: connectionDetails.endpointHttpUrl });
-    this.engine.addProvider(this.nonceSubProvider);
-
-    this.engine.addProvider(new SanitizingSubprovider());
-
-    this.engine.addProvider(new CacheSubprovider());
-
-    this.engine.addProvider(new InflightCacheSubprovider());
-
-    if (!connectionDetails.endpointWsUrl) {
-      this.engine.addProvider(new SubscriptionsSubprovider());
-      this.engine.addProvider(new FilterSubprovider());
-    } else {
-      this.engine.addProvider(new WebsocketSubprovider({ rpcUrl: connectionDetails.endpointWsUrl }));
-    }
-
     if (!this.arkaneSubProvider) {
       this.arkaneSubProvider = new ArkaneWalletSubProvider(options);
     }
     this.ac = this.arkaneSubProvider.arkaneConnect;
 
-    this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.arkaneSubProvider);
+    if(!this.signedVersionedTypedDataSubProvider) {
+      this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.arkaneSubProvider);
+    }
     this.engine.addProvider(this.signedVersionedTypedDataSubProvider);
+
+
+    this.engine.addProvider(new FilterSubprovider());
+
+    this.nonceSubProvider = new NonceTrackerSubprovider({ rpcUrl: connectionDetails.endpointHttpUrl });
+    this.engine.addProvider(this.nonceSubProvider);
+
+    this.engine.addProvider(new EmptyEstimateGasProvider());
+
+    this.engine.addProvider(new SanitizingSubprovider());
+
+    this.engine.addProvider(new SubscriptionsSubprovider());
+
+    this.engine.addProvider(new CacheSubprovider());
+
+    this.engine.addProvider(new InflightCacheSubprovider());
+
+
 
     this.rpcSubprovider = new RpcSubprovider({ rpcUrl: connectionDetails.endpointHttpUrl });
     this.engine.addProvider(this.arkaneSubProvider);
