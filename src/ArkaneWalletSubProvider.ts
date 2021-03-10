@@ -208,8 +208,6 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
 
   private getWalletIdFrom(address: string):
     string {
-    console.log('searching for', address, this.wallets);
-
     let foundWallet = this.wallets.find((wallet) => {
       return wallet.address.toLowerCase() === address.toLowerCase();
     });
