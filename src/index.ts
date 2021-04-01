@@ -5,7 +5,7 @@ import { NonceTrackerSubprovider } from "./NonceTracker";
 import { Provider } from 'ethereum-types';
 import { SignedVersionedTypedDataSubProvider } from './SignedVersionedTypedDataSubProvider';
 import { SecretType } from '@arkane-network/arkane-connect';
-import { EmptyEstimateGasProvider } from './EmptyEstimateGasProvider';
+import { SignTransactionGasFix } from './SignTransactionGasFix';
 
 const ProviderEngine = require('@arkane-network/web3-provider-engine');
 const CacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/cache');
@@ -63,6 +63,9 @@ class ArkaneSubProvider {
       eth_mining: false,
       eth_syncing: true,
     }));
+
+    this.engine.addProvider(new SignTransactionGasFix());
+
     if (!this.arkaneSubProvider) {
       this.arkaneSubProvider = new ArkaneWalletSubProvider(options);
     }
@@ -79,7 +82,7 @@ class ArkaneSubProvider {
     this.nonceSubProvider = new NonceTrackerSubprovider({ rpcUrl: connectionDetails.endpointHttpUrl });
     this.engine.addProvider(this.nonceSubProvider);
 
-    this.engine.addProvider(new EmptyEstimateGasProvider());
+
 
     this.engine.addProvider(new SanitizingSubprovider());
 
