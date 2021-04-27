@@ -105,7 +105,9 @@ class ArkaneSubProvider {
 
   private getConnectionDetails(options: ArkaneSubProviderOptions): ConnectionDetails {
     let secretType = options.secretType ? options.secretType : SecretType.ETHEREUM;
-    let endpoint = `${secretType.toLowerCase()}-node${options.environment && !options.environment.startsWith('prod') ? '-' + options.environment : ''}.arkane.network`;
+    let environment = options.environment;
+    environment = environment?.replace('-local', '');
+    let endpoint = `${secretType.toLowerCase()}-node${environment && !environment.startsWith('prod') ? '-' + environment : ''}.arkane.network`;
     return {
       endpointHttpUrl: 'https://' + endpoint
     }
