@@ -1,9 +1,8 @@
 import { JSONRPCRequestPayload } from 'ethereum-types';
 import { Callback, ErrorCallback } from '@0x/subproviders/lib/src/types';
 import { Subprovider } from '@0x/subproviders';
-import { ArkaneWalletSubProvider } from './ArkaneWalletSubProvider';
 
-export class EmptyEstimateGasProvider extends Subprovider {
+export class SignTransactionGasFix extends Subprovider {
 
 
   /**
@@ -19,9 +18,15 @@ export class EmptyEstimateGasProvider extends Subprovider {
                              next: Callback,
                              end: ErrorCallback): Promise<void> {
 
+
     switch (payload.method) {
-      case 'eth_estimateGas':
-        end(null, '');
+      case 'eth_signTransaction':
+        if (payload.params && payload.params.length > 0 && payload.params[0]) {
+          if (!payload.params[0].gas) {
+            payload.params[0].gas = "";
+          }
+          next();
+        }
         return;
 
       default:

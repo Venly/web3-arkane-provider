@@ -126,6 +126,8 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
       type = SignatureRequestType.MATIC_TRANSACTION;
     } else if (this.options.secretType && this.options.secretType == SecretType.BSC) {
       type = SignatureRequestType.BSC_TRANSACTION;
+    } else if (this.options.secretType && this.options.secretType == SecretType.AVAC) {
+      type = SignatureRequestType.AVAC_TRANSACTION;
     }
     const retVal = {
       gasPrice: txParams.gasPrice ? parseInt(txParams.gasPrice, 16) : txParams.gasPrice,
@@ -161,6 +163,8 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
       type = SignatureRequestType.MATIC_RAW;
     } else if (this.options.secretType && this.options.secretType == SecretType.BSC) {
       type = SignatureRequestType.BSC_RAW;
+    } else if (this.options.secretType && this.options.secretType == SecretType.AVAC) {
+      type = SignatureRequestType.AVAC_RAW;
     }
     return signer.signTransaction({
         type: type,
