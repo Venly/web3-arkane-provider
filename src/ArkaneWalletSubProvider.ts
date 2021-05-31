@@ -130,12 +130,12 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
       type = SignatureRequestType.AVAC_TRANSACTION;
     }
     const retVal = {
-      gasPrice: txParams.gasPrice ? parseInt(txParams.gasPrice, 16) : txParams.gasPrice,
-      gas: txParams.gas ? parseInt(txParams.gas, 16) : txParams.gas,
+      gasPrice: txParams.gasPrice ? BigInt(txParams.gasPrice).toString(10) : txParams.gasPrice,
+      gas: txParams.gas ? BigInt(txParams.gas).toString(10) : txParams.gas,
       to: txParams.to,
-      nonce: txParams.nonce ? parseInt(txParams.nonce, 16) : txParams.nonce,
+      nonce: txParams.nonce ? BigInt(txParams.nonce).toString(10) : txParams.nonce,
       data: (txParams.data) || '0x',
-      value: txParams.value ? parseInt(txParams.value, 16) : 0,
+      value: txParams.value ? BigInt(txParams.value).toString(10) : "0",
       submit: false,
       type: type,
       walletId: this.getWalletIdFrom(txParams.from),
