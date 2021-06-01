@@ -137,10 +137,10 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
       type = SignatureRequestType.AVAC_RAW;
     }
     return signer.signTransaction({
-      type: type,
-      walletId: this.getWalletIdFrom(address),
-      data: data
-    })
+                   type: type,
+                   walletId: this.getWalletIdFrom(address),
+                   data: data
+                 })
                  .then((result) => {
                    if (result.status === 'SUCCESS') {
                      return result.result.signature;
