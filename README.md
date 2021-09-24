@@ -1,34 +1,37 @@
-Arkane Web3 Provider<img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
+Venly Web3 Provider<img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
 ===
+# Introduction
 
-> The Arkane Web3 provider is a smart wrapper around the existing Web3 Ethereum JavaScript API.
+> The Venly Web3 provider is a smart wrapper around the existing Web3 Ethereum JavaScript API.
 
-If you already have an application running using web3 technology, you can make use of this wrapper to leverage the full potential of Arkane Network. 
-Your existing infrastructure is just one code block away from being **Arkane Enabled**.
+If you already have an application running using web3 technology, you can make use of this wrapper to leverage the full potential of Venly Wallet API.
+Your existing infrastructure is just one code block away from being **Venly Wallet Enabled**.
 
-![Arkane Components](https://i.imgur.com/T5sWhZa.png)
+![Venly Components](https://i.imgur.com/T5sWhZa.png)
+
+# Documentation
+The full documentation of the Venly Web3 Provider can be found here: https://docs.venly.io/widget/web3-provider/getting-started
 
 # Getting Started
 
 ## Adding the library
 ```bash
-npm i @arkane-network/web3-arkane-provider
+npm i @venly/web3-provider
 ```
 
 Add the following script to the head of your page:
 
 ```html
-<script src="/node_modules/@arkane-network/web3-arkane-provider/dist/web3-arkane-provider.js"></script>
+<script src="/node_modules/@venly/web3-provider/dist/web3-provider.js"></script>
 ```
 
 ## Using the Library
 
-After adding the javascript file to your page, a global *Arkane* object is added to your window. This object is the gateway for creating the web3 wrapper and fully integrates the [Arkane Connect JS SDK](https://docs.arkane.network/pages/connect-js.html).
+After adding the javascript file to your page, a global *Venly* object is added to your window. This object is the gateway for creating the web3 wrapper and fully integrates [Venly Connect](https://docs.venly.io/widget/widget/introduction).
 
 ### Adding the web3 provider
 
 ```javascript
-
 const options = {
   clientId: 'YOUR_CLIENT_ID',
   rpcUrl: 'https://kovan.infura.io/v3/YOUR-PROJECT-ID', //optional
@@ -36,37 +39,40 @@ const options = {
   signMethod: 'POPUP', //optional, REDIRECT by default
   bearerTokenProvider: () => 'obtained_bearer_token' //optional, default undefined
 };
-Arkane.createArkaneProviderEngine(options).then(provider => {
-    web3 = new Web3(provider);
-  });
+
+Venly.createProviderEngine(options)
+     .then(provider => {
+         web3 = new Web3(provider);
+     });
 ```
 
 The web3 instance now works as if it was [injected by parity or metamask](https://github.com/ethereum/wiki/wiki/JavaScript-API). You can fetch your wallets or sign transactions and messages. 
 
 If you provide your own implementation of `bearerTokenProvider`, the web3 provider will not attempt to obtain an authentication code, but rather use the one provided by you.
 
-### Using Arkane Connect JS natively
+### Using Venly Connect natively
 
-Although we use Arkane Connect JS under the hood, the functionality of the web3 wrapper isn't limited to the web3 API. Linking or fetching profile information is not supported by Web3, but it is in our wrapper.
-After creating an Arkane Provider Engine, we add an instance of **ArkaneConnect** to the global **Arkane** object. As a result, it's possible to call Arkane Connect JS natively, like so.
+Although we use Venly Connect under the hood, the functionality of the web3 wrapper isn't limited to the web3 API. Linking or fetching profile information is not supported by Web3, but it is in our wrapper.
+After creating a Venly Provider Engine, we add an instance of **VenlyConnect** to the global **Venly** object. As a result, it's possible to call Venly Connect natively, like so.
 
 ```
-Arkane.arkaneConnect().linkWallets();
+Venly.connect().linkWallets();
 ```
 
-[The full documentation of the Arkane Connect JS SDK can be found here.](https://docs.arkane.network/pages/connect-js.html)
+The full documentation of Venly Connect can be found here: https://docs.venly.io/widget/widget/introduction
 
 # Example Project
+We've created two examples of the Web3 Provider in our demo application.
 
-[As an example](https://github.com/ArkaneNetwork/web3-arkane-provider-example), we transformed our *Arketype* demo to sign transactions and data using web3. 
+One only checks authentication and shows the login form after the user clicks a button:
+* [Web3 Provider Demo](https://demo.arkane.network/pages/web3-provider)
+* [Web3 Provider Demo html source](https://github.com/ArkaneNetwork/Arketype/blob/develop/pages/web3-provider.html)
+* [Web3 Provider JS source](https://github.com/ArkaneNetwork/Arketype/blob/develop/assets/js/web3-provider.js)
 
-# What is Arkane Network
-Not sure yet what Arkane Network is all about, where are some resources to help you get a better view:
-* [An eli5 about Arkane](https://medium.com/arkane-network/eli5-arkane-network-44bb10d0e68f)
-* [What is Arkane and what can it do for me?](https://medium.com/arkane-network/what-is-arkane-network-ad536e9984a1)
-* [Our wallet security explained](https://medium.com/arkane-network/wallet-security-explained-5b540d746583)
-* [I'm a developer what can Arkane do for me? (Watch video)](https://www.youtube.com/watch?&v=fsBZg450drQ)
-* [I'm a crypto-enthusiast: what can Arkane do for me? (Watch video)](https://www.youtube.com/watch?v=XIAi4lFcolo)
+The other checks if a user is logged in on page load. If not, it shows the login button, otherwise it fetches the users' wallets:
+* [Web3 Provider (skip auth) Demo](https://demo.arkane.network/pages/web3-provider-skip-auth)
+* [Web3 Provider (skip auth) Demo html source](https://github.com/ArkaneNetwork/Arketype/blob/develop/pages/web3-provider-skip-auth.html)
+* [Web3 Provider (skip auth) JS source](https://github.com/ArkaneNetwork/Arketype/blob/develop/assets/js/web3-provider-skip-auth.js)
 
-[![alt text](https://i.imgur.com/L1ZDzlH.png)](https://www.youtube.com/watch?&v=fsBZg450drQ " I’m a developer: what can Arkane do for me?")
-
+# What is Venly Wallet
+Not sure yet what Venly is all about, be sure to check out our website: https://www.venly.io/

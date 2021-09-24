@@ -1,19 +1,19 @@
-import {ArkaneConnect, SecretType, SignatureRequestType, SignMethod, Wallet, WindowMode} from '@arkane-network/arkane-connect'
+import {VenlyConnect, SecretType, SignatureRequestType, SignMethod, Wallet, WindowMode} from '@venly/connect'
 import {PartialTxParams} from '@0x/subproviders';
 import {BaseWalletSubprovider} from '@0x/subproviders/lib/src/subproviders/base_wallet_subprovider';
-import {ArkaneSubProviderOptions} from './index';
-import {AuthenticationOptions, AuthenticationResult, ConstructorOptions} from '@arkane-network/arkane-connect/dist/src/connect/connect';
-import {Account} from '@arkane-network/arkane-connect/dist/src/models/Account';
-import {BuildEip712SignRequestDto} from '@arkane-network/arkane-connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
+import {VenlySubProviderOptions} from './index';
+import {AuthenticationOptions, AuthenticationResult, ConstructorOptions} from '@venly/connect/dist/src/connect/connect';
+import {Account} from '@venly/connect/dist/src/models/Account';
+import {BuildEip712SignRequestDto} from '@venly/connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
 
-export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
+export class VenlyWalletSubProvider extends BaseWalletSubprovider {
 
-  readonly arkaneConnect: ArkaneConnect;
-  public options: ArkaneSubProviderOptions;
+  readonly connect: VenlyConnect;
+  public options: VenlySubProviderOptions;
   public lastWalletsFetch?: number;
   private wallets: Wallet[] = [];
 
-  constructor(options: ArkaneSubProviderOptions) {
+  constructor(options: VenlySubProviderOptions) {
     super();
     const connectConstructorOptions: ConstructorOptions = {
       environment: options.environment || 'production',
@@ -25,7 +25,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
     if (options.windowMode) {
       Object.assign(connectConstructorOptions, {windowMode: options.windowMode == 'POPUP' ? WindowMode.POPUP : WindowMode.REDIRECT});
     }
-    this.arkaneConnect = new ArkaneConnect(options.clientId, connectConstructorOptions);
+    this.connect = new VenlyConnect(options.clientId, connectConstructorOptions);
     this.options = options;
   }
 
@@ -34,7 +34,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
       this.options.authenticationOptions = authenticationOptions;
     }
     let that = this;
-    return this.arkaneConnect.flows.getAccount(this.options.secretType || SecretType.ETHEREUM, this.options.authenticationOptions)
+    return this.connect.flows.getAccount(this.options.secretType || SecretType.ETHEREUM, this.options.authenticationOptions)
                .then(async (account: Account) => {
                  return await new Promise((
                    resolve,
@@ -54,9 +54,9 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
   }
 
   public async refreshWallets() {
-    let newWallets = await this.arkaneConnect.api.getWallets({secretType: this.options.secretType || SecretType.ETHEREUM, includeBalance: false});
+    let newWallets = await this.connect.api.getWallets({secretType: this.options.secretType || SecretType.ETHEREUM, includeBalance: false});
     if (!newWallets || newWallets.length < 1) {
-      let account = await this.arkaneConnect.flows.getAccount(this.options.secretType || SecretType.ETHEREUM, this.options.authenticationOptions);
+      let account = await this.connect.flows.getAccount(this.options.secretType || SecretType.ETHEREUM, this.options.authenticationOptions);
       newWallets = account.wallets;
     }
     this.wallets = newWallets;
@@ -73,7 +73,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
   public async getAccountsAsync(): Promise<string[]> {
     let promise: Promise<any>;
 
-    const authResult: AuthenticationResult = await this.arkaneConnect.checkAuthenticated();
+    const authResult: AuthenticationResult = await this.connect.checkAuthenticated();
     if (!authResult.isAuthenticated) {
       promise = this.startGetAccountFlow();
     } else if (this.shouldRefreshWallets()) {
@@ -88,7 +88,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
   }
 
   public async checkAuthenticated(): Promise<AuthenticationResult> {
-    return this.arkaneConnect.checkAuthenticated();
+    return this.connect.checkAuthenticated();
   }
 
   /**
@@ -100,7 +100,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
    * @return Signed transaction hex string
    */
   public async signTransactionAsync(txParams: PartialTxParams): Promise<string> {
-    let signer = this.arkaneConnect.createSigner();
+    let signer = this.connect.createSigner();
     return signer.signTransaction(this.constructEthereumTransationSignatureRequest(txParams))
                  .then((result) => {
                    if (result.status === 'SUCCESS') {
@@ -125,7 +125,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
     data: string,
     address: string
   ): Promise<string> {
-    const signer = this.arkaneConnect.createSigner();
+    const signer = this.connect.createSigner();
     let type = SignatureRequestType.ETHEREUM_RAW;
     if (this.options.secretType && this.options.secretType == SecretType.ETHEREUM) {
       type = SignatureRequestType.ETHEREUM_RAW;
@@ -163,7 +163,7 @@ export class ArkaneWalletSubProvider extends BaseWalletSubprovider {
     address: string,
     typedData: any
   ): Promise<string> {
-    const signer = this.arkaneConnect.createSigner();
+    const signer = this.connect.createSigner();
     if (typeof typedData === 'string') {
       typedData = JSON.parse(typedData);
     }
