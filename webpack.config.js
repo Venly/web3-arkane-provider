@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: path.join(__dirname, 'src/index.ts'),
   output: {
-    filename: 'web3-arkane-provider.js',
+    filename: 'web3-provider.js',
     path: path.join(__dirname, './dist'),
   },
   watch: false,
