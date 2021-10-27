@@ -1,4 +1,3 @@
-const inherits = require('util').inherits
 const Transaction = require('ethereumjs-tx')
 const ethUtil = require('ethereumjs-util')
 const Subprovider = require('@arkane-network/web3-provider-engine/subproviders/subprovider')
