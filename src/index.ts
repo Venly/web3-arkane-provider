@@ -39,6 +39,10 @@ class VenlySubProvider {
     }
   }
 
+  public hasSubProvider(): boolean {
+    return !!this.subProvider;
+  }
+
   public async checkAuthenticated(): Promise<AuthenticationResult> {
     if (!this.subProvider) {
       throw new Error('Please initialise provider first (Venly.createProviderEngine)');
