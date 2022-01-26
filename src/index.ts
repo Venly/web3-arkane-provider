@@ -4,6 +4,7 @@ import {Account} from '@venly/connect/dist/src/models/Account';
 import {NonceTrackerSubprovider} from './NonceTracker';
 import {Provider} from 'ethereum-types';
 import {SignedVersionedTypedDataSubProvider} from './SignedVersionedTypedDataSubProvider';
+import {RequestAccountsSubProvider} from './RequestAccountsSubProvider';
 import {SecretType} from '@venly/connect';
 import {SignTransactionGasFix} from './SignTransactionGasFix';
 
@@ -23,6 +24,7 @@ class VenlySubProvider {
   private rpcSubProvider: any;
   private nonceSubProvider: any;
   private signedVersionedTypedDataSubProvider: any;
+  private requestAccountsSubProvider: any;
   private subProvider?: VenlyWalletSubProvider;
   private engine?: any;
 
@@ -79,6 +81,11 @@ class VenlySubProvider {
       this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.subProvider);
     }
     this.engine.addProvider(this.signedVersionedTypedDataSubProvider);
+
+    if (!this.requestAccountsSubProvider) {
+      this.requestAccountsSubProvider = new RequestAccountsSubProvider(this.subProvider);
+    }
+    this.engine.addProvider(this.requestAccountsSubProvider);
 
 
     this.engine.addProvider(new FilterSubprovider());
