@@ -528,10 +528,10 @@
   dependencies:
     "@types/ethereum-protocol" "*"
 
-"@venly/connect@1.35.0":
-  "integrity" "sha512-N9QKBRepVP9buCxodRRcyZBJNRkFWhS6VHArKykLUyQtXmgEon04WYKx8OtihUBENwdrvz7uhnGu7yxzfpMBOA=="
-  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.35.0.tgz"
-  "version" "1.35.0"
+"@venly/connect@^1.36.0-develop.4":
+  "integrity" "sha512-CwkHJyfrqg+4P/L9t4sbCnshDc5/iVt7oXjFuO/4mRt2EXKP3YIasEt9ohyx+Fugh5QjSXhH90bjfopbdzgXYQ=="
+  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.36.0-develop.4.tgz"
+  "version" "1.36.0-develop.4"
   dependencies:
     "@types/node" "^12.7.1"
     "axios" "^0.21.1"
