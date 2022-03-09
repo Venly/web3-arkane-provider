@@ -528,10 +528,10 @@
   dependencies:
     "@types/ethereum-protocol" "*"
 
-"@venly/connect@^1.36.0-develop.4":
-  "integrity" "sha512-CwkHJyfrqg+4P/L9t4sbCnshDc5/iVt7oXjFuO/4mRt2EXKP3YIasEt9ohyx+Fugh5QjSXhH90bjfopbdzgXYQ=="
-  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.36.0-develop.4.tgz"
-  "version" "1.36.0-develop.4"
+"@venly/connect@^1.36.0":
+  "integrity" "sha512-a5k4+1DGlT9mgro2IoTGgI9WtWBeSMTsJLrsTcMYEoDJBpK7gfke4mZN/ZulfrjQ9gAMc2+PWxobb/EBM72odA=="
+  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.36.0.tgz"
+  "version" "1.36.0"
   dependencies:
     "@types/node" "^12.7.1"
     "axios" "^0.21.1"
@@ -3724,6 +3724,19 @@
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
 
+"fsevents@^1.2.7":
+  "integrity" "sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw=="
+  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz"
+  "version" "1.2.13"
+  dependencies:
+    "bindings" "^1.5.0"
+    "nan" "^2.12.1"
+
+"fsevents@~2.3.2":
+  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
+  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
+  "version" "2.3.2"
+
 "function-bind@^1.1.1", "function-bind@~1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
   "resolved" "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -5419,7 +5432,7 @@
     "multibase" "^0.7.0"
     "varint" "^5.0.0"
 
-"nan@^2.14.0":
+"nan@^2.12.1", "nan@^2.14.0":
   "integrity" "sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ=="
   "resolved" "https://registry.npmjs.org/nan/-/nan-2.14.2.tgz"
   "version" "2.14.2"
