@@ -38,18 +38,18 @@
   },
   "homepage": "https://venly.io",
   "dependencies": {
-    "@0x/assert": "^3.0.32",
-    "@0x/subproviders": "6.6.3",
+    "@0x/assert": "^3.0.34",
+    "@0x/subproviders": "6.6.5",
     "@arkane-network/web3-provider-engine": "16.0.1-e",
-    "@venly/connect": "^1.36.0"
+    "@venly/connect": "^1.37.0"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.1",
-    "mocha": "^6.1.4",
-    "ts-loader": "^5.3.3",
+    "mocha": "^9.2.2",
+    "ts-loader": "^9.2.8",
     "typedoc": "^0.14.2",
-    "typescript": "^3.5.3",
-    "webpack": "^4.29.0",
-    "webpack-cli": "^3.2.1"
+    "typescript": "^4.6.3",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
   }
 }
