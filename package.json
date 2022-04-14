@@ -41,7 +41,7 @@
     "@0x/assert": "^3.0.34",
     "@0x/subproviders": "6.6.5",
     "@arkane-network/web3-provider-engine": "16.0.1-e",
-    "@venly/connect": "^1.37.0"
+    "@venly/connect": "^1.38.0-develop.1"
   },
   "devDependencies": {
     "mocha": "^9.2.2",

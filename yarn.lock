@@ -511,10 +511,10 @@
   "resolved" "https://registry.npmjs.org/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz"
   "version" "1.1.2"
 
-"@venly/connect@^1.37.0":
-  "integrity" "sha512-TOhD+pvhgmDU/zu66Bn5fxAE05GY24JHupgDsYMDkf3dGfaGqSvg/VHaARR2CQiHl33hgLO33qSfc37jJALsog=="
-  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.37.0.tgz"
-  "version" "1.37.0"
+"@venly/connect@^1.38.0-develop.1":
+  "integrity" "sha512-jx6WgES6I2S/V5MacZsmt37NZCJClo/16NUL01D+clHn7hqkZ5ZWx4hrV5uGEwQT2SIq4PRBDN9Cdr26Pq3VKQ=="
+  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.38.0-develop.1.tgz"
+  "version" "1.38.0-develop.1"
   dependencies:
     "@types/node" "^12.7.1"
     "axios" "^0.21.1"
@@ -2135,10 +2135,15 @@
 "core-js-pure@^3.0.1":
   "version" "3.8.2"
 
-"core-js@^2.4.0", "core-js@^2.5.0", "core-js@^3.2.1":
+"core-js@^2.4.0", "core-js@^2.5.0":
   "integrity" "sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg=="
   "resolved" "https://registry.npmjs.org/core-js/-/core-js-2.6.11.tgz"
   "version" "2.6.11"
+
+"core-js@^3.2.1":
+  "integrity" "sha512-FRq5b/VMrWlrmCzwRrpDYNxyHP9BcAZC+xHJaqTgIE5091ZV1NTmyh0sGOg5XqpnHvR0svdy0sv1gWA1zmhxig=="
+  "resolved" "https://registry.npmjs.org/core-js/-/core-js-3.21.1.tgz"
+  "version" "3.21.1"
 
 "core-util-is@~1.0.0", "core-util-is@1.0.2":
   "integrity" "sha1-tf1UIgqivFq1eqtxQMlAdUUDwac="
@@ -3526,8 +3531,6 @@
   "integrity" "sha1-FQStJSMVjKpA20onh8sBQRmU6k8="
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
-
-"fsevents@~2.3.2":
 
 "function-bind@^1.1.1", "function-bind@~1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
