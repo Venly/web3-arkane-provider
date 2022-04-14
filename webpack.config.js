@@ -11,18 +11,20 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
-        exclude: /node_modules/,
-        query: {
-          declaration: false,
-        },
+        loader: 'ts-loader',
+        exclude: /node_modules/
       },
     ]
   },
-  node: {
-    fs: "empty"
-  },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
+    fallback: {
+      fs: false,
+      util: false,
+      buffer: false,
+      stream: false,
+      assert: false,
+      crypto: false,
+    }
   },
 };
