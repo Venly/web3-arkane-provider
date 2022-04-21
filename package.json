@@ -44,10 +44,15 @@
     "@venly/connect": "^1.38.0-develop.1"
   },
   "devDependencies": {
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "crypto-js": "^4.1.1",
     "mocha": "^9.2.2",
+    "stream-browserify": "^3.0.0",
     "ts-loader": "^9.2.8",
     "typedoc": "^0.22.15",
     "typescript": "^4.6.3",
+    "util": "^0.12.4",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
   }
