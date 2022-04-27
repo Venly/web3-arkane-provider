@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   entry: path.join(__dirname, 'src/index.ts'),
@@ -11,18 +12,28 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
-        exclude: /node_modules/,
-        query: {
-          declaration: false,
-        },
+        loader: 'ts-loader',
+        exclude: /node_modules/
       },
     ]
   },
-  node: {
-    fs: "empty"
-  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
+  ],
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
+    fallback: {
+      fs: false,
+      util: require.resolve('util/'),
+      buffer: require.resolve('buffer/'),
+      stream: require.resolve('stream-browserify/'),
+      assert: require.resolve('assert/'),
+      crypto: require.resolve('crypto-js/'),
+    }
   },
 };
