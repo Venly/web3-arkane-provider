@@ -39,7 +39,7 @@
   "homepage": "https://venly.io",
   "dependencies": {
     "@0x/assert": "^3.0.34",
-    "@0x/subproviders": "6.6.5",
+    "@0x/subproviders": "7.0.0",
     "@arkane-network/web3-provider-engine": "16.0.1-e",
     "@venly/connect": "^1.38.0"
   },
