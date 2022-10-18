@@ -981,13 +981,12 @@
   "resolved" "https://registry.npmjs.org/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz"
   "version" "1.1.2"
 
-"@venly/connect@^1.38.0":
-  "integrity" "sha512-vT9YN714XJebGtJ8cL4ISceAPeq+FuuQ/AHto6vHYnsDLe1Q8T2+Sbw2iGGvgL2i/utr2lj5KKNEGFk04rgHjw=="
-  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.38.0.tgz"
-  "version" "1.38.0"
+"@venly/connect@^1.39.0":
+  "integrity" "sha512-zDm6Frl8KPowkPhNoF4SszZ6o2Mc2z8gViKtjyduqigpQ7oQH1HJa2AgppfIZs0fPCMUYbOAh2ThHoddflWmMA=="
+  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.39.0.tgz"
+  "version" "1.39.0"
   dependencies:
     "@types/node" "^12.7.1"
-    "axios" "^0.21.1"
     "core-js" "^3.2.1"
     "es6-promise" "^4.2.8"
     "keycloak-js" "11.0.2"
@@ -1334,13 +1333,6 @@
   "integrity" "sha512-zg7Hz2k5lI8kb7U32998pRRFin7zJlkfezGJjUc2heaD4Pw2wObakCDVzkKztTm/Ln7eiVvYsjqak0Ed4LkMDA=="
   "resolved" "https://registry.npmjs.org/aws4/-/aws4-1.10.1.tgz"
   "version" "1.10.1"
-
-"axios@^0.21.1":
-  "integrity" "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg=="
-  "resolved" "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz"
-  "version" "0.21.4"
-  dependencies:
-    "follow-redirects" "^1.14.0"
 
 "backoff@^2.5.0":
   "integrity" "sha1-9hbtqdPktmuMp/ynn2lXIsX44m8="
@@ -2486,11 +2478,6 @@
   "integrity" "sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ=="
   "resolved" "https://registry.npmjs.org/flat/-/flat-5.0.2.tgz"
   "version" "5.0.2"
-
-"follow-redirects@^1.14.0":
-  "integrity" "sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w=="
-  "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.9.tgz"
-  "version" "1.14.9"
 
 "foreach@^2.0.5":
   "integrity" "sha1-C+4AUBiusmDQo6865ljdATbsG5k="
