@@ -1,6 +1,6 @@
 {
   "name": "@venly/web3-provider",
-  "version": "0.32.0",
+  "version": "0.33.0",
   "description": "Venly enabled Web3 Provider for the web",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -39,9 +39,9 @@
   "homepage": "https://venly.io",
   "dependencies": {
     "@0x/assert": "^3.0.34",
-    "@0x/subproviders": "6.6.5",
+    "@0x/subproviders": "7.0.0",
     "@arkane-network/web3-provider-engine": "16.0.1-e",
-    "@venly/connect": "^1.38.0"
+    "@venly/connect": "^1.39.0"
   },
   "devDependencies": {
     "assert": "^2.0.0",
