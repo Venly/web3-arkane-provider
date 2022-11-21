@@ -1,8 +1,8 @@
 {
   "name": "@venly/web3-provider",
-  "version": "0.34.0-develop.0",
+  "version": "1.0.0-develop.0",
   "description": "Venly enabled Web3 Provider for the web",
-  "main": "dist/src/index.js",
+  "main": "dist/web3-provider.js",
   "types": "dist/src/index.d.ts",
   "unpkg": "dist/web3-provider.js",
   "scripts": {

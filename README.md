@@ -24,6 +24,20 @@ Add the following script to the head of your page:
 ```html
 <script src="/node_modules/@venly/web3-provider/dist/web3-provider.js"></script>
 ```
+or import it inside the application main client module
+
+```javascript
+import "@venly/web3-provider";
+```
+
+## Typing
+
+To have types properly defined while using the library you need to place the code below inside the file you are intending to use the library.
+
+```javascript
+import { VenlySubProvider } from "@venly/web3-provider";
+declare const Venly: VenlySubProvider;
+```
 
 ## Using the Library
 
@@ -32,7 +46,7 @@ After adding the javascript file to your page, a global *Venly* object is added 
 ### Adding the web3 provider
 
 ```javascript
-const options = {
+const options: VenlySubProviderOptions = {
   clientId: 'YOUR_CLIENT_ID',
   rpcUrl: 'https://kovan.infura.io/v3/YOUR-PROJECT-ID', //optional
   environment: 'staging', //optional, production by default  
