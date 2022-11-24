@@ -8,7 +8,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build-ts": "npx tsc -p .",
-    "build": "npm run clean && npm run build-js && npm run build-ts",
+    "build": "npm run clean && npm run build-js",
     "build-js": "npx webpack --mode production",
     "test": "mocha --timeout 20000",
     "prepublishOnly": "npm run build",
