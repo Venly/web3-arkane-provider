@@ -1,14 +1,14 @@
 {
   "name": "@venly/web3-provider",
-  "version": "0.34.0-develop.0",
+  "version": "1.0.0-develop.0",
   "description": "Venly enabled Web3 Provider for the web",
-  "main": "dist/src/index.js",
+  "main": "dist/web3-provider.js",
   "types": "dist/src/index.d.ts",
   "unpkg": "dist/web3-provider.js",
   "scripts": {
     "clean": "rm -rf dist",
     "build-ts": "npx tsc -p .",
-    "build": "npm run clean && npm run build-js && npm run build-ts",
+    "build": "npm run clean && npm run build-js",
     "build-js": "npx webpack --mode production",
     "test": "mocha --timeout 20000",
     "prepublishOnly": "npm run build",

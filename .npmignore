@@ -1,0 +1,33 @@
+# source code
+src
+
+# compiler
+tsconfig.json
+webpack.config.js
+
+# files
+*.log
+unwrap.js
+node_modules
+Jenkinsfile
+Jenkinsfile-release
+
+
+# tests
+test
+jest.config.js
+setupJest.ts
+coverage
+
+#  lint
+.eslintrc.js
+.prettierrc
+tslint.json
+
+# IDE - VSCode
+.vscode
+*.code-workspace
+
+# git
+.git
+.github

@@ -18,7 +18,7 @@ const SanitizingSubprovider = require('@arkane-network/web3-provider-engine/subp
 const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
 const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subproviders/websocket');
 
-class VenlySubProvider {
+export class VenlySubProvider {
 
   private venlyConnect?: VenlyConnect;
   private rpcSubProvider: any;
@@ -160,5 +160,3 @@ export interface VenlySubProviderOptions {
 if (typeof window !== 'undefined') {
   (window as any).Venly = new VenlySubProvider();
 }
-
-export const Venly = VenlySubProvider.prototype;
