@@ -30,7 +30,7 @@ export class VenlySubProvider {
     return this.venlyConnect;
   }
 
-  public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM): Promise<any> {
+  public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM): Promise<Provider | undefined> {
     if (this.subProvider && this.subProvider.options) {
       this.subProvider.options.secretType = secretType;
       this.subProvider.lastWalletsFetch = undefined;
@@ -132,4 +132,8 @@ export interface VenlySubProviderOptions {
   authenticationOptions?: AuthenticationOptions
   skipAuthentication: boolean;
   pollingInterval?: number;
+}
+
+if (typeof window !== 'undefined') {
+  (window as any).Venly = new VenlySubProvider();
 }
