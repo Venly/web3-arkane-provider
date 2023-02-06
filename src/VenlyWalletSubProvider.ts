@@ -1,10 +1,10 @@
 import { VenlyConnect, SecretType, SignatureRequestType, SignMethod, Wallet, WindowMode } from '@venly/connect'
-import { AuthenticationOptions, AuthenticationResult, ConstructorOptions } from '@venly/connect/dist/src/connect/connect';
-import { BuildEip712SignRequestDto } from '@venly/connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
-import { Account } from '@venly/connect/dist/src/models/Account';
-import { VenlySubProviderOptions } from './index';
-import { BaseWalletSubprovider } from './BaseWalletSubprovider';
 import { PartialTxParams } from './types';
+import { BaseWalletSubprovider } from './BaseWalletSubprovider';
+import { VenlySubProviderOptions } from './index';
+import { AuthenticationOptions, AuthenticationResult, ConstructorOptions } from '@venly/connect/dist/src/connect/connect';
+import { Account } from '@venly/connect/dist/src/models/Account';
+import { BuildEip712SignRequestDto } from '@venly/connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
 
 export class VenlyWalletSubProvider extends BaseWalletSubprovider {
 
