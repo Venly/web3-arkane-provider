@@ -1,21 +1,21 @@
 import { AuthenticationOptions, AuthenticationResult } from '@venly/connect/dist/src/connect/connect';
-import { Account } from '@venly/connect/dist/src/models/Account';
-import { SecretType, VenlyConnect } from '@venly/connect';
-import { Provider } from 'ethereum-types';
 import { VenlyWalletSubProvider } from './VenlyWalletSubProvider';
+import { Account } from '@venly/connect/dist/src/models/Account';
 import { NonceTrackerSubprovider } from './NonceTracker';
+import { Provider } from 'ethereum-types';
 import { SignedVersionedTypedDataSubProvider } from './SignedVersionedTypedDataSubProvider';
 import { RequestAccountsSubProvider } from './RequestAccountsSubProvider';
+import { SecretType, VenlyConnect } from '@venly/connect';
 import { SignTransactionGasFix } from './SignTransactionGasFix';
 
 const ProviderEngine = require('@arkane-network/web3-provider-engine');
-const FixtureSubprovider = require('@arkane-network/web3-provider-engine/subproviders/fixture');
 const CacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/cache');
+const FixtureSubprovider = require('@arkane-network/web3-provider-engine/subproviders/fixture');
 const FilterSubprovider = require('@arkane-network/web3-provider-engine/subproviders/filters');
-const SanitizerSubprovider = require('@arkane-network/web3-provider-engine/subproviders/sanitizer');
-const SubscriptionsSubprovider = require('@arkane-network/web3-provider-engine/subproviders/subscriptions');
-const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
 const RpcSubprovider = require('@arkane-network/web3-provider-engine/subproviders/rpc');
+const SubscriptionsSubprovider = require('@arkane-network/web3-provider-engine/subproviders/subscriptions');
+const SanitizerSubprovider = require('@arkane-network/web3-provider-engine/subproviders/sanitizer');
+const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
 const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subproviders/websocket');
 
 export class VenlySubProvider {
