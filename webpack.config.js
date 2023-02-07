@@ -13,14 +13,16 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     fallback: {
-      "stream": false,
+      stream: false,
+      buffer: false,
     }
   },
   module: {
     rules: [
       { 
         test: /\.tsx?$/,
-        loader: "ts-loader"
+        loader: "ts-loader",
+        exclude: /node_modules/
       }
     ]
   }
