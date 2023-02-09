@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "clean": "rm -rf dist umd",
     "build-ts": "tsc",
     "build-js": "npx webpack",
-    "build": "npm run build-ts && npm run build-js",
+    "build": "npm run clean && npm run build-ts && npm run build-js",
     "prepublishOnly": "npm run build"
   },
   "repository": {
