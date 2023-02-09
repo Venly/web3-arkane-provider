@@ -1,7 +1,7 @@
-const Transaction = require('ethereumjs-tx')
-const ethUtil = require('ethereumjs-util')
-const Subprovider = require('@arkane-network/web3-provider-engine/subproviders/subprovider')
-const blockTagForPayload = require('@arkane-network/web3-provider-engine/util/rpc-cache-utils').blockTagForPayload
+const Transaction = require('ethereumjs-tx');
+const ethUtil = require('ethereumjs-util');
+const Subprovider = require('@arkane-network/web3-provider-engine/subproviders/subprovider');
+const blockTagForPayload = require('@arkane-network/web3-provider-engine/util/rpc-cache-utils').blockTagForPayload;
 
 export class NonceTrackerSubprovider extends Subprovider {
 
@@ -21,7 +21,7 @@ export class NonceTrackerSubprovider extends Subprovider {
 
             case 'eth_getTransactionCount':
                 var blockTag = blockTagForPayload(payload)
-                var address = payload.params[0].toLowerCase()
+                var address = payload.params[0].toLowerCase();
                 var cachedResult = self.nonceCache[self.rpcUrl] && self.nonceCache[self.rpcUrl][address];
                 // only handle requests against the 'pending' blockTag
                 if (blockTag === 'pending') {

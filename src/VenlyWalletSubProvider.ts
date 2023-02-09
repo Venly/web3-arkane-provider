@@ -1,10 +1,10 @@
-import {VenlyConnect, SecretType, SignatureRequestType, SignMethod, Wallet, WindowMode} from '@venly/connect'
-import {PartialTxParams} from '@0x/subproviders';
-import {BaseWalletSubprovider} from '@0x/subproviders/lib/src/subproviders/base_wallet_subprovider';
-import {VenlySubProviderOptions} from './index';
-import {AuthenticationOptions, AuthenticationResult, ConstructorOptions} from '@venly/connect/dist/src/connect/connect';
-import {Account} from '@venly/connect/dist/src/models/Account';
-import {BuildEip712SignRequestDto} from '@venly/connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
+import { VenlyConnect, SecretType, SignatureRequestType, SignMethod, Wallet, WindowMode } from '@venly/connect'
+import { PartialTxParams } from './types';
+import { BaseWalletSubprovider } from './BaseWalletSubprovider';
+import { VenlySubProviderOptions } from './index';
+import { AuthenticationOptions, AuthenticationResult, ConstructorOptions } from '@venly/connect/dist/src/connect/connect';
+import { Account } from '@venly/connect/dist/src/models/Account';
+import { BuildEip712SignRequestDto } from '@venly/connect/dist/src/models/transaction/build/BuildEip712SignRequestDto';
 
 export class VenlyWalletSubProvider extends BaseWalletSubprovider {
 
@@ -35,22 +35,22 @@ export class VenlyWalletSubProvider extends BaseWalletSubprovider {
     }
     let that = this;
     return this.connect.flows.getAccount(this.options.secretType || SecretType.ETHEREUM, this.options.authenticationOptions)
-               .then(async (account: Account) => {
-                 return await new Promise((
-                   resolve,
-                   reject
-                 ) => {
-                   if (!account.isAuthenticated) {
-                     reject('not-authenticated');
-                   } else if (account.wallets && account.wallets.length <= 0) {
-                     reject('no-wallet-linked');
-                   } else {
-                     that.wallets = account.wallets;
-                     that.lastWalletsFetch = Date.now();
-                     resolve(account);
-                   }
-                 });
-               });
+      .then(async (account: Account) => {
+        return await new Promise((
+          resolve,
+          reject
+        ) => {
+          if (!account.isAuthenticated) {
+            reject('not-authenticated');
+          } else if (account.wallets && account.wallets.length <= 0) {
+            reject('no-wallet-linked');
+          } else {
+            that.wallets = account.wallets;
+            that.lastWalletsFetch = Date.now();
+            resolve(account);
+          }
+        });
+      });
   }
 
   public async refreshWallets() {
@@ -102,13 +102,13 @@ export class VenlyWalletSubProvider extends BaseWalletSubprovider {
   public async signTransactionAsync(txParams: PartialTxParams): Promise<string> {
     let signer = this.connect.createSigner();
     return signer.signTransaction(this.constructEthereumTransationSignatureRequest(txParams))
-                 .then((result) => {
-                   if (result.status === 'SUCCESS') {
-                     return result.result.signedTransaction;
-                   } else {
-                     throw new Error((result.errors && result.errors.join(', ')));
-                   }
-                 });
+      .then((result) => {
+        if (result.status === 'SUCCESS') {
+          return result.result.signedTransaction;
+        } else {
+          throw new Error((result.errors && result.errors.join(', ')));
+        }
+      });
   }
 
   /**
@@ -137,17 +137,17 @@ export class VenlyWalletSubProvider extends BaseWalletSubprovider {
       type = SignatureRequestType.AVAC_RAW;
     }
     return signer.signTransaction({
-                   type: type,
-                   walletId: this.getWalletIdFrom(address),
-                   data: data
-                 })
-                 .then((result) => {
-                   if (result.status === 'SUCCESS') {
-                     return result.result.signature;
-                   } else {
-                     throw new Error((result.errors && result.errors.join(', ')));
-                   }
-                 });
+      type: type,
+      walletId: this.getWalletIdFrom(address),
+      data: data
+    })
+    .then((result) => {
+      if (result.status === 'SUCCESS') {
+        return result.result.signature;
+      } else {
+        throw new Error((result.errors && result.errors.join(', ')));
+      }
+    });
   }
 
   /**
@@ -173,13 +173,13 @@ export class VenlyWalletSubProvider extends BaseWalletSubprovider {
       secretType: this.options.secretType || SecretType.ETHEREUM
     }
     return signer.signEip712(request)
-                 .then((result) => {
-                   if (result.status === 'SUCCESS') {
-                     return result.result.signature;
-                   } else {
-                     throw new Error((result.errors && result.errors.join(', ')));
-                   }
-                 });
+      .then((result) => {
+        if (result.status === 'SUCCESS') {
+          return result.result.signature;
+        } else {
+          throw new Error((result.errors && result.errors.join(', ')));
+        }
+      });
   }
 
   private shouldRefreshWallets(): boolean {

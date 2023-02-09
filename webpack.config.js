@@ -2,38 +2,42 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: path.join(__dirname, 'src/index.ts'),
-  output: {
-    filename: 'web3-provider.js',
-    path: path.join(__dirname, './dist'),
+  mode: "production",
+  entry: {
+    main: "./src/index.ts",
   },
-  watch: false,
+  output: {
+    path: path.resolve(__dirname, './umd'),
+    filename: "index.js",
+    libraryTarget: 'umd',
+    globalObject: 'this',
+    library: 'VenlySubProvider',
+    libraryExport: 'VenlySubProvider'
+  },
+  resolve: {
+    extensions: [".ts", ".tsx", ".js"],
+    fallback: {
+      stream: false,
+      buffer: false,
+    }
+  },
   module: {
     rules: [
-      {
+      { 
         test: /\.tsx?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/
-      },
+        loader: "ts-loader",
+        include: [
+          path.resolve(__dirname, 'src')
+        ]
+      }
     ]
   },
   plugins: [
     new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
-    }),
-    new webpack.ProvidePlugin({
       process: 'process/browser',
     }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
   ],
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-    fallback: {
-      fs: false,
-      util: require.resolve('util/'),
-      buffer: require.resolve('buffer/'),
-      stream: require.resolve('stream-browserify/'),
-      assert: require.resolve('assert/'),
-      crypto: require.resolve('crypto-js/'),
-    }
-  },
 };

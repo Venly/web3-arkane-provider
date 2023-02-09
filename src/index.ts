@@ -1,12 +1,12 @@
-import {AuthenticationOptions, AuthenticationResult, VenlyConnect} from '@venly/connect/dist/src/connect/connect';
-import {VenlyWalletSubProvider} from './VenlyWalletSubProvider';
-import {Account} from '@venly/connect/dist/src/models/Account';
-import {NonceTrackerSubprovider} from './NonceTracker';
-import {Provider} from 'ethereum-types';
-import {SignedVersionedTypedDataSubProvider} from './SignedVersionedTypedDataSubProvider';
-import {RequestAccountsSubProvider} from './RequestAccountsSubProvider';
-import {SecretType} from '@venly/connect';
-import {SignTransactionGasFix} from './SignTransactionGasFix';
+import { AuthenticationOptions, AuthenticationResult } from '@venly/connect/dist/src/connect/connect';
+import { VenlyWalletSubProvider } from './VenlyWalletSubProvider';
+import { Account } from '@venly/connect/dist/src/models/Account';
+import { NonceTrackerSubprovider } from './NonceTracker';
+import { Provider } from 'ethereum-types';
+import { SignedVersionedTypedDataSubProvider } from './SignedVersionedTypedDataSubProvider';
+import { RequestAccountsSubProvider } from './RequestAccountsSubProvider';
+import { SecretType, VenlyConnect } from '@venly/connect';
+import { SignTransactionGasFix } from './SignTransactionGasFix';
 
 const ProviderEngine = require('@arkane-network/web3-provider-engine');
 const CacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/cache');
@@ -14,15 +14,13 @@ const FixtureSubprovider = require('@arkane-network/web3-provider-engine/subprov
 const FilterSubprovider = require('@arkane-network/web3-provider-engine/subproviders/filters');
 const RpcSubprovider = require('@arkane-network/web3-provider-engine/subproviders/rpc');
 const SubscriptionsSubprovider = require('@arkane-network/web3-provider-engine/subproviders/subscriptions');
-const SanitizingSubprovider = require('@arkane-network/web3-provider-engine/subproviders/sanitizer');
+const SanitizerSubprovider = require('@arkane-network/web3-provider-engine/subproviders/sanitizer');
 const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
-const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subproviders/websocket');
+// const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subproviders/websocket');
 
 export class VenlySubProvider {
 
   private venlyConnect?: VenlyConnect;
-  private rpcSubProvider: any;
-  private nonceSubProvider: any;
   private signedVersionedTypedDataSubProvider: any;
   private requestAccountsSubProvider: any;
   private subProvider?: VenlyWalletSubProvider;
@@ -70,42 +68,24 @@ export class VenlySubProvider {
       eth_syncing: true,
     }));
 
-    this.engine.addProvider(new SignTransactionGasFix());
-
-    if (!this.subProvider) {
-      this.subProvider = new VenlyWalletSubProvider(options);
-    }
+    if (!this.subProvider) this.subProvider = new VenlyWalletSubProvider(options);
+    this.engine.addProvider(this.subProvider);
     this.venlyConnect = this.subProvider.connect;
 
-    if (!this.signedVersionedTypedDataSubProvider) {
-      this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.subProvider);
-    }
+    if (!this.signedVersionedTypedDataSubProvider) this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.subProvider);
     this.engine.addProvider(this.signedVersionedTypedDataSubProvider);
-
-    if (!this.requestAccountsSubProvider) {
-      this.requestAccountsSubProvider = new RequestAccountsSubProvider(this.subProvider);
-    }
+    if (!this.requestAccountsSubProvider) this.requestAccountsSubProvider = new RequestAccountsSubProvider(this.subProvider);
     this.engine.addProvider(this.requestAccountsSubProvider);
 
-
-    this.engine.addProvider(new FilterSubprovider());
-
-    this.nonceSubProvider = new NonceTrackerSubprovider({rpcUrl: connectionDetails.endpointHttpUrl});
-    this.engine.addProvider(this.nonceSubProvider);
-
-
-    this.engine.addProvider(new SanitizingSubprovider());
-
-    this.engine.addProvider(new SubscriptionsSubprovider());
-
+    this.engine.addProvider(new NonceTrackerSubprovider({rpcUrl: connectionDetails.endpointHttpUrl}));
+    this.engine.addProvider(new SignTransactionGasFix());
+    
     this.engine.addProvider(new CacheSubprovider());
-
+    this.engine.addProvider(new FilterSubprovider());
+    this.engine.addProvider(new SanitizerSubprovider());
+    this.engine.addProvider(new SubscriptionsSubprovider());
     this.engine.addProvider(new InflightCacheSubprovider());
-
-
-    this.rpcSubProvider = new RpcSubprovider({rpcUrl: connectionDetails.endpointHttpUrl});
-    this.engine.addProvider(this.subProvider);
-    this.engine.addProvider(this.rpcSubProvider);
+    this.engine.addProvider(new RpcSubprovider({rpcUrl: connectionDetails.endpointHttpUrl}));
 
     return options.skipAuthentication
       ? Promise.resolve(this.startEngine(this.engine))
@@ -123,12 +103,9 @@ export class VenlySubProvider {
   }
 
   private startEngine(engine: any) {
-    // network connectivity error
     engine.on('error', (err: any) => {
-      // report connectivity errors
       console.error(err.stack)
     });
-    // start polling for blocks
     engine.start();
     return engine;
   }
@@ -155,8 +132,4 @@ export interface VenlySubProviderOptions {
   authenticationOptions?: AuthenticationOptions
   skipAuthentication: boolean;
   pollingInterval?: number;
-}
-
-if (typeof window !== 'undefined') {
-  (window as any).Venly = new VenlySubProvider();
 }

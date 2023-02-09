@@ -2,36 +2,18 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "typeRoots": ["node_modules/@0x/typescript-typings/types", "node_modules/@types"],
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "baseUrl": "/",
+    "lib": ["es2017", "es7", "es6", "dom"],
     "declaration": true,
-    "outDir": "./dist/src",
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
-    "lib": [
-      "es2015",
-      "dom",
-      "dom.iterable",
-      "scripthost",
-      "es2018.promise",
-      "es2020.bigint"
-    ]
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist",
+    "umd"
   ]
 }
