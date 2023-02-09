@@ -1,14 +1,18 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
-  mode: "development",
-  devtool: "inline-source-map",
+  mode: "production",
   entry: {
     main: "./src/index.ts",
   },
   output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: "web3-provider.js" // <--- Will be compiled to this single file
+    path: path.resolve(__dirname, './umd'),
+    filename: "index.js",
+    libraryTarget: 'umd',
+    globalObject: 'this',
+    library: 'VenlySubProvider',
+    libraryExport: 'VenlySubProvider'
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
@@ -22,8 +26,21 @@ module.exports = {
       { 
         test: /\.tsx?$/,
         loader: "ts-loader",
-        exclude: /node_modules/
+        include: [
+          path.resolve(__dirname, 'src')
+        ]
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env)
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
+  ],
 };

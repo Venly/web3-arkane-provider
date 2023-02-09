@@ -19,29 +19,27 @@ The full documentation of the Venly Web3 Provider can be found here: https://doc
 npm i @venly/web3-provider
 ```
 
-Add the following script to the head of your page:
-
-```html
-<script src="/node_modules/@venly/web3-provider/dist/web3-provider.js"></script>
-```
-or import it inside the application main client module
-
-```javascript
-import "@venly/web3-provider";
-```
-
-## Typing
-
-To have types properly defined while using the library you need to place the code below inside the file you are intending to use the library.
+Import the module in your project
 
 ```javascript
 import { VenlySubProvider } from "@venly/web3-provider";
-declare const Venly: VenlySubProvider;
 ```
+
+Alternatively, you may choose to load from a CDN
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@venly/web3-provider/umd/index.js"></script>
+```
+
 
 ## Using the Library
 
-After adding the javascript file to your page, a global *Venly* object is added to your window. This object is the gateway for creating the web3 wrapper and fully integrates [Venly Connect](https://docs.venly.io/widget/widget/introduction).
+```javascript
+import { VenlySubProvider } from "@venly/web3-provider";
+const Venly = new VenlySubProvider();
+```
+
+The Venly object is the gateway for creating the web3 wrapper and fully integrates [Venly Connect](https://docs.venly.io/widget/widget/introduction).
 
 ### Adding the web3 provider
 
@@ -55,9 +53,9 @@ const options: VenlySubProviderOptions = {
 };
 
 Venly.createProviderEngine(options)
-     .then(provider => {
-         web3 = new Web3(provider);
-     });
+  .then(provider => {
+    web3 = new Web3(provider);
+  });
 ```
 
 The web3 instance now works as if it was [injected by parity or metamask](https://github.com/ethereum/wiki/wiki/JavaScript-API). You can fetch your wallets or sign transactions and messages. 

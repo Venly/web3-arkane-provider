@@ -20,3 +20,8 @@ export enum WalletSubproviderErrors {
   FromAddressMissingOrInvalid = 'FROM_ADDRESS_MISSING_OR_INVALID',
   MethodNotSupported = 'METHOD_NOT_SUPPORTED',
 }
+
+export enum WindowMode {
+  POPUP = "POPUP",
+  REDIRECT = "REDIRECT"
+}
