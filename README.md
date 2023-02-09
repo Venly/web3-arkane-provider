@@ -25,21 +25,19 @@ Import the module in your project
 import { VenlySubProvider } from "@venly/web3-provider";
 ```
 
-Alternatively, you may choose to load from a CDN
+Alternatively, you can load our script from a CDN
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@venly/web3-provider/umd/index.js"></script>
 ```
 
-
 ## Using the Library
 
 ```javascript
-import { VenlySubProvider } from "@venly/web3-provider";
 const Venly = new VenlySubProvider();
 ```
 
-The Venly object is the gateway for creating the web3 wrapper and fully integrates [Venly Connect](https://docs.venly.io/widget/widget/introduction).
+The VenlySubProvider object is the gateway for creating the web3 wrapper and fully integrates [Venly Connect](https://docs.venly.io/widget/widget/introduction).
 
 ### Adding the web3 provider
 
@@ -87,4 +85,4 @@ The other checks if a user is logged in on page load. If not, it shows the login
 * [Web3 Provider (skip auth) JS source](https://github.com/ArkaneNetwork/Arketype/blob/develop/assets/js/web3-provider-skip-auth.js)
 
 # What is Venly Wallet
-Not sure yet what Venly is all about, be sure to check out our website: https://www.venly.io/
+Not sure yet what Venly is all about? Be sure to check out our website: https://www.venly.io/
