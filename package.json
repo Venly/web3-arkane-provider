@@ -4,6 +4,7 @@
   "description": "Venly enabled Web3 Provider for the web",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "browser": "umd/index.js",
   "scripts": {
     "clean": "rm -rf dist umd",
     "build-ts": "tsc",
