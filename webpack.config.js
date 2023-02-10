@@ -18,7 +18,7 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js"],
     fallback: {
       stream: false,
-      buffer: false,
+      buffer: require.resolve('buffer')
     }
   },
   module: {
