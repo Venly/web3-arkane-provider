@@ -25,7 +25,8 @@ pipeline {
         stage('Build') {
             steps {
               sh "npm i"
-              sh "npm run build"
+              sh "npm run build-ts"
+              sh "npm run build-js"
             }
         }
         stage ('Publish (develop)') {
