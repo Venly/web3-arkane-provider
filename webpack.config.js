@@ -4,7 +4,7 @@ const webpack = require('webpack');
 module.exports = {
   mode: "production",
   entry: {
-    main: "./src/index.ts",
+    main: "./dist/index.js",
   },
   output: {
     path: path.resolve(__dirname, './umd'),
