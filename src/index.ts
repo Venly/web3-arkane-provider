@@ -2,7 +2,6 @@ import { AuthenticationOptions, AuthenticationResult } from '@venly/connect/dist
 import { VenlyWalletSubProvider } from './VenlyWalletSubProvider';
 import { Account } from '@venly/connect/dist/src/models/Account';
 import { NonceTrackerSubprovider } from './NonceTracker';
-import { Provider } from 'ethereum-types';
 import { SignedVersionedTypedDataSubProvider } from './SignedVersionedTypedDataSubProvider';
 import { RequestAccountsSubProvider } from './RequestAccountsSubProvider';
 import { SecretType, VenlyConnect } from '@venly/connect';
@@ -30,7 +29,7 @@ export class VenlySubProvider {
     return this.venlyConnect;
   }
 
-  public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM): Promise<Provider | undefined> {
+  public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM): Promise<any> {
     if (this.subProvider && this.subProvider.options) {
       this.subProvider.options.secretType = secretType;
       this.subProvider.lastWalletsFetch = undefined;
@@ -57,7 +56,7 @@ export class VenlySubProvider {
     return this.subProvider.startGetAccountFlow(authenticationOptions);
   }
 
-  public createProviderEngine(options: VenlySubProviderOptions): Promise<Provider> {
+  public createProviderEngine(options: VenlySubProviderOptions): Promise<any> {
     let connectionDetails = this.getConnectionDetails(options);
     this.engine = new ProviderEngine({pollingInterval: options.pollingInterval || 15000});
     this.engine.addProvider(new FixtureSubprovider({
