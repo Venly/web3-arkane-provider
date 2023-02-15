@@ -132,3 +132,5 @@ export interface VenlySubProviderOptions {
   skipAuthentication: boolean;
   pollingInterval?: number;
 }
+
+(globalThis as any).Venly = new VenlySubProvider();
