@@ -62,7 +62,7 @@ If you provide your own implementation of `bearerTokenProvider`, the web3 provid
 
 ### Usage with ethers.js
 
-Use the Web3Provider class to wrap our existing Web3-compatible provider and expose it as an ethers.js Provider.
+Use the Web3Provider class to wrap our existing Web3-compatible provider and expose it as an ethers.js Provider. (Requires ethers.js v5)
 
 ```javascript
 ethers = new ethers.providers.Web3Provider(provider);
