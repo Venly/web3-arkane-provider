@@ -359,11 +359,6 @@
   "resolved" "https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz"
   "version" "12.20.55"
 
-"@types/node@12.12.54":
-  "integrity" "sha512-ge4xZ3vSBornVYlDnk7yZ0gK6ChHf/CHB7Gl1I0Jhah8DDnEQqBzgohYG4FX4p81TNirSETOiSyn+y1r9/IR6w=="
-  "resolved" "https://registry.npmjs.org/@types/node/-/node-12.12.54.tgz"
-  "version" "12.12.54"
-
 "@types/pbkdf2@^3.0.0":
   "integrity" "sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ=="
   "resolved" "https://registry.npmjs.org/@types/pbkdf2/-/pbkdf2-3.1.0.tgz"
@@ -724,11 +719,6 @@
   "version" "1.0.2"
   dependencies:
     "tweetnacl" "^0.14.3"
-
-"bignumber.js@~9.0.2":
-  "integrity" "sha512-GAcQvbpsM0pUb0zw1EI0KhQEZ+lRwR5fYaAp3vPOYuP7aDvGy6cVN6XHLauvF8SOga2y0dcLcjt3iQDTSEliyw=="
-  "resolved" "https://registry.npmjs.org/bignumber.js/-/bignumber.js-9.0.2.tgz"
-  "version" "9.0.2"
 
 "blakejs@^1.1.0":
   "integrity" "sha512-QXUSXI3QVc/gJME0dBpXrag1kbzOqCjCX8/b54ntNyW6sjtoqxqRk3LTmXzaJoh71zMsDCjM+47jS7XiwN/+fQ=="
@@ -1241,14 +1231,6 @@
     "scrypt-js" "^3.0.0"
     "secp256k1" "^4.0.1"
     "setimmediate" "^1.0.5"
-
-"ethereum-types@^3.7.1":
-  "integrity" "sha512-EBQwTGnGZQ9oHK7Za3DFEOxiElksRCoZECkk418vHiE2d59lLSejDZ1hzRVphtFjAu5YqONz4/XuAYdMBg+gWA=="
-  "resolved" "https://registry.npmjs.org/ethereum-types/-/ethereum-types-3.7.1.tgz"
-  "version" "3.7.1"
-  dependencies:
-    "@types/node" "12.12.54"
-    "bignumber.js" "~9.0.2"
 
 "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   "resolved" "git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git#ee3994657fa7a427238e6ba92a84d0b529bbcde0"
