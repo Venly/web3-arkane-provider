@@ -18,9 +18,9 @@ export function createSwitchEthereumChainMiddleware({ changeSecretType }: any) {
       return;
     }
     const chainId = (req.params as any)[0]?.chainId;
-    const chain = SECRET_TYPES[Number(chainId)]
+    const chain = SECRET_TYPES[Number(chainId)];
     
-    if (chain && await changeSecretType(chain.secretType, chain.env))
+    if (chain && await changeSecretType(chain.secretType, chainId))
       res.result = null;
     else
       res.error = { code: -32602, message: 'Chain not supported' };

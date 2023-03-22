@@ -1,36 +1,36 @@
 export const CHAIN_IDS: { [id: string]: any } = {
   AVAC: {
-    prod: 0xA86A,
+    production: 0xA86A,
     staging: 0xA869,
     qa: 0xA869
   },
   BSC: {
-    prod: 0x38,
+    production: 0x38,
     staging: 0x61,
     qa: 0x61
   },
   ETHEREUM: {
-    prod: 0x1,
-    staging: 0x4,
+    production: 0x1,
+    staging: 0x5,
     qa: 0x5
   },
   GOCHAIN: {
-    prod: 0x3c,
+    production: 0x3c,
     staging: 0x7a69,
     qa: 0x7a69
   },
   HEDERA: {
-    prod: 0x127,
+    production: 0x127,
     staging: 0x128,
     qa: 0x128
   },
   VECHAIN: {
-    prod: 0x186a9,
+    production: 0x186a9,
     staging: 0x186aa,
     qa: 0x186aa
   },
   MATIC: {
-    prod: 0x89,
+    production: 0x89,
     staging: 0x13881,
     qa: 0x13881
   },
@@ -38,7 +38,7 @@ export const CHAIN_IDS: { [id: string]: any } = {
 
 export const SECRET_TYPES: { [id: number]: any } = {
   0xA86A: {
-    env: 'prod',
+    env: 'production',
     secretType: 'AVAC',
   },
   0xA869: {
@@ -46,7 +46,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'AVAC',
   },
   0x38: {
-    env: 'prod',
+    env: 'production',
     secretType: 'BSC',
   },
   0x61: {
@@ -54,7 +54,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'BSC',
   },
   0x1: {
-    env: 'prod',
+    env: 'production',
     secretType: 'ETHEREUM',
   },
   0x5: {
@@ -62,7 +62,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'ETHEREUM',
   },
   0x3c: {
-    env: 'prod',
+    env: 'production',
     secretType: 'GOCHAIN',
   },
   0x7a69: {
@@ -70,7 +70,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'GOCHAIN',
   },
   0x127: {
-    env: 'prod',
+    env: 'production',
     secretType: 'HEDERA',
   },
   0x128: {
@@ -78,7 +78,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'HEDERA',
   },
   0x186a9: {
-    env: 'prod',
+    env: 'production',
     secretType: 'VECHAIN',
   },
   0x186aa: {
@@ -86,7 +86,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'VECHAIN',
   },
   0x89: {
-    env: 'prod',
+    env: 'production',
     secretType: 'MATIC',
   },
   0x13881: {

@@ -1,6 +1,6 @@
 import { SecretType, WindowMode, AuthenticationOptions, AuthenticationResult, Account } from '@venly/connect'
 import { VenlyController } from './venlyController';
-import { CHAIN_IDS } from './types';
+import { CHAIN_IDS, SECRET_TYPES } from './types';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { providerFromEngine, providerFromMiddleware } from '@metamask/eth-json-rpc-provider';
 import createVenlyMiddleware from './middleware/createVenlyMiddleware';
@@ -23,16 +23,18 @@ export class VenlyProvider {
     return this.venlyController?.venlyConnect;
   }
 
-  public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM, environment?: string): Promise<any> {
+  public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM, chainId?: string): Promise<any> {
     if (!this._provider)
       throw new Error('Please initialise provider first (Venly.createProviderEngine)');
       
-    if (environment)
-      this.venlyController.options.environment = environment;
-
-    this.venlyController.options.secretType = secretType;
     this.venlyController.lastWalletsFetch = undefined;
-    return this.createProviderEngine(this.venlyController.options);
+    const options = {...this.venlyController.options,
+      secretType: secretType,
+      ...chainId && { environment: SECRET_TYPES[Number(chainId)].env }
+    };
+    this._provider.emit('chainChanged', chainId);
+    this._provider = await this.createProviderEngine(options);
+    return this._provider;
   }
 
   public async checkAuthenticated(): Promise<AuthenticationResult> {
@@ -107,8 +109,9 @@ export class VenlyProvider {
       });
     }
     this._provider = provider;
+    this._provider.emit('connect', { chainId });
     this._blockTracker = blockTracker;
-    return Promise.resolve(provider);
+    return Promise.resolve(this._provider);
   }
 
   private getRpcUrl(options: VenlyProviderOptions): string {
