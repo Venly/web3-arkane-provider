@@ -77,9 +77,9 @@ export class VenlyController {
 
   async processEthSignMessage(params: any, req: any) {
     const signer = this.venlyConnect.createSigner();
-    const res = await signer.sign({
-      type: REQUEST_TYPES[this.options.secretType!].signature,
+    const res = await signer.signMessage({
       walletId: this.getWalletIdFrom(params.from),
+      secretType: this.options.secretType!,
       data: params.data
     });
     if (res.status === 'SUCCESS')
