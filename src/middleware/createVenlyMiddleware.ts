@@ -23,7 +23,7 @@ export default function createVenlyMiddleware({
 }: any) {
   const venlyMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
-      web3_clientVersion: 'VenlyProviderEngine/v0.21.0/javascript',
+      web3_clientVersion: 'VenlyProvider/v3.0.0',
       eth_hashrate: '0x00',
       eth_mining: false,
       eth_syncing: true
