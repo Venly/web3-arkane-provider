@@ -72,13 +72,6 @@ export class VenlyProvider {
       getPendingTransactions: this.venlyController.getPendingTransactions.bind(this.venlyController),
       changeSecretType: this.changeSecretType.bind(this),
       // getPendingNonce: this.venlyController.getPendingNonce.bind(this.venlyController),
-      // getPendingTransactionByHash: (hash: any) => { }
-      // this.txController.getTransactions({
-      //   searchCriteria: {
-      //     hash,
-      //     status: TRANSACTION_STATUSES.SUBMITTED,
-      //   },
-      // })[0],
     });
     engine.push(venlyMiddleware);
 
@@ -104,7 +97,7 @@ export class VenlyProvider {
     const provider: any = providerFromEngine(engine);
     provider.request = function(req: any) {
       return new Promise((resolve, reject) => {
-        this.send(req, (err: any, res: any) => {
+        provider.send(req, (err: any, res: any) => {
           if (err) reject(res.error);
           else resolve(res.result)
         });
