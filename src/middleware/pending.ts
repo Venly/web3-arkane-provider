@@ -17,7 +17,7 @@ export function createPendingNonceMiddleware({ getPendingNonce }: any) {
   });
 }
 
-export function createPendingTxMiddleware({ getPendingTransactionByHash }: any) {
+export function createTransactionByHashMiddleware({ getTransactionByHash }: any) {
   return createAsyncMiddleware(async (req, res, next) => {
     const { method, params } = req;
     if (method !== 'eth_getTransactionByHash') {
@@ -25,11 +25,15 @@ export function createPendingTxMiddleware({ getPendingTransactionByHash }: any) 
       return;
     }
     const [hash]: any = params;
-    const txMeta = getPendingTransactionByHash(hash);
-    if (!txMeta) {
+    res.result = await getTransactionByHash(hash);
+  });
+}
+export function createPendingTransactionsMiddleware({ getPendingTransactions }: any) {
+  return createAsyncMiddleware(async (req, res, next) => {
+    if (req.method !== 'eth_pendingTransactions') {
       next();
       return;
     }
-    res.result = formatTxMetaForRpcResult(txMeta);
+    res.result = await getPendingTransactions();
   });
 }

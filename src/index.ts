@@ -68,6 +68,8 @@ export class VenlyProvider {
       processTypedMessageV3: this.venlyController.processTypedMessage.bind(this.venlyController),
       processTypedMessageV4: this.venlyController.processTypedMessage.bind(this.venlyController),
       processPersonalMessage: this.venlyController.processPersonalMessage.bind(this.venlyController),
+      getTransactionByHash: this.venlyController.getTransactionByHash.bind(this.venlyController),
+      getPendingTransactions: this.venlyController.getPendingTransactions.bind(this.venlyController),
       changeSecretType: this.changeSecretType.bind(this),
       // getPendingNonce: this.venlyController.getPendingNonce.bind(this.venlyController),
       // getPendingTransactionByHash: (hash: any) => { }

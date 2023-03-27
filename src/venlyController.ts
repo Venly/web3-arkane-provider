@@ -118,9 +118,16 @@ export class VenlyController {
   //   return Promise.resolve();
   // }
 
-  // async getPendingTransactionByHash(hash: any) {
-  //   return Promise.resolve();
-  // }
+  async getTransactionByHash(hash: string) {
+    const res: any = await this.venlyConnect.api.getTransactionStatus(hash, this.options.secretType!);
+    res.value = res.rawValue;
+    return res;
+  }
+
+  async getPendingTransactions() {
+    const res: any = await this.venlyConnect.api.getPendingTransactions();
+    return res;
+  }
 
   private async refreshWallets() {
     if (!this.lastWalletsFetch || (Date.now() - this.lastWalletsFetch) > 5000) {

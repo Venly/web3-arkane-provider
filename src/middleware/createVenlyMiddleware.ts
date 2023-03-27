@@ -2,7 +2,8 @@ import { createScaffoldMiddleware, mergeMiddleware } from 'json-rpc-engine';
 import { createWalletMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
   createPendingNonceMiddleware,
-  createPendingTxMiddleware,
+  createTransactionByHashMiddleware,
+  createPendingTransactionsMiddleware,
 } from './pending';
 import { createRequestAccountsMiddleware, createSwitchEthereumChainMiddleware } from './accounts';
 
@@ -18,7 +19,8 @@ export default function createVenlyMiddleware({
   processTypedMessageV3,
   processTypedMessageV4,
   getPendingNonce,
-  getPendingTransactionByHash,
+  getTransactionByHash,
+  getPendingTransactions,
   changeSecretType
 }: any) {
   const venlyMiddleware = mergeMiddleware([
@@ -26,7 +28,7 @@ export default function createVenlyMiddleware({
       web3_clientVersion: 'VenlyProvider/v3.0.0',
       eth_hashrate: '0x00',
       eth_mining: false,
-      eth_syncing: true
+      eth_syncing: false
     }),
     createWalletMiddleware({
       getAccounts,
@@ -42,7 +44,8 @@ export default function createVenlyMiddleware({
     }) as any,
     createRequestAccountsMiddleware({ getAccounts }),
     createPendingNonceMiddleware({ getPendingNonce }),
-    createPendingTxMiddleware({ getPendingTransactionByHash }),
+    createTransactionByHashMiddleware({ getTransactionByHash }),
+    createPendingTransactionsMiddleware({ getPendingTransactions }),
     createSwitchEthereumChainMiddleware({ changeSecretType }),
   ]);
   return venlyMiddleware;
