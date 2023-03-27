@@ -126,7 +126,11 @@ export class VenlyController {
 
   async getPendingTransactions() {
     const res: any = await this.venlyConnect.api.getPendingTransactions();
-    return res;
+    return res.map((tx: any) => {
+      const {type, ...transaction} = tx.transactionRequest;
+      transaction.value = BigInt(transaction.value).toString();
+      return transaction;
+    });
   }
 
   private async refreshWallets() {
