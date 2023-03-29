@@ -114,10 +114,6 @@ export class VenlyController {
       throw new Error(res.errors?.join(', '));
   }
 
-  // async getPendingNonce(address: string) {
-  //   return Promise.resolve();
-  // }
-
   async getTransactionByHash(hash: string) {
     const res: any = await this.venlyConnect.api.getTransactionStatus(hash, this.options.secretType!);
     res.value = BigInt(res.rawValue).toString();
