@@ -120,14 +120,16 @@ export class VenlyController {
 
   async getTransactionByHash(hash: string) {
     const res: any = await this.venlyConnect.api.getTransactionStatus(hash, this.options.secretType!);
-    res.value = res.rawValue;
-    return res;
+    res.value = BigInt(res.rawValue).toString();
+    if (!res.data) res.data = '0x';
+    const {rawValue, ...transaction} = res;
+    return transaction;
   }
 
   async getPendingTransactions() {
     const res: any = await this.venlyConnect.api.getPendingTransactions();
     return res.map((tx: any) => {
-      const {type, ...transaction} = tx.transactionRequest;
+      const {rawValue, type, ...transaction} = tx.transactionRequest;
       transaction.value = BigInt(transaction.value).toString();
       return transaction;
     });
