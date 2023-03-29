@@ -1,136 +1,130 @@
-import { AuthenticationOptions, AuthenticationResult } from '@venly/connect/dist/src/connect/connect';
-import { VenlyWalletSubProvider } from './VenlyWalletSubProvider';
-import { Account } from '@venly/connect/dist/src/models/Account';
-import { NonceTrackerSubprovider } from './NonceTracker';
-import { SignedVersionedTypedDataSubProvider } from './SignedVersionedTypedDataSubProvider';
-import { RequestAccountsSubProvider } from './RequestAccountsSubProvider';
-import { SecretType, VenlyConnect } from '@venly/connect';
-import { SignTransactionGasFix } from './SignTransactionGasFix';
+import { SecretType, WindowMode, AuthenticationOptions, AuthenticationResult, Account } from '@venly/connect'
+import { VenlyController } from './venlyController';
+import { CHAIN_IDS, SECRET_TYPES } from './types';
+import { JsonRpcEngine } from 'json-rpc-engine';
+import { providerFromEngine, providerFromMiddleware } from '@metamask/eth-json-rpc-provider';
+import createVenlyMiddleware from './middleware/createVenlyMiddleware';
+// import createLoggerMiddleware from './createLoggerMiddleware';
+// import createOriginMiddleware from './createOriginMiddleware';
+import createJsonRpcClient from './createJsonRpcClient';
+const createFilterMiddleware = require('eth-json-rpc-filters');
+const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager');
 
-const ProviderEngine = require('@arkane-network/web3-provider-engine');
-const CacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/cache');
-const FixtureSubprovider = require('@arkane-network/web3-provider-engine/subproviders/fixture');
-const FilterSubprovider = require('@arkane-network/web3-provider-engine/subproviders/filters');
-const RpcSubprovider = require('@arkane-network/web3-provider-engine/subproviders/rpc');
-const SubscriptionsSubprovider = require('@arkane-network/web3-provider-engine/subproviders/subscriptions');
-const SanitizerSubprovider = require('@arkane-network/web3-provider-engine/subproviders/sanitizer');
-const InflightCacheSubprovider = require('@arkane-network/web3-provider-engine/subproviders/inflight-cache');
-// const WebsocketSubprovider = require('@arkane-network/web3-provider-engine/subproviders/websocket');
+export { SecretType } from '@venly/connect';
+export { SECRET_TYPES } from './types';
 
-export class VenlySubProvider {
+export class VenlyProvider {
 
-  private venlyConnect?: VenlyConnect;
-  private signedVersionedTypedDataSubProvider: any;
-  private requestAccountsSubProvider: any;
-  private subProvider?: VenlyWalletSubProvider;
-  private engine?: any;
+  venlyController: VenlyController = new VenlyController();
+  _provider: any;
+  _blockTracker: any;
 
   public connect() {
-    return this.venlyConnect;
+    return this.venlyController?.venlyConnect;
   }
 
-  public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM): Promise<any> {
-    if (this.subProvider && this.subProvider.options) {
-      this.subProvider.options.secretType = secretType;
-      this.subProvider.lastWalletsFetch = undefined;
-      this.engine.stop();
-      return this.createProviderEngine(this.subProvider.options);
-    }
-  }
-
-  public hasSubProvider(): boolean {
-    return !!this.subProvider;
+  public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM, chainId?: string): Promise<any> {
+    if (!this._provider)
+      throw new Error('Please initialise provider first (Venly.createProviderEngine)');
+      
+    this.venlyController.lastWalletsFetch = undefined;
+    const options = {...this.venlyController.options,
+      secretType: secretType,
+      ...chainId && { environment: SECRET_TYPES[Number(chainId)].env }
+    };
+    this._provider.emit('chainChanged', chainId);
+    this._provider = await this.createProviderEngine(options);
+    return this._provider;
   }
 
   public async checkAuthenticated(): Promise<AuthenticationResult> {
-    if (!this.subProvider) {
+    if (!this._provider)
       throw new Error('Please initialise provider first (Venly.createProviderEngine)');
-    }
-    return this.subProvider.checkAuthenticated();
+
+    return this.venlyController.venlyConnect.checkAuthenticated();
   }
 
   public async authenticate(authenticationOptions?: AuthenticationOptions): Promise<Account | {}> {
-    if (!this.subProvider) {
+    if (!this._provider)
       throw new Error('Please initialise provider first (Venly.createProviderEngine)');
-    }
-    return this.subProvider.startGetAccountFlow(authenticationOptions);
+
+    return this.venlyController.startGetAccountFlow(authenticationOptions);
   }
 
-  public createProviderEngine(options: VenlySubProviderOptions): Promise<any> {
-    let connectionDetails = this.getConnectionDetails(options);
-    this.engine = new ProviderEngine({pollingInterval: options.pollingInterval || 15000});
-    this.engine.addProvider(new FixtureSubprovider({
-      web3_clientVersion: 'VenlyProviderEngine/v0.21.0/javascript',
-      net_listening: true,
-      eth_hashrate: '0x00',
-      eth_mining: false,
-      eth_syncing: true,
-    }));
+  public createProviderEngine(options: VenlyProviderOptions): Promise<any> {
+    options.environment = options.environment || 'production';
+    options.windowMode = options.windowMode || WindowMode.REDIRECT;
+    options.secretType = options.secretType || SecretType.ETHEREUM;
 
-    if (!this.subProvider) this.subProvider = new VenlyWalletSubProvider(options);
-    this.engine.addProvider(this.subProvider);
-    this.venlyConnect = this.subProvider.connect;
+    this.venlyController.initialize(options);
+    const engine = new JsonRpcEngine();
 
-    if (!this.signedVersionedTypedDataSubProvider) this.signedVersionedTypedDataSubProvider = new SignedVersionedTypedDataSubProvider(this.subProvider);
-    this.engine.addProvider(this.signedVersionedTypedDataSubProvider);
-    if (!this.requestAccountsSubProvider) this.requestAccountsSubProvider = new RequestAccountsSubProvider(this.subProvider);
-    this.engine.addProvider(this.requestAccountsSubProvider);
-
-    this.engine.addProvider(new NonceTrackerSubprovider({rpcUrl: connectionDetails.endpointHttpUrl}));
-    this.engine.addProvider(new SignTransactionGasFix());
-    
-    this.engine.addProvider(new CacheSubprovider());
-    this.engine.addProvider(new FilterSubprovider());
-    this.engine.addProvider(new SanitizerSubprovider());
-    this.engine.addProvider(new SubscriptionsSubprovider());
-    this.engine.addProvider(new InflightCacheSubprovider());
-    this.engine.addProvider(new RpcSubprovider({rpcUrl: connectionDetails.endpointHttpUrl}));
-
-    return options.skipAuthentication
-      ? Promise.resolve(this.startEngine(this.engine))
-      : this.subProvider.getAccountsAsync().then(() => this.startEngine(this.engine));
-  }
-
-  private getConnectionDetails(options: VenlySubProviderOptions): ConnectionDetails {
-    let secretType = options.secretType ? options.secretType : SecretType.ETHEREUM;
-    let environment = options.environment;
-    environment = environment?.replace('-local', '');
-    let endpoint = `${secretType.toLowerCase()}-node${environment && !environment.startsWith('prod') ? '-' + environment : ''}.arkane.network`;
-    return {
-      endpointHttpUrl: 'https://' + endpoint
-    }
-  }
-
-  private startEngine(engine: any) {
-    engine.on('error', (err: any) => {
-      console.error(err.stack)
+    const venlyMiddleware = createVenlyMiddleware({
+      getAccounts: this.venlyController.getAccounts.bind(this.venlyController),
+      processTransaction: this.venlyController.processTransaction.bind(this.venlyController),
+      processSignTransaction: this.venlyController.processSignTransaction.bind(this.venlyController),
+      processEthSignMessage: this.venlyController.processEthSignMessage.bind(this.venlyController),
+      processTypedMessage: this.venlyController.processTypedMessage.bind(this.venlyController),
+      processTypedMessageV3: this.venlyController.processTypedMessage.bind(this.venlyController),
+      processTypedMessageV4: this.venlyController.processTypedMessage.bind(this.venlyController),
+      processPersonalMessage: this.venlyController.processPersonalMessage.bind(this.venlyController),
+      getTransactionByHash: this.venlyController.getTransactionByHash.bind(this.venlyController),
+      getPendingTransactions: this.venlyController.getPendingTransactions.bind(this.venlyController),
+      changeSecretType: this.changeSecretType.bind(this)
     });
-    engine.start();
-    return engine;
+    engine.push(venlyMiddleware);
+
+    const rpcUrl = this.getRpcUrl(options);
+    const chainId = CHAIN_IDS[options.secretType][options.environment];
+    const { networkMiddleware, blockTracker } = createJsonRpcClient({ rpcUrl, chainId });
+    const networkProvider = providerFromMiddleware(networkMiddleware);
+    const filterMiddleware = createFilterMiddleware({
+      provider: networkProvider,
+      blockTracker,
+    });
+    const subscriptionManager = createSubscriptionManager({
+      provider: networkProvider,
+      blockTracker,
+    });
+    subscriptionManager.events.on('notification', (message: any) =>
+      engine.emit('notification', message),
+    );
+    engine.push(filterMiddleware);
+    engine.push(subscriptionManager.middleware);
+    engine.push(networkMiddleware);
+
+    const provider: any = providerFromEngine(engine);
+    provider.request = function(req: any) {
+      return new Promise((resolve, reject) => {
+        provider.send(req, (err: any, res: any) => {
+          if (err) reject(res.error);
+          else resolve(res.result)
+        });
+      });
+    }
+    this._provider = provider;
+    this._provider.emit('connect', { chainId });
+    this._blockTracker = blockTracker;
+    return Promise.resolve(this._provider);
   }
+
+  private getRpcUrl(options: VenlyProviderOptions): string {
+    const secretType = options.secretType!.toLowerCase();
+    let environment = options.environment!.replace('-local', '');
+    return environment.startsWith('prod') ? `https://${secretType}-node.arkane.network` : `https://${secretType}-node-${environment}.arkane.network`;
+  }
+  
 }
 
-class ConnectionDetails {
-  endpointHttpUrl: string;
-  endpointWsUrl?: string;
-
-  constructor(endpointHttpUrl: string, endpointWsUrl: string) {
-    this.endpointHttpUrl = endpointHttpUrl;
-    this.endpointWsUrl = endpointWsUrl;
-  }
-}
-
-export interface VenlySubProviderOptions {
+export interface VenlyProviderOptions {
   clientId: string;
   environment?: string;
-  /** Deprecated, use windowMode instead */
-  signMethod?: string;
-  windowMode?: string;
-  bearerTokenProvider?: () => string;
   secretType?: SecretType;
+  windowMode?: WindowMode;
+  bearerTokenProvider?: () => string;
   authenticationOptions?: AuthenticationOptions
   skipAuthentication: boolean;
   pollingInterval?: number;
 }
 
-(globalThis as any).Venly = new VenlySubProvider();
+(globalThis as any).Venly = new VenlyProvider();

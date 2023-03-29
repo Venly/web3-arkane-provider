@@ -22,7 +22,7 @@ npm i @venly/web3-provider
 Import the module in your project
 
 ```javascript
-import { VenlySubProvider } from "@venly/web3-provider";
+import { VenlyProvider } from "@venly/web3-provider";
 ```
 
 Alternatively, you can load our script from a CDN
@@ -34,15 +34,15 @@ Alternatively, you can load our script from a CDN
 ## Using the Library
 
 ```javascript
-const Venly = new VenlySubProvider();
+const Venly = new VenlyProvider();
 ```
 
-The VenlySubProvider object is the gateway for creating the web3 wrapper and fully integrates [Venly Connect](https://docs.venly.io/widget/widget/introduction).
+The VenlyProvider object is the gateway for creating the web3 wrapper and fully integrates [Venly Connect](https://docs.venly.io/widget/widget/introduction).
 
 ### Adding the web3 provider
 
 ```javascript
-const options: VenlySubProviderOptions = {
+const options: VenlyProviderOptions = {
   clientId: 'YOUR_CLIENT_ID',
   rpcUrl: 'https://kovan.infura.io/v3/YOUR-PROJECT-ID', //optional
   environment: 'staging', //optional, production by default  
