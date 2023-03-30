@@ -53,7 +53,7 @@ export class VenlyProvider {
 
   public createProviderEngine(options: VenlyProviderOptions): Promise<any> {
     options.environment = options.environment || 'production';
-    options.windowMode = options.windowMode || WindowMode.REDIRECT;
+    options.windowMode = options.windowMode || WindowMode.POPUP;
     options.secretType = options.secretType || SecretType.ETHEREUM;
 
     this.venlyController.initialize(options);
