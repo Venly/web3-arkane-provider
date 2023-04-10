@@ -15,17 +15,22 @@ The full documentation of the Venly Web3 Provider can be found here: https://doc
 # Getting Started
 
 ## Adding the library
+
+Install and import the module in your project
+
 ```bash
 npm i @venly/web3-provider
 ```
-
-Import the module in your project
 
 ```javascript
 import { VenlyProvider } from "@venly/web3-provider";
 ```
 
-Alternatively, you can load our script from a CDN
+Alternatively, you can load our script from one of the following CDNs
+
+```html
+<script src="https://unpkg.com/@venly/web3-provider/umd/index.js"></script>
+```
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@venly/web3-provider/umd/index.js"></script>
@@ -44,10 +49,11 @@ The VenlyProvider object is the gateway for creating the web3 wrapper and fully 
 ```javascript
 const options: VenlyProviderOptions = {
   clientId: 'YOUR_CLIENT_ID',
-  rpcUrl: 'https://kovan.infura.io/v3/YOUR-PROJECT-ID', //optional
   environment: 'staging', //optional, production by default  
-  signMethod: 'POPUP', //optional, REDIRECT by default
-  bearerTokenProvider: () => 'obtained_bearer_token' //optional, default undefined
+  secretType: SecretType.ETHEREUM, //optional, ETHEREUM by default  
+  windowMode: WindowMode.POPUP, //optional, POPUP by default
+  bearerTokenProvider: () => 'obtained_bearer_token', //optional, default undefined
+  skipAuthentication: false
 };
 
 Venly.createProviderEngine(options)
