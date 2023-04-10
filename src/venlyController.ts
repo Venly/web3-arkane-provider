@@ -1,11 +1,7 @@
-import {
-  VenlyConnect, 
-  Wallet, 
-  AuthenticationOptions, 
-  Account
-} from '@venly/connect'
+import { VenlyConnect, Wallet, AuthenticationOptions, Account } from '@venly/connect'
 import { VenlyProviderOptions } from './index';
 import { REQUEST_TYPES } from './types';
+import { hexToUtf8 } from './util';
 
 export class VenlyController {
 
@@ -19,8 +15,20 @@ export class VenlyController {
     this.venlyConnect = new VenlyConnect(options.clientId, {
       environment: options.environment,
       windowMode: options.windowMode,
-      bearerTokenProvider: options.bearerTokenProvider
+      bearerTokenProvider: options.bearerTokenProvider,
+      useOverlayWithPopup: false
     });
+  }
+
+  async authenticate() {
+    let authResult = await this.venlyConnect.checkAuthenticated();
+    if (!authResult.isAuthenticated)
+      authResult = await this.venlyConnect.flows.authenticate({
+        windowMode: this.options.authenticationOptions?.windowMode,
+        forcePopup: true,
+        closePopup: this.options.authenticationOptions?.closePopup
+      });
+    return authResult;
   }
 
   async getAccounts(): Promise<string[]> {
@@ -102,11 +110,16 @@ export class VenlyController {
   }
 
   async processPersonalMessage(params: any, req: any) {
+    let message = params.data;
+    try {
+      message = hexToUtf8(params.data);
+    }
+    catch {}
     const signer = this.venlyConnect.createSigner();
     const res = await signer.signMessage({
       walletId: this.getWalletIdFrom(params.from),
       secretType: this.options.secretType!,
-      data: params.data
+      data: message
     });
     if (res.status === 'SUCCESS')
       return res.result.signature;

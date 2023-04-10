@@ -11,8 +11,8 @@ module.exports = {
     filename: "index.js",
     libraryTarget: 'umd',
     globalObject: 'this',
-    library: 'VenlySubProvider',
-    libraryExport: 'VenlySubProvider'
+    library: 'VenlyProvider',
+    libraryExport: 'VenlyProvider'
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"],

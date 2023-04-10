@@ -837,10 +837,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@venly/connect@^1.41.0-develop.16":
-  "integrity" "sha512-b3fyZ+5Q3q5BxZ5SBQF2sseN86xUB5hxlaggH1gVG4qfb6H02KUsYrBUMqeQhB6W21W16fVCNqSlVcgSZNXilA=="
-  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.41.0-develop.16.tgz"
-  "version" "1.41.0-develop.16"
+"@venly/connect@^1.41.0-develop.28":
+  "integrity" "sha512-S6nTHZN+2lyzwPivZjyeMTWym7ETdXZarUCJHDaudpGBFf6DUZ9eLM2PWuQhKYHtwyVv4eY5sXCBKRBTR059jg=="
+  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.41.0-develop.28.tgz"
+  "version" "1.41.0-develop.28"
   dependencies:
     "@types/node" "^12.7.1"
     "core-js" "^3.2.1"
@@ -1354,9 +1354,9 @@
   "version" "2.0.0"
 
 "core-js@^3.2.1":
-  "integrity" "sha512-GutwJLBChfGCpwwhbYoqfv03LAfmiz7e7D/BNxzeMxwQf10GRSzqiOjx7AmtEk+heiD/JWmBuyBPgFtx0Sg1ww=="
-  "resolved" "https://registry.npmjs.org/core-js/-/core-js-3.27.1.tgz"
-  "version" "3.27.1"
+  "integrity" "sha512-hQotSSARoNh1mYPi9O2YaWeiq/cEB95kOrFb4NCrO4RIFt1qqNpKsaE+vy/L3oiqvND5cThqXzUU3r9F7Efztg=="
+  "resolved" "https://registry.npmjs.org/core-js/-/core-js-3.30.0.tgz"
+  "version" "3.30.0"
 
 "cross-spawn@^7.0.3":
   "integrity" "sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w=="
@@ -2938,6 +2938,11 @@
   "version" "4.4.1"
   dependencies:
     "punycode" "^2.1.0"
+
+"utf8@^3.0.0":
+  "integrity" "sha512-E8VjFIQ/TyQgp+TZfS6l8yp/xWppSAHzidGiRrqe4bK4XP9pTRyKFgGJpO3SN7zdX4DeomTrwaseCHovfpFcqQ=="
+  "resolved" "https://registry.npmjs.org/utf8/-/utf8-3.0.0.tgz"
+  "version" "3.0.0"
 
 "v8-to-istanbul@^9.0.1":
   "integrity" "sha512-6z3GW9x8G1gd+JIIgQQQxXuiJtCXeAjp6RaPEPLv62mH3iPHPxV6W3robxtCzNErRo6ZwTmzWhsbNvjyEBKzKA=="

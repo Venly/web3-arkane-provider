@@ -12,21 +12,15 @@ const MILLISECOND = 1;
 const SECOND = MILLISECOND * 1000;
 
 export default function createJsonRpcClient({ rpcUrl, chainId }: any) {
-  const blockTrackerOpts = process.env.IN_TEST
-    ? { pollingInterval: SECOND }
-    : {};
+  const blockTrackerOpts = {};
   const fetchMiddleware = createFetchMiddleware({ btoa, fetch, rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
   const blockTracker = new PollingBlockTracker({
     ...blockTrackerOpts,
     provider: blockProvider as any,
   });
-  const testMiddlewares = process.env.IN_TEST
-    ? [createEstimateGasDelayTestMiddleware()]
-    : [];
 
   const networkMiddleware = mergeMiddleware([
-    ...testMiddlewares as any,
     createChainIdMiddleware(chainId),
     createBlockRefRewriteMiddleware({ blockTracker } as any),
     createBlockCacheMiddleware({ blockTracker } as any),
