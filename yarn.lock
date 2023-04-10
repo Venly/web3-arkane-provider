@@ -837,10 +837,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@venly/connect@^1.41.0-develop.28":
-  "integrity" "sha512-S6nTHZN+2lyzwPivZjyeMTWym7ETdXZarUCJHDaudpGBFf6DUZ9eLM2PWuQhKYHtwyVv4eY5sXCBKRBTR059jg=="
-  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.41.0-develop.28.tgz"
-  "version" "1.41.0-develop.28"
+"@venly/connect@^1.41.0-develop.32":
+  "integrity" "sha512-7PAGk649QGzzTcndmaOB9h3D2bfogQavrpdbIVwabHIX+a9KYdKg5GHIHn+Ajkjp/qbdstxgfcRiT+rt8RvzSQ=="
+  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-1.41.0-develop.32.tgz"
+  "version" "1.41.0-develop.32"
   dependencies:
     "@types/node" "^12.7.1"
     "core-js" "^3.2.1"
