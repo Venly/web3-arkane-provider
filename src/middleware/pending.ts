@@ -28,6 +28,7 @@ export function createTransactionByHashMiddleware({ getTransactionByHash }: any)
     res.result = await getTransactionByHash(hash);
   });
 }
+
 export function createPendingTransactionsMiddleware({ getPendingTransactions }: any) {
   return createAsyncMiddleware(async (req, res, next) => {
     if (req.method !== 'eth_pendingTransactions') {

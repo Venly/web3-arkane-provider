@@ -49,10 +49,10 @@ export class VenlyProvider {
     return this.venlyController.startGetAccountFlow(authenticationOptions);
   }
 
-  public createProviderEngine(options: VenlyProviderOptions): Promise<any> {
-    options.environment = options.environment || 'production';
-    options.windowMode = options.windowMode || WindowMode.POPUP;
-    options.secretType = options.secretType || SecretType.ETHEREUM;
+  public async createProviderEngine(options: VenlyProviderOptions): Promise<any> {
+    if (options.environment == null) options.environment = 'production';
+    if (options.windowMode == null) options.windowMode = WindowMode.POPUP;
+    if (options.secretType == null) options.secretType = SecretType.ETHEREUM;
 
     this.venlyController.initialize(options);
     const engine = new JsonRpcEngine();
@@ -103,7 +103,9 @@ export class VenlyProvider {
     this._provider = provider;
     this._provider.emit('connect', { chainId });
     this._blockTracker = blockTracker;
-    return Promise.resolve(this._provider);
+    if (!options.skipAuthentication)
+      await this.venlyController.authenticate();
+    return this._provider;
   }
 
   private getRpcUrl(options: VenlyProviderOptions): string {

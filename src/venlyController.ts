@@ -1,9 +1,4 @@
-import {
-  VenlyConnect, 
-  Wallet, 
-  AuthenticationOptions, 
-  Account
-} from '@venly/connect'
+import { VenlyConnect, Wallet, AuthenticationOptions, Account } from '@venly/connect'
 import { VenlyProviderOptions } from './index';
 import { REQUEST_TYPES } from './types';
 
@@ -19,8 +14,20 @@ export class VenlyController {
     this.venlyConnect = new VenlyConnect(options.clientId, {
       environment: options.environment,
       windowMode: options.windowMode,
-      bearerTokenProvider: options.bearerTokenProvider
+      bearerTokenProvider: options.bearerTokenProvider,
+      useOverlayWithPopup: false
     });
+  }
+
+  async authenticate() {
+    let authResult = await this.venlyConnect.checkAuthenticated();
+    if (!authResult.isAuthenticated)
+      authResult = await this.venlyConnect.flows.authenticate({
+        windowMode: this.options.authenticationOptions?.windowMode,
+        forcePopup: true,
+        closePopup: this.options.authenticationOptions?.closePopup
+      });
+    return authResult;
   }
 
   async getAccounts(): Promise<string[]> {
