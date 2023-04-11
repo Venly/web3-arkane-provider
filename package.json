@@ -42,8 +42,7 @@
     "@venly/connect": "^1.41.0-develop.32",
     "eth-block-tracker": "^7.0.0",
     "eth-json-rpc-filters": "^6.0.0",
-    "json-rpc-engine": "^6.1.0",
-    "utf8": "^3.0.0"
+    "json-rpc-engine": "^6.1.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
