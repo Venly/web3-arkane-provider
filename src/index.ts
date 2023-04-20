@@ -8,22 +8,22 @@ import createJsonRpcClient from './createJsonRpcClient';
 const createFilterMiddleware = require('eth-json-rpc-filters');
 const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager');
 
-export { SecretType } from '@venly/connect';
+export { SecretType, WindowMode } from '@venly/connect';
 export { SECRET_TYPES } from './types';
 
 export class VenlyProvider {
 
-  venlyController: VenlyController = new VenlyController();
+  venlyController!: VenlyController;
   _provider: any;
   _blockTracker: any;
 
-  public connect() {
+  public get connect() {
     return this.venlyController?.venlyConnect;
   }
 
   public async changeSecretType(secretType: SecretType = SecretType.ETHEREUM, chainId?: string): Promise<any> {
     if (!this._provider)
-      throw new Error('Please initialise provider first (Venly.createProviderEngine)');
+      throw new Error('Please initialise provider first (Venly.createProvider)');
       
     this.venlyController.lastWalletsFetch = undefined;
     const options = {...this.venlyController.options,
@@ -31,30 +31,38 @@ export class VenlyProvider {
       ...chainId && { environment: SECRET_TYPES[Number(chainId)].env }
     };
     this._provider.emit('chainChanged', chainId);
-    this._provider = await this.createProviderEngine(options);
+    this._provider = await this.createProvider(options);
     return this._provider;
   }
 
   public async checkAuthenticated(): Promise<AuthenticationResult> {
     if (!this._provider)
-      throw new Error('Please initialise provider first (Venly.createProviderEngine)');
+      throw new Error('Please initialise provider first (Venly.createProvider)');
 
-    return this.venlyController.venlyConnect.checkAuthenticated();
+    return await this.venlyController.checkAuthenticated();
   }
 
   public async authenticate(authenticationOptions?: AuthenticationOptions): Promise<Account | {}> {
     if (!this._provider)
-      throw new Error('Please initialise provider first (Venly.createProviderEngine)');
+      throw new Error('Please initialise provider first (Venly.createProvider)');
 
-    return this.venlyController.startGetAccountFlow(authenticationOptions);
+    return this.venlyController.authResult = await this.venlyController.startGetAccountFlow(authenticationOptions);
   }
 
-  public async createProviderEngine(options: VenlyProviderOptions): Promise<any> {
-    if (options.environment == null) options.environment = 'production';
-    if (options.windowMode == null) options.windowMode = WindowMode.POPUP;
-    if (options.secretType == null) options.secretType = SecretType.ETHEREUM;
+  public async logout() {
+    if (!this._provider)
+      throw new Error('Please initialise provider first (Venly.createProvider)');
 
-    this.venlyController.initialize(options);
+    await this.venlyController.logout();
+  }
+
+  public async createProvider(options: VenlyProviderOptions): Promise<any> {
+    options.environment ??= 'production';
+    options.windowMode ??= WindowMode.POPUP;
+    options.secretType ??= SecretType.ETHEREUM;
+    options.skipAuthentication ??= false;
+
+    this.venlyController = new VenlyController(options);
     const engine = new JsonRpcEngine();
 
     const venlyMiddleware = createVenlyMiddleware({
@@ -104,7 +112,7 @@ export class VenlyProvider {
     this._provider.emit('connect', { chainId });
     this._blockTracker = blockTracker;
     if (!options.skipAuthentication)
-      await this.venlyController.authenticate();
+      await this.venlyController.getAccounts();
     return this._provider;
   }
 
@@ -124,7 +132,7 @@ export class VenlyProvider {
  * @property {WindowMode} windowMode - The sign method you want to use, possible values are POPUP or REDIRECT. Default set to POPUP.
  * @property {function} bearerTokenProvider - You can implement all the authentication handling yourself and provide Venly Connect with your own bearer token provider. The bearer token provider is a function returning the bearer token (access token) to login to Venly. Default the Venly Connect authentication client is used.
  * @property {AuthenticationOptions} authenticationOptions - The options to use for authentications https://docs.venly.io/widget/widget-advanced/object-type-reference/authenticationoptions
- * @property {boolean} skipAuthentication - Boolean flag that indicates if you want to authenticate immediately or revert to checkAuthenticated()
+ * @property {boolean} skipAuthentication - Boolean flag that indicates if you want to authenticate immediately or revert to checkAuthenticated(). Default set to false.
  */
 export interface VenlyProviderOptions {
   clientId: string;
@@ -133,7 +141,7 @@ export interface VenlyProviderOptions {
   windowMode?: WindowMode;
   bearerTokenProvider?: () => string;
   authenticationOptions?: AuthenticationOptions
-  skipAuthentication: boolean;
+  skipAuthentication?: boolean;
   pollingInterval?: number;
 }
 

@@ -1,4 +1,4 @@
-import { VenlyConnect, Wallet, AuthenticationOptions, Account } from '@venly/connect'
+import { VenlyConnect, Wallet, AuthenticationOptions, Account, AuthenticationResult } from '@venly/connect'
 import { VenlyProviderOptions } from './index';
 import { REQUEST_TYPES } from './types';
 
@@ -6,10 +6,11 @@ export class VenlyController {
 
   venlyConnect!: VenlyConnect;
   options!: VenlyProviderOptions;
+  authResult: any;
   lastWalletsFetch?: number;
   wallets: Wallet[] = [];
   
-  initialize(options: VenlyProviderOptions) {
+  constructor(options: VenlyProviderOptions) {
     this.options = options;
     this.venlyConnect = new VenlyConnect(options.clientId, {
       environment: options.environment,
@@ -19,29 +20,31 @@ export class VenlyController {
     });
   }
 
-  async authenticate() {
-    let authResult = await this.venlyConnect.checkAuthenticated();
-    if (!authResult.isAuthenticated)
-      authResult = await this.venlyConnect.flows.authenticate({
+  async authenticate(): Promise<AuthenticationResult>  {
+    if (!this.authResult || !this.authResult.isAuthenticated)
+      this.authResult = await this.venlyConnect.flows.authenticate({
         windowMode: this.options.authenticationOptions?.windowMode,
         forcePopup: true,
         closePopup: this.options.authenticationOptions?.closePopup
       });
-    return authResult;
+    return this.authResult;
+  }
+
+  async checkAuthenticated(): Promise<AuthenticationResult> {
+    return this.authResult = await this.venlyConnect.checkAuthenticated();
+  }
+
+  async logout(): Promise<void>  {
+    this.authResult = await this.venlyConnect.logout();
   }
 
   async getAccounts(): Promise<string[]> {
-    let promise: Promise<any> = Promise.resolve();
-
-    const authResult = await this.venlyConnect.checkAuthenticated();
-    if (!authResult.isAuthenticated)
-      promise = this.startGetAccountFlow();
+    if (!this.authResult || !this.authResult.isAuthenticated)
+      this.authResult = await this.startGetAccountFlow(this.options.authenticationOptions);
     else
-      promise = this.refreshWallets();
+      await this.refreshWallets();
 
-    return promise.then(() => {
-      return this.wallets.map((wallet) => wallet.address)
-    });
+    return this.wallets.map((wallet) => wallet.address);
   }
 
   async processTransaction(params: any, req: any) {

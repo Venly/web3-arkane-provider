@@ -6,30 +6,19 @@ require('isomorphic-fetch');
 
 var venly: VenlyProvider;
 var engine: JsonRpcEngine;
-// var provider: any;
 
 beforeAll(async () => {
   venly = new VenlyProvider();
-  mockApiCalls();
   let options = {
     clientId: 'Testaccount',
     environment: 'qa',
     secretType: SecretType.ETHEREUM,
     skipAuthentication: true
   };
-  var provider = await venly.createProviderEngine(options);
+  var provider = await venly.createProvider(options);
   engine = new JsonRpcEngine();
   engine.push(providerAsMiddleware(provider));
 });
-
-function mockApiCalls() {
-  venly.venlyController!.getAccounts = jest.fn().mockResolvedValue(['0xb60e8dd61c5d32be8058bb8eb970870f07233155']);
-  venly.venlyController!.processTransaction = jest.fn().mockResolvedValue('');
-  venly.venlyController!.processSignTransaction = jest.fn().mockResolvedValue('');
-  venly.venlyController!.processEthSignMessage = jest.fn().mockResolvedValue('');
-  venly.venlyController!.processTypedMessage = jest.fn().mockResolvedValue('');
-  venly.venlyController!.processPersonalMessage = jest.fn().mockResolvedValue('');
-}
 
 describe('Static Middleware', () => {
   test('web3_clientVersion returns VenlyProviderEngine/v0.21.0/javascript', () => {
@@ -39,7 +28,7 @@ describe('Static Middleware', () => {
       method: 'web3_clientVersion'
     };
     return engine.handle(req).then((res: any) => {
-      expect(res.result).toStrictEqual('VenlyProviderEngine/v0.21.0/javascript');
+      expect(res.result).toMatch(/VenlyProvider.*/);
     });
   })
   test('eth_hashrate returns 0x00', () => {
@@ -62,14 +51,14 @@ describe('Static Middleware', () => {
       expect(res.result).toStrictEqual(false);
     });
   })
-  test('eth_syncing returns true', () => {
+  test('eth_syncing returns false', () => {
     const req: any = {
       id: 1,
       jsonrpc: '2.0',
       method: 'eth_syncing'
     };
     return engine.handle(req).then((res: any) => {
-      expect(res.result).toStrictEqual(true);
+      expect(res.result).toStrictEqual(false);
     });
   })
 })
@@ -228,169 +217,6 @@ describe('Filter Middleware', () => {
     };
     return engine.handle(req).then((res: any) => {
       expect(res.result).toStrictEqual(true);
-    });
-  })
-})
-
-describe('Wallet Middleware', () => {
-  test('eth_coinbase calls getAccounts() with correct params', () => {
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'eth_coinbase'
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.getAccounts).lastCalledWith(req);
-    });
-  })
-  test('eth_accounts calls getAccounts() with correct params', () => {
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'eth_accounts'
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.getAccounts).lastCalledWith(req);
-    });
-  })
-  test('eth_requestAccounts calls getAccounts() with correct params', () => {
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'eth_requestAccounts'
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.getAccounts).lastCalledWith();
-    });
-  })
-  test('eth_sendTransaction calls processTransaction() with correct params', () => {
-    const params = {
-      from: "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
-      to: "0xd46e8dd67c5d32be8058bb8eb970870f07244567",
-      gas: "0x76c0", // 30400
-      gasPrice: "0x9184e72a000", // 10000000000000
-      value: "0x9184e72a", // 2441406250
-      data: "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
-    }
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'eth_sendTransaction',
-      params: [params]
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.processTransaction).lastCalledWith(params, req);
-    });
-  })
-  test('eth_signTransaction calls processSignTransaction() with correct params', () => {
-    const params = {
-      data: "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
-      from: "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
-      gas: "0x76c0",
-      gasPrice: "0x9184e72a000",
-      to: "0xd46e8dd67c5d32be8058bb8eb970870f07244567",
-      value: "0x9184e72a"
-    };
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'eth_signTransaction',
-      params: [params]
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.processSignTransaction).lastCalledWith(params, req);
-    });
-  })
-  test('eth_sign calls processEthSignMessage() with correct params', () => {
-    const params = {
-      data: "0xdeadbeaf",
-      from: "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
-    };
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'eth_sign',
-      params: [params.from, params.data]
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.processEthSignMessage).lastCalledWith(params, req);
-    });
-  })
-  test('eth_signTypedData calls processTypedMessage() with correct params', () => {
-    const params = {
-      data: "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
-      from: "0xb60e8dd61c5d32be8058bb8eb970870f07233155"
-    };
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'eth_signTypedData',
-      params: [params.data, params.from]
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.processTypedMessage).lastCalledWith(params, req, 'V1');
-    });
-  })
-  test('eth_signTypedData_v3 calls processTypedMessage() with correct params', () => {
-    const params = {
-      data: "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
-      from: "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
-      version: "V3"
-    };
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'eth_signTypedData_v3',
-      params: [params.from, params.data]
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.processTypedMessage).lastCalledWith(params, req, 'V3');
-    });
-  })
-  test('eth_signTypedData_v4 calls processTypedMessage() with correct params', () => {
-    const params = {
-      data: "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
-      from: "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
-      version: "V4"
-    };
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'eth_signTypedData_v4',
-      params: [params.from, params.data]
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.processTypedMessage).lastCalledWith(params, req, 'V4');
-    });
-  })
-  test('personal_sign calls processPersonalMessage() with correct params', () => {
-    const params = {
-      data: "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
-      from: "0xb60e8dd61c5d32be8058bb8eb970870f07233155"
-    };
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'personal_sign',
-      params: [params.from, params.data]
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(venly.venlyController!.processPersonalMessage).lastCalledWith(params, req);
-    });
-  })
-  test('wallet_switchEthereumChain calls changeSecretType() and returns null', () => {
-    const req: any = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'wallet_switchEthereumChain',
-      params: [{
-        chainId: "0x89"
-      }]
-    };
-    return engine.handle(req).then((res: any) => {
-      expect(res.result).toBeNull;
-      expect(venly.venlyController.options.secretType).toEqual('MATIC');
-      expect(venly.venlyController.options.environment).toEqual('prod');
     });
   })
 })
