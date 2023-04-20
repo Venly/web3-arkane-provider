@@ -44,7 +44,7 @@ const Venly = new VenlyProvider();
 
 The VenlyProvider object is the gateway for creating the web3 wrapper and fully integrates [Venly Connect](https://docs.venly.io/widget/widget/introduction).
 
-### Adding the web3 provider
+### Adding the web3 provider (web3.js)
 
 ```javascript
 const options: VenlyProviderOptions = {
@@ -53,13 +53,11 @@ const options: VenlyProviderOptions = {
   secretType: SecretType.ETHEREUM, //optional, ETHEREUM by default  
   windowMode: WindowMode.POPUP, //optional, POPUP by default
   bearerTokenProvider: () => 'obtained_bearer_token', //optional, default undefined
-  skipAuthentication: false
+  skipAuthentication: false //optional, false by default
 };
 
-Venly.createProviderEngine(options)
-  .then(provider => {
-    web3 = new Web3(provider);
-  });
+const provider = await Venly.createProvider(options);
+const web3 = new Web3(provider);
 ```
 
 The web3 instance now works as if it was [injected by parity or metamask](https://github.com/ethereum/wiki/wiki/JavaScript-API). You can fetch your wallets or sign transactions and messages. 
@@ -71,19 +69,23 @@ If you provide your own implementation of `bearerTokenProvider`, the web3 provid
 Use the Web3Provider class to wrap our existing Web3-compatible provider and expose it as an ethers.js Provider. (Requires ethers.js v5)
 
 ```javascript
-ethers = new ethers.providers.Web3Provider(provider);
+const options = {
+  clientId: 'YOUR_CLIENT_ID'
+};
+
+const provider = await Venly.createProvider(options);
+const ethers = new ethers.providers.Web3Provider(provider);
 ```
 
 ### Using Venly Connect natively
 
-Although we use Venly Connect under the hood, the functionality of the web3 wrapper isn't limited to the web3 API. Linking or fetching profile information is not supported by Web3, but it is in our wrapper.
-After creating a Venly Provider Engine, we add an instance of **VenlyConnect** to the global **Venly** object. As a result, it's possible to call Venly Connect natively, like so.
+After initializing the Venly Provider, an instance of **VenlyConnect** is added to the **Venly** object. As a result, it's possible to call Venly Connect natively.
 
 ```
-Venly.connect().linkWallets();
+Venly.connect.getProfile();
 ```
 
-The full documentation of Venly Connect can be found here: https://docs.venly.io/widget/widget/introduction
+The full documentation for Venly Connect can be found here: https://docs.venly.io/widget/widget/introduction
 
 # Example Project
 We've created two examples of the Web3 Provider in our demo application.
