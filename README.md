@@ -47,7 +47,7 @@ The VenlyProvider object is the gateway for creating the web3 wrapper and fully 
 ### Adding the web3 provider (web3.js)
 
 ```javascript
-const options = {
+const options: VenlyProviderOptions = {
   clientId: 'YOUR_CLIENT_ID',
   environment: 'staging', //optional, production by default  
   secretType: SecretType.ETHEREUM, //optional, ETHEREUM by default  
