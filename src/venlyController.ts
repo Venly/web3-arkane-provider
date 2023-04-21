@@ -4,11 +4,11 @@ import { REQUEST_TYPES } from './types';
 
 export class VenlyController {
 
-  venlyConnect!: VenlyConnect;
-  options!: VenlyProviderOptions;
-  authResult: any;
-  lastWalletsFetch?: number;
-  wallets: Wallet[] = [];
+  public venlyConnect!: VenlyConnect;
+  public options!: VenlyProviderOptions;
+  private authResult: any;
+  private lastWalletsFetch?: number;
+  private wallets: Wallet[] = [];
   
   constructor(options: VenlyProviderOptions) {
     this.options = options;
@@ -20,12 +20,11 @@ export class VenlyController {
     });
   }
 
-  async authenticate(): Promise<AuthenticationResult>  {
+  async authenticate(authenticationOptions?: AuthenticationOptions): Promise<AuthenticationResult>  {
     if (!this.authResult || !this.authResult.isAuthenticated)
       this.authResult = await this.venlyConnect.flows.authenticate({
-        windowMode: this.options.authenticationOptions?.windowMode,
-        forcePopup: true,
-        closePopup: this.options.authenticationOptions?.closePopup
+        ...authenticationOptions,
+        forcePopup: true
       });
     return this.authResult;
   }
