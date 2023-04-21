@@ -38,14 +38,14 @@ export class VenlyProvider {
     if (!this._provider)
       throw new Error('Please initialise provider first (Venly.createProvider)');
 
-    return await this.venlyController.checkAuthenticated();
+    return this.venlyController.checkAuthenticated();
   }
 
   public async authenticate(authenticationOptions?: AuthenticationOptions): Promise<Account | {}> {
     if (!this._provider)
       throw new Error('Please initialise provider first (Venly.createProvider)');
 
-    return await this.venlyController.authenticate(authenticationOptions);
+    return this.venlyController.authenticate(authenticationOptions);
   }
 
   public async logout() {
