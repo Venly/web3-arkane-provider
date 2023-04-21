@@ -25,7 +25,6 @@ export class VenlyProvider {
     if (!this._provider)
       throw new Error('Please initialise provider first (Venly.createProvider)');
       
-    this.venlyController.lastWalletsFetch = undefined;
     const options = {...this.venlyController.options,
       secretType: secretType,
       ...chainId && { environment: SECRET_TYPES[Number(chainId)].env }
@@ -39,14 +38,14 @@ export class VenlyProvider {
     if (!this._provider)
       throw new Error('Please initialise provider first (Venly.createProvider)');
 
-    return await this.venlyController.checkAuthenticated();
+    return this.venlyController.checkAuthenticated();
   }
 
   public async authenticate(authenticationOptions?: AuthenticationOptions): Promise<Account | {}> {
     if (!this._provider)
       throw new Error('Please initialise provider first (Venly.createProvider)');
 
-    return this.venlyController.authResult = await this.venlyController.startGetAccountFlow(authenticationOptions);
+    return this.venlyController.authenticate(authenticationOptions);
   }
 
   public async logout() {
