@@ -19,16 +19,6 @@ export const CHAIN_IDS: { [id: string]: any } = {
     staging: 0x7a69,
     qa: 0x7a69
   },
-  HEDERA: {
-    production: 0x127,
-    staging: 0x128,
-    qa: 0x128
-  },
-  VECHAIN: {
-    production: 0x186a9,
-    staging: 0x186aa,
-    qa: 0x186aa
-  },
   MATIC: {
     production: 0x89,
     staging: 0x13881,
@@ -69,22 +59,6 @@ export const SECRET_TYPES: { [id: number]: any } = {
     env: 'staging',
     secretType: 'GOCHAIN',
   },
-  0x127: {
-    env: 'production',
-    secretType: 'HEDERA',
-  },
-  0x128: {
-    env: 'staging',
-    secretType: 'HEDERA',
-  },
-  0x186a9: {
-    env: 'production',
-    secretType: 'VECHAIN',
-  },
-  0x186aa: {
-    env: 'staging',
-    secretType: 'VECHAIN',
-  },
   0x89: {
     env: 'production',
     secretType: 'MATIC',
@@ -111,10 +85,6 @@ export const REQUEST_TYPES: { [id: string]: any } = {
   GOCHAIN: {
     transaction: 'GO_TRANSACTION',
     signature: 'GOCHAIN_TRANSACTION',
-  },
-  VECHAIN: {
-    transaction: 'VET_TRANSACTION',
-    signature: 'VECHAIN_TRANSACTION',
   },
   MATIC: {
     transaction: 'MATIC_TRANSACTION',
