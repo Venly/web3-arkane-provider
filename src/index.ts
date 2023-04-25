@@ -118,7 +118,7 @@ export class VenlyProvider {
   private getRpcUrl(options: VenlyProviderOptions): string {
     const secretType = options.secretType!.toLowerCase();
     let environment = options.environment!.replace('-local', '');
-    return environment.startsWith('prod') ? `https://${secretType}-node.arkane.network` : `https://${secretType}-node-${environment}.arkane.network`;
+    return environment.startsWith('prod') ? `https://${secretType}-node.venly.io` : `https://${secretType}-node-${environment}.venly.io`;
   }
   
 }
