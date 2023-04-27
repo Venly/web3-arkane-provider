@@ -20,6 +20,11 @@ export class VenlyController {
     });
   }
 
+  resetWallets() {
+    this.lastWalletsFetch = undefined;
+    this.wallets = [];
+  }
+
   async authenticate(authenticationOptions?: AuthenticationOptions): Promise<AuthenticationResult>  {
     if (!this.authResult || !this.authResult.isAuthenticated)
       this.authResult = await this.venlyConnect.flows.authenticate({

@@ -61,7 +61,13 @@ export class VenlyProvider {
     options.secretType ??= SecretType.ETHEREUM;
     options.skipAuthentication ??= false;
 
-    this.venlyController = new VenlyController(options);
+    if (!this.venlyController || this.venlyController.options.environment != options.environment)
+      this.venlyController = new VenlyController(options);
+    else {
+      this.venlyController.options = options;
+      this.venlyController.resetWallets();
+    }
+      
     const engine = new JsonRpcEngine();
 
     const venlyMiddleware = createVenlyMiddleware({
