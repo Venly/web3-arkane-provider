@@ -145,6 +145,12 @@ export class VenlyController {
     });
   }
 
+  async getPendingNonce(nonce: string) {
+    const res = await this.venlyConnect.api.getPendingTransactions();
+    const pendingNonce = Number(nonce) + res.length;
+    return '0x' + pendingNonce.toString(16);
+  }
+
   private async refreshWallets() {
     if (!this.lastWalletsFetch || (Date.now() - this.lastWalletsFetch) > 5000) {
       let wallets = await this.venlyConnect.api.getWallets({ secretType: this.options.secretType, includeBalance: false });

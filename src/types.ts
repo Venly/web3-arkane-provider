@@ -1,28 +1,28 @@
 export const CHAIN_IDS: { [id: string]: any } = {
   AVAC: {
-    production: 0xA86A,
-    staging: 0xA869,
-    qa: 0xA869
+    production: '0xA86A',
+    staging: '0xA869',
+    qa: '0xA869'
   },
   BSC: {
-    production: 0x38,
-    staging: 0x61,
-    qa: 0x61
+    production: '0x38',
+    staging: '0x61',
+    qa: '0x61'
   },
   ETHEREUM: {
-    production: 0x1,
-    staging: 0x5,
-    qa: 0x5
+    production: '0x1',
+    staging: '0x5',
+    qa: '0x5'
   },
   GOCHAIN: {
-    production: 0x3c,
-    staging: 0x7a69,
-    qa: 0x7a69
+    production: '0x3c',
+    staging: '0x7a69',
+    qa: '0x7a69'
   },
   MATIC: {
-    production: 0x89,
-    staging: 0x13881,
-    qa: 0x13881
+    production: '0x89',
+    staging: '0x13881',
+    qa: '0x13881'
   },
 }
 
