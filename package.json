@@ -37,6 +37,7 @@
   },
   "homepage": "https://venly.io",
   "dependencies": {
+    "@ethersproject/bignumber": "^5.7.0",
     "@metamask/eth-json-rpc-middleware": "^11.0.0",
     "@metamask/eth-json-rpc-provider": "^1.0.0",
     "@venly/connect": "^1.41.0-develop.37",

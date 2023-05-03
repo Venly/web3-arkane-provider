@@ -1,6 +1,7 @@
 import { VenlyConnect, Wallet, AuthenticationOptions, Account, AuthenticationResult } from '@venly/connect'
 import { VenlyProviderOptions } from './index';
 import { REQUEST_TYPES } from './types';
+import { BigNumber } from '@ethersproject/bignumber';
 
 export class VenlyController {
 
@@ -58,10 +59,10 @@ export class VenlyController {
       type: REQUEST_TYPES[this.options.secretType!].transaction,
       ...params.to && { to: params.to },
       ...params.data && { data: params.data },
-      ...params.value && { value: BigInt(params.value).toString() },
-      ...params.gas && { gas: BigInt(params.gas).toString() },
-      ...params.gasPrice && { gasPrice: BigInt(params.gasPrice).toString() },
-      ...params.nonce && { nonce: BigInt(params.nonce).toString() }
+      ...params.value && { value: BigNumber.from(params.value).toString() },
+      ...params.gas && { gas: BigNumber.from(params.gas).toString() },
+      ...params.gasPrice && { gasPrice: BigNumber.from(params.gasPrice).toString() },
+      ...params.nonce && { nonce: BigNumber.from(params.nonce).toString() }
     };
     const res = await signer.executeNativeTransaction(transactionData);
     if (res.status === 'SUCCESS')
@@ -77,10 +78,10 @@ export class VenlyController {
       type: REQUEST_TYPES[this.options.secretType!].signature,
       ...params.to && { to: params.to },
       ...params.data && { data: params.data },
-      ...params.value && { value: BigInt(params.value).toString() },
-      ...params.gas && { gas: BigInt(params.gas).toString() },
-      ...params.gasPrice && { gasPrice: BigInt(params.gasPrice).toString() },
-      ...params.nonce && { nonce: BigInt(params.nonce).toString() }
+      ...params.value && { value: BigNumber.from(params.value).toString() },
+      ...params.gas && { gas: BigNumber.from(params.gas).toString() },
+      ...params.gasPrice && { gasPrice: BigNumber.from(params.gasPrice).toString() },
+      ...params.nonce && { nonce: BigNumber.from(params.nonce).toString() }
     };
     const res = await signer.sign(transactionData);
     if (res.status === 'SUCCESS')
@@ -130,19 +131,29 @@ export class VenlyController {
 
   async getTransactionByHash(hash: string) {
     const res: any = await this.venlyConnect.api.getTransactionStatus(hash, this.options.secretType!);
-    res.value = BigInt(res.rawValue).toString();
-    if (!res.data) res.data = '0x';
-    const {rawValue, ...transaction} = res;
-    return transaction;
+    if (res?.status == 'SUCCEEDED') {
+      res.value = BigNumber.from(res.rawValue).toString();
+      if (!res.data) res.data = '0x';
+      const {rawValue, ...transaction} = res;
+      return transaction;
+    }
+    else 
+      return null;
   }
 
   async getPendingTransactions() {
     const res: any = await this.venlyConnect.api.getPendingTransactions();
     return res.map((tx: any) => {
       const {rawValue, type, ...transaction} = tx.transactionRequest;
-      transaction.value = BigInt(transaction.value).toString();
+      transaction.value = BigNumber.from(transaction.value).toString();
       return transaction;
     });
+  }
+
+  async getPendingNonce(nonce: string) {
+    const res = await this.venlyConnect.api.getPendingTransactions();
+    const pendingNonce = Number(nonce) + res.length;
+    return '0x' + pendingNonce.toString(16);
   }
 
   private async refreshWallets() {
