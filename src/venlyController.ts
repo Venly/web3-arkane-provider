@@ -105,10 +105,20 @@ export class VenlyController {
 
   async processTypedMessage(params: any, req: any, version: any): Promise<string> {
     const signer = this.venlyConnect.createSigner();
+    
+    try {
+      var typedData = JSON.parse(params.data);
+    }
+    catch {
+      var typedData = params.data;
+    }
+    if (typedData?.domain?.chainId)
+      typedData.domain.chainId = BigNumber.from(typedData.domain.chainId).toString();
+
     const res = await signer.signEip712({
       walletId: this.getWalletIdFrom(params.from),
       secretType: this.options.secretType!,
-      data: JSON.parse(params.data)
+      data: typedData
     });
     if (res.status === 'SUCCESS')
         return res.result.signature;
