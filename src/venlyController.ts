@@ -106,11 +106,12 @@ export class VenlyController {
   async processTypedMessage(params: any, req: any, version: any): Promise<string> {
     const signer = this.venlyConnect.createSigner();
     
-    let typedData = params.data;
     try {
-      typedData = JSON.parse(typedData);
+      var typedData = JSON.parse(params.data);
     }
-    catch {}
+    catch {
+      var typedData = params.data;
+    }
     if (typedData?.domain?.chainId)
       typedData.domain.chainId = BigNumber.from(typedData.domain.chainId).toString();
 
