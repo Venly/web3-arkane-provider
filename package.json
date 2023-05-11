@@ -40,7 +40,7 @@
     "@ethersproject/bignumber": "^5.7.0",
     "@metamask/eth-json-rpc-middleware": "^11.0.0",
     "@metamask/eth-json-rpc-provider": "^1.0.0",
-    "@venly/connect": "^1.41.0-develop.37",
+    "@venly/connect": "^2.0.0",
     "eth-block-tracker": "^7.0.0",
     "eth-json-rpc-filters": "^6.0.0",
     "json-rpc-engine": "^6.1.0"
