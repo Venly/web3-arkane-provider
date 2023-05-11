@@ -10,7 +10,8 @@ Your existing infrastructure is just one code block away from being **Venly Wall
 ![Venly Components](https://i.imgur.com/T5sWhZa.png)
 
 # Documentation
-The full documentation of the Venly Web3 Provider can be found here: https://docs.venly.io/widget/web3-provider/getting-started
+* [Changelog](https://github.com/ArkaneNetwork/web3-arkane-provider/blob/develop/CHANGELOG.md)
+* [Getting Started](https://docs.venly.io/widget/web3-provider/getting-started)
 
 # Getting Started
 
