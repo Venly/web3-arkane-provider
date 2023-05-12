@@ -133,7 +133,7 @@ export class VenlyProvider {
 /**
  * @type {Object}
  * @property {string} clientId - The clientId to connect to Venly
- * @property {string} environment - The environment to which you want to connect, possible values are 'staging' and 'prod'. Default set to 'prod'.
+ * @property {string} environment - The environment to which you want to connect, possible values are 'staging', 'sandbox' and 'prod'. Default set to 'prod'.
  * @property {SecretType} secretType - The secret type to use. Allowed types for web3 provider: ETHEREUM, BSC, MATIC https://docs.venly.io/widget/widget-advanced/object-type-reference/secrettype
  * @property {WindowMode} windowMode - The sign method you want to use, possible values are POPUP or REDIRECT. Default set to POPUP.
  * @property {function} bearerTokenProvider - You can implement all the authentication handling yourself and provide Venly Connect with your own bearer token provider. The bearer token provider is a function returning the bearer token (access token) to login to Venly. Default the Venly Connect authentication client is used.

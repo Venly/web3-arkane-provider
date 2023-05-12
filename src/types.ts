@@ -1,26 +1,31 @@
 export const CHAIN_IDS: { [id: string]: any } = {
   AVAC: {
     production: '0xA86A',
+    sandbox: '0xA869',
     staging: '0xA869',
     qa: '0xA869'
   },
   BSC: {
     production: '0x38',
+    sandbox: '0x61',
     staging: '0x61',
     qa: '0x61'
   },
   ETHEREUM: {
     production: '0x1',
+    sandbox: '0x5',
     staging: '0x5',
     qa: '0x5'
   },
   GOCHAIN: {
     production: '0x3c',
+    sandbox: '0x7a69',
     staging: '0x7a69',
     qa: '0x7a69'
   },
   MATIC: {
     production: '0x89',
+    sandbox: '0x13881',
     staging: '0x13881',
     qa: '0x13881'
   },
@@ -32,7 +37,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'AVAC',
   },
   0xA869: {
-    env: 'staging',
+    env: 'sandbox',
     secretType: 'AVAC',
   },
   0x38: {
@@ -40,7 +45,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'BSC',
   },
   0x61: {
-    env: 'staging',
+    env: 'sandbox',
     secretType: 'BSC',
   },
   0x1: {
@@ -48,7 +53,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'ETHEREUM',
   },
   0x5: {
-    env: 'staging',
+    env: 'sandbox',
     secretType: 'ETHEREUM',
   },
   0x3c: {
@@ -56,7 +61,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'GOCHAIN',
   },
   0x7a69: {
-    env: 'staging',
+    env: 'sandbox',
     secretType: 'GOCHAIN',
   },
   0x89: {
@@ -64,7 +69,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     secretType: 'MATIC',
   },
   0x13881: {
-    env: 'staging',
+    env: 'sandbox',
     secretType: 'MATIC',
   },
 }
