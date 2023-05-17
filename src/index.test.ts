@@ -2,7 +2,6 @@ import { SecretType } from '@venly/connect';
 import { VenlyProvider } from "./index";
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-require('isomorphic-fetch');
 
 var venly: VenlyProvider;
 var engine: JsonRpcEngine;
@@ -71,7 +70,7 @@ describe('Network Middleware', () => {
       method: 'eth_chainId'
     };
     return engine.handle(req).then((res: any) => {
-      expect(res.result).toStrictEqual(0x5);
+      expect(res.result).toStrictEqual("0x5");
     });
   })
   test('eth_blockNumber returns valid block number', () => {
