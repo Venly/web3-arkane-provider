@@ -12,8 +12,10 @@ pipeline {
     stages {
         stage ('Bump version (develop)') {
             when {
-                expression {
-                    return env.BRANCH_NAME == 'develop'
+                anyOf {
+                    branch 'develop'
+                    branch 'hotfix-*'
+                    branch 'release-*'
                 }
             }
             steps {
@@ -28,19 +30,35 @@ pipeline {
               sh "npm run build"
             }
         }
-        stage ('Publish (develop)') {
+        stage('Publish to npmjs') {
+            environment {
+                NPM_KEY = credentials('NPM_KEY')
+            }
             when {
-                expression {
-                    GIT_BRANCH = env.BRANCH_NAME
-                    return GIT_BRANCH == 'develop'
+                anyOf {
+                    branch 'develop'
+                    branch 'hotfix-*'
+                    branch 'release-*'
+                    branch 'master'
                 }
             }
             steps {
                 sh "printf '//registry.npmjs.org/:_authToken=' > .npmrc && printf '${NPM_KEY}' >> .npmrc"
-                sh 'npm publish --tag develop'
-                withCredentials([usernamePassword(credentialsId: 'GITHUB_CRED', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/ArkaneNetwork/web3-arkane-provider.git HEAD:refs/heads/${GIT_BRANCH}'
-                    sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/ArkaneNetwork/web3-arkane-provider.git --tags'
+                script {
+                    if (env.BRANCH_NAME == 'master') {
+                        sh 'npm publish'
+                    } else {
+                        sh 'npm publish --tag ${BRANCH_NAME}'
+                    }
+                }
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_CRED', gitToolName: 'Default')]) {
+                    sh 'git push origin HEAD:refs/heads/${GIT_BRANCH}'
+                    sh 'git push origin --tags'
+                }
+            }
+            post {
+                always {
+                    cleanWs(deleteDirs: true, patterns: [[pattern: '.npmrc', type: 'INCLUDE']])
                 }
             }
         }
