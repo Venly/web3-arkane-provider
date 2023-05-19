@@ -858,10 +858,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@venly/connect@^2.2.0-develop.2":
-  "integrity" "sha512-lvWPjF23jbi+iC3AXDti9BCyGLYuljF2DbuHw/2D8T0VM+c6zmH0LWujXFPpbLTSHLvgbTQnNVxdj7p+ld80hw=="
-  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-2.2.0-develop.2.tgz"
-  "version" "2.2.0-develop.2"
+"@venly/connect@^2.2.0":
+  "integrity" "sha512-fSG+loJ7q6Oy8FCIPPIba3z6Ss6TEJ4ZRGDSoQw7Od0JCaSPPJ1MOA9/4MplVIbj3eCqR/FS11tq0K1jpQZavQ=="
+  "resolved" "https://registry.npmjs.org/@venly/connect/-/connect-2.2.0.tgz"
+  "version" "2.2.0"
   dependencies:
     "@types/node" "^12.7.1"
     "es6-promise" "^4.2.8"
