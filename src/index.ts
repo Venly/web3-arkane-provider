@@ -2,7 +2,8 @@ import { SecretType, WindowMode, AuthenticationOptions, AuthenticationResult, Ac
 import { VenlyController } from './venlyController';
 import { CHAIN_IDS, SECRET_TYPES } from './types';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import { providerFromEngine, providerFromMiddleware } from '@metamask/eth-json-rpc-provider';
+import { providerFromMiddleware } from '@metamask/eth-json-rpc-provider';
+import providerFromEngine from './providerFromEngine';
 import createVenlyMiddleware from './middleware/createVenlyMiddleware';
 import createJsonRpcClient from './createJsonRpcClient';
 const createFilterMiddleware = require('eth-json-rpc-filters');
@@ -29,8 +30,10 @@ export class VenlyProvider {
       secretType: secretType,
       ...chainId && { environment: SECRET_TYPES[Number(chainId)].env }
     };
+    this._provider.engine = this.#createEngine(options);
     this._provider.emit('chainChanged', chainId);
-    this._provider = await this.createProvider(options);
+    this._provider.emit('accountsChanged', await this.venlyController.getAccounts());
+
     return this._provider;
   }
 
@@ -55,19 +58,21 @@ export class VenlyProvider {
     await this.venlyController.logout();
   }
 
-  public async createProvider(options: VenlyProviderOptions): Promise<any> {
-    options.environment ??= 'production';
-    options.windowMode ??= WindowMode.POPUP;
-    options.secretType ??= SecretType.ETHEREUM;
-    options.skipAuthentication ??= false;
+  #getRpcUrl(options: VenlyProviderOptions): string {
+    const secretType = options.secretType!.toLowerCase();
+    let environment = options.environment!.replace('-local', '');
+    
+    return environment.startsWith('prod') ? `https://${secretType}-node.venly.io` : `https://${secretType}-node-${environment}.venly.io`;
+  }
 
+  #createEngine(options: VenlyProviderOptions) {
     if (!this.venlyController || this.venlyController.options.environment != options.environment)
       this.venlyController = new VenlyController(options);
     else {
       this.venlyController.options = options;
       this.venlyController.resetWallets();
     }
-      
+
     const engine = new JsonRpcEngine();
 
     const venlyMiddleware = createVenlyMiddleware({
@@ -86,9 +91,10 @@ export class VenlyProvider {
     });
     engine.push(venlyMiddleware);
 
-    const rpcUrl = this.getRpcUrl(options);
-    const chainId = CHAIN_IDS[options.secretType][options.environment];
+    const rpcUrl = this.#getRpcUrl(options);
+    const chainId = CHAIN_IDS[options.secretType!][options.environment!];
     const { networkMiddleware, blockTracker } = createJsonRpcClient({ rpcUrl, chainId });
+    this._blockTracker = blockTracker;
     const networkProvider = providerFromMiddleware(networkMiddleware);
     const filterMiddleware = createFilterMiddleware({
       provider: networkProvider,
@@ -105,27 +111,22 @@ export class VenlyProvider {
     engine.push(subscriptionManager.middleware);
     engine.push(networkMiddleware);
 
+    return engine;
+  }
+
+  public async createProvider(options: VenlyProviderOptions): Promise<any> {
+    options.environment ??= 'production';
+    options.windowMode ??= WindowMode.POPUP;
+    options.secretType ??= SecretType.ETHEREUM;
+    options.skipAuthentication ??= false;
+      
+    const engine = this.#createEngine(options);
     const provider: any = providerFromEngine(engine);
-    provider.request = function(req: any) {
-      return new Promise((resolve, reject) => {
-        provider.send(req, (err: any, res: any) => {
-          if (err) reject(res.error);
-          else resolve(res.result)
-        });
-      });
-    }
     this._provider = provider;
-    this._provider.emit('connect', { chainId });
-    this._blockTracker = blockTracker;
+
     if (!options.skipAuthentication)
       await this.venlyController.getAccounts();
     return this._provider;
-  }
-
-  private getRpcUrl(options: VenlyProviderOptions): string {
-    const secretType = options.secretType!.toLowerCase();
-    let environment = options.environment!.replace('-local', '');
-    return environment.startsWith('prod') ? `https://${secretType}-node.venly.io` : `https://${secretType}-node-${environment}.venly.io`;
   }
   
 }
