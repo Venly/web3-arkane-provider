@@ -1,4 +1,4 @@
-import { SecretType, WindowMode, AuthenticationOptions, AuthenticationResult, Account } from '@venly/connect'
+import { SecretType, WindowMode, AuthenticationOptions, AuthenticationResult, Account } from '@venly/connect';
 import { VenlyController } from './venlyController';
 import { CHAIN_IDS, SECRET_TYPES } from './types';
 import { JsonRpcEngine } from 'json-rpc-engine';
@@ -6,8 +6,8 @@ import { providerFromMiddleware } from '@metamask/eth-json-rpc-provider';
 import providerFromEngine from './providerFromEngine';
 import createVenlyMiddleware from './middleware/createVenlyMiddleware';
 import createJsonRpcClient from './createJsonRpcClient';
-const createFilterMiddleware = require('eth-json-rpc-filters');
-const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager');
+import createFilterMiddleware from 'eth-json-rpc-filters';
+import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 
 export { SecretType, WindowMode } from '@venly/connect';
 export { SECRET_TYPES } from './types';
