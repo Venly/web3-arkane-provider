@@ -56,6 +56,7 @@ export class VenlyProvider {
       throw new Error('Please initialise provider first (Venly.createProvider)');
 
     await this.venlyController.logout();
+    this._provider.emit('disconnect', { message: 'disconnect', code: 1000 });
   }
 
   #getRpcUrl(options: VenlyProviderOptions): string {
