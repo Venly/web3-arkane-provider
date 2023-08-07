@@ -50,11 +50,11 @@ The VenlyProvider object is the gateway for creating the web3 wrapper and fully 
 ```javascript
 const options: VenlyProviderOptions = {
   clientId: 'YOUR_CLIENT_ID',
-  environment: 'sandbox', //optional, production by default  
-  secretType: SecretType.ETHEREUM, //optional, ETHEREUM by default  
-  windowMode: WindowMode.POPUP, //optional, POPUP by default
-  bearerTokenProvider: () => 'obtained_bearer_token', //optional, default undefined
-  skipAuthentication: false //optional, false by default
+  environment: 'sandbox', //optional, defaults to production  
+  secretType: SecretType.ETHEREUM, //optional, defaults to ETHEREUM  
+  windowMode: WindowMode.POPUP, //optional, defaults to POPUP
+  bearerTokenProvider: () => 'obtained_bearer_token', //optional
+  skipAuthentication: false //optional, defaults to false
 };
 
 const provider = await Venly.createProvider(options);
