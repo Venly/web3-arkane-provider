@@ -1,6 +1,5 @@
 Venly Web3 Provider<img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
 ===
-# Introduction
 
 > The Venly Web3 provider is a smart wrapper around the existing Web3 Ethereum JavaScript API.
 
@@ -11,9 +10,7 @@ Your existing infrastructure is just one code block away from being **Venly Wall
 
 # Documentation
 * [Changelog](https://github.com/ArkaneNetwork/web3-arkane-provider/blob/develop/CHANGELOG.md)
-* [Getting Started](https://docs.venly.io/widget/web3-provider/getting-started)
-
-# Getting Started
+* [Venly Docs](https://docs.venly.io/widget/web3-provider/getting-started)
 
 ## Adding the library
 
@@ -87,6 +84,59 @@ Venly.connect.getProfile();
 ```
 
 The full documentation for Venly Connect can be found here: https://docs.venly.io/widget/widget/introduction
+
+## Build Environments
+
+Many of required dependencies are not normally included in browser builds (namely the node built-in modules such as `crypto`, `buffer`, `util` etc). If you are having build issues you can try the following bundler configs to resolve these dependency issues:
+
+#### Create-React-App
+
+[React App Rewired](https://www.npmjs.com/package/react-app-rewired) provides a simple way to override webpack config which is obfuscated in Create React App built applications.
+
+Add the following dev dependencies:
+`npm i --save-dev assert buffer crypto-browserify stream-http https-browserify process stream-browserify url browserify-zlib`
+
+**OR**
+
+`yarn add assert buffer crypto-browserify stream-http https-browserify process stream-browserify url browserify-zlib -D`
+
+Create a `config-overrides.js` file in the root directory:
+
+```javascript copy
+const webpack = require('webpack')
+
+module.exports = function override(config) {
+  const fallback = config.resolve.fallback || {}
+  Object.assign(fallback, {
+    assert: require.resolve('assert'),
+    buffer: require.resolve('buffer'),
+    crypto: require.resolve('crypto-browserify'),
+    http: require.resolve('stream-http'),
+    https: require.resolve('https-browserify'),
+    process: require.resolve('process/browser'),
+    stream: require.resolve('stream-browserify'),
+    url: require.resolve('url'),
+    zlib: require.resolve('browserify-zlib')
+  })
+  config.resolve.fallback = fallback
+  config.plugins = (config.plugins || []).concat([
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer']
+    })
+  ])
+  config.ignoreWarnings = [/Failed to parse source map/]
+  config.module.rules.push({
+    test: /\.(js|mjs|jsx)$/,
+    enforce: 'pre',
+    loader: require.resolve('source-map-loader'),
+    resolve: {
+      fullySpecified: false
+    }
+  })
+  return config
+}
+```
 
 # Example Project
 We've created two examples of the Web3 Provider in our demo application.
