@@ -1,7 +1,7 @@
 import { SecretType, WindowMode, AuthenticationOptions, AuthenticationResult, Account } from '@venly/connect';
 import { VenlyController } from './venlyController';
 import { CHAIN_IDS, SECRET_TYPES } from './types';
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { providerFromMiddleware } from '@metamask/eth-json-rpc-provider';
 import providerFromEngine from './providerFromEngine';
 import createVenlyMiddleware from './middleware/createVenlyMiddleware';
@@ -94,7 +94,7 @@ export class VenlyProvider {
 
     const rpcUrl = this.#getRpcUrl(options);
     const chainId = CHAIN_IDS[options.secretType!][options.environment!];
-    const { networkMiddleware, blockTracker } = createJsonRpcClient({ rpcUrl, chainId });
+    const { networkMiddleware, blockTracker } = createJsonRpcClient({ rpcUrl, chainId, venlyConnect: this.venlyController.venlyConnect });
     this._blockTracker = blockTracker;
     const networkProvider = providerFromMiddleware(networkMiddleware);
     const filterMiddleware = createFilterMiddleware({

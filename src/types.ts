@@ -96,3 +96,6 @@ export const REQUEST_TYPES: { [id: string]: any } = {
     signature: 'MATIC_TRANSACTION',
   },
 }
+
+export type BlockData = string | string[];
+export type Block = Record<string, BlockData>;
