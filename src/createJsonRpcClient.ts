@@ -1,19 +1,19 @@
-import { createAsyncMiddleware, mergeMiddleware } from 'json-rpc-engine';
+import { createAsyncMiddleware, mergeMiddleware } from '@metamask/json-rpc-engine';
 import {
-  createFetchMiddleware,
   createBlockRefRewriteMiddleware,
   createBlockCacheMiddleware,
   createInflightCacheMiddleware,
   createBlockTrackerInspectorMiddleware
 } from '@metamask/eth-json-rpc-middleware';
+import { createFetchMiddleware } from './createFetchMiddleware';
 import { providerFromMiddleware } from '@metamask/eth-json-rpc-provider';
 import { PollingBlockTracker } from 'eth-block-tracker';
 const MILLISECOND = 1;
 const SECOND = MILLISECOND * 1000;
 
-export default function createJsonRpcClient({ rpcUrl, chainId }: any) {
+export default function createJsonRpcClient({ rpcUrl, chainId, venlyConnect }: any) {
   const blockTrackerOpts = {};
-  const fetchMiddleware = createFetchMiddleware({ btoa, fetch, rpcUrl });
+  const fetchMiddleware = createFetchMiddleware({ btoa, fetch, rpcUrl, venlyConnect });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
   const blockTracker = new PollingBlockTracker({
     ...blockTrackerOpts,

@@ -1,6 +1,6 @@
 import { SecretType } from '@venly/connect';
 import { VenlyProvider } from "./index";
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 require('isomorphic-fetch');
 
