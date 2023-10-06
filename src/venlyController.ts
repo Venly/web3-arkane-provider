@@ -52,7 +52,8 @@ export class VenlyController {
     return this.wallets.map((wallet) => wallet.address);
   }
 
-  async processTransaction(params: any, req: any) {
+  async processTransaction(txParams: any, req: any) {
+    const params = req.params[0];
     const signer = this.venlyConnect.createSigner();
     const transactionData = {
       walletId: this.getWalletIdFrom(params.from),
@@ -71,7 +72,8 @@ export class VenlyController {
       throw new Error(res.errors?.join(', '));
   }
 
-  async processSignTransaction(params: any, req: any): Promise<string> {
+  async processSignTransaction(txParams: any, req: any): Promise<string> {
+    const params = req.params[0];
     const signer = this.venlyConnect.createSigner();
     const transactionData = {
       walletId: this.getWalletIdFrom(params.from),
