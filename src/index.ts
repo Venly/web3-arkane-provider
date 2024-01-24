@@ -93,7 +93,10 @@ export class VenlyProvider {
     engine.push(venlyMiddleware);
 
     const rpcUrl = this.#getRpcUrl(options);
-    const chainId = CHAIN_IDS[options.secretType!][options.environment!];
+    const chainId = CHAIN_IDS[options.secretType!][options.environment!] ?? CHAIN_IDS[options.secretType!]['production'];
+    if (!chainId)
+      throw new Error(`Unable to determine chainId for secretType: ${options.secretType} and environment: ${options.environment}`);
+
     const { networkMiddleware, blockTracker } = createJsonRpcClient({ rpcUrl, chainId, venlyConnect: this.venlyController.venlyConnect });
     this._blockTracker = blockTracker;
     const networkProvider = providerFromMiddleware(networkMiddleware);
