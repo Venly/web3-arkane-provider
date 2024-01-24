@@ -1,4 +1,4 @@
-export const CHAIN_IDS: { [id: string]: any } = {
+export const CHAIN_IDS = {
   AVAC: {
     production: '0xA86A',
     sandbox: '0xA869',
@@ -13,9 +13,9 @@ export const CHAIN_IDS: { [id: string]: any } = {
   },
   ETHEREUM: {
     production: '0x1',
-    sandbox: '0x5',
-    staging: '0x5',
-    qa: '0x5'
+    sandbox: '0xaa36a7',
+    staging: '0xaa36a7',
+    qa: '0xaa36a7'
   },
   GOCHAIN: {
     production: '0x3c',
@@ -31,7 +31,7 @@ export const CHAIN_IDS: { [id: string]: any } = {
   },
 }
 
-export const SECRET_TYPES: { [id: number]: any } = {
+export const SECRET_TYPES = {
   0xA86A: {
     env: 'production',
     secretType: 'AVAC',
@@ -52,7 +52,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
     env: 'production',
     secretType: 'ETHEREUM',
   },
-  0x5: {
+  0xaa36a7: {
     env: 'sandbox',
     secretType: 'ETHEREUM',
   },
@@ -74,7 +74,7 @@ export const SECRET_TYPES: { [id: number]: any } = {
   },
 }
 
-export const REQUEST_TYPES: { [id: string]: any } = {
+export const REQUEST_TYPES = {
   AVAC: {
     transaction: 'AVAC_TRANSACTION',
     signature: 'AVAC_TRANSACTION',
