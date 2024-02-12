@@ -1,4 +1,11 @@
-export const CHAIN_IDS = {
+export const CHAIN_IDS: {
+  [secretType: string]: { 
+    production: string, 
+    sandbox: string,
+    staging: string,
+    qa: string,
+  }
+} = {
   AVAC: {
     production: '0xA86A',
     sandbox: '0xA869',
@@ -31,7 +38,12 @@ export const CHAIN_IDS = {
   },
 }
 
-export const SECRET_TYPES = {
+export const CHAIN_CONFIGS: {
+  [chainId: number]: { 
+    env: string, 
+    secretType: string,
+  }
+} = {
   0xA86A: {
     env: 'production',
     secretType: 'AVAC',
@@ -74,7 +86,12 @@ export const SECRET_TYPES = {
   },
 }
 
-export const REQUEST_TYPES = {
+export const REQUEST_TYPES: {
+  [secretType: string]: { 
+    transaction: string, 
+    signature: string,
+  }
+} = {
   AVAC: {
     transaction: 'AVAC_TRANSACTION',
     signature: 'AVAC_TRANSACTION',
