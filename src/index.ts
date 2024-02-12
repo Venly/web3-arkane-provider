@@ -1,6 +1,6 @@
 import { SecretType, WindowMode, AuthenticationOptions, AuthenticationResult, Account } from '@venly/connect';
 import { VenlyController } from './venlyController';
-import { CHAIN_IDS, SECRET_TYPES } from './types';
+import { CHAIN_IDS, CHAIN_CONFIGS } from './types';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { providerFromMiddleware } from '@metamask/eth-json-rpc-provider';
 import providerFromEngine from './providerFromEngine';
@@ -10,7 +10,7 @@ import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 
 export { SecretType, WindowMode } from '@venly/connect';
-export { SECRET_TYPES } from './types';
+export { CHAIN_CONFIGS } from './types';
 
 export class VenlyProvider {
 
@@ -28,10 +28,10 @@ export class VenlyProvider {
       
     const options = {...this.venlyController.options,
       secretType: secretType,
-      ...chainId && { environment: SECRET_TYPES[Number(chainId)].env }
+      ...chainId && { environment: CHAIN_CONFIGS[Number(chainId)].env }
     };
     this._provider.engine = this.#createEngine(options);
-    this._provider.emit('chainChanged', chainId);
+    this._provider.emit('chainChanged', chainId ?? CHAIN_IDS[secretType][this.venlyController.options.environment!]);
     this._provider.emit('accountsChanged', await this.venlyController.getAccounts());
 
     return this._provider;
