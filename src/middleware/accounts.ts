@@ -1,5 +1,5 @@
 import { createAsyncMiddleware } from 'json-rpc-engine';
-import { SECRET_TYPES } from '../types';
+import { CHAIN_CONFIGS } from '../types';
 
 export function createRequestAccountsMiddleware({ getAccounts }: any) {
   return createAsyncMiddleware(async (req, res, next) => {
@@ -18,7 +18,7 @@ export function createSwitchEthereumChainMiddleware({ changeSecretType }: any) {
       return;
     }
     const chainId = (req.params as any)[0]?.chainId;
-    const chain = SECRET_TYPES[Number(chainId)];
+    const chain = CHAIN_CONFIGS[Number(chainId)];
     
     if (chain && await changeSecretType(chain.secretType, chainId))
       res.result = null;
