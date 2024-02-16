@@ -6,6 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.3]
+### Fixed
+- Update `@venly/connect` to 2.3.2
+  - Fixes issue with `executeNativeTransaction()` not opening popup
+
+## [3.3.2]
+### Changed
+- Rename exported `SECRET_TYPES` to `CHAIN_CONFIGS`
+
+### Fixed
+- Update `@venly/connect` to 2.3.1
+  - Fixes issue with popup staying open during `getAccounts()`
+
+## [3.3.1]
+### Changed
+- Update `chainId` to reflect change from Etherum Goerli -> Ethereum Sepolia
+
+## [3.3.0]
+### Added
+- Attach bearer token to fetch calls made by RPC middleware
+
+## [3.2.4]
+### Fixed
+- Fix issue with login url in prod environment
+
+## [3.2.0]
+### Added
+- Add section on build environments to README
+
+## [3.1.3]
+### Added
+- Provider emits `'disconnect'` event on logout. Can be captured using `provider.on('disconnect', callback)`
+- Added `sandbox` environment
+
+## [3.1.1]
+### Changed
+- `wallet_switchEthereumChain` RPC method and `switchSecretType()` no longer require reinitializing the provider.
+
 ## [3.0.0]
 ### Added
 - Built using `json-rpc-engine` instead of the deprecated `web3-provider-engine`
