@@ -1,4 +1,4 @@
-import { VenlyConnect, Wallet, AuthenticationOptions, Account, AuthenticationResult } from '@venly/connect'
+import { VenlyConnect, Wallet, AuthenticationOptions, Account, AuthenticationResult, WindowMode } from '@venly/connect'
 import { VenlyProviderOptions } from './index';
 import { REQUEST_TYPES } from './types';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -52,7 +52,7 @@ export class VenlyController {
     return this.wallets.map((wallet) => wallet.address);
   }
 
-  async processTransaction(txParams: any, req: any) {
+  async processTransaction(txParams: any, req: any): Promise<string> {
     const params = req.params[0];
     const signer = this.venlyConnect.createSigner();
     const transactionData = {
@@ -66,8 +66,10 @@ export class VenlyController {
       ...params.nonce && { nonce: BigNumber.from(params.nonce).toString() }
     };
     const res = await signer.executeNativeTransaction(transactionData);
-    if (res.status === 'SUCCESS')
-      return res.result.transactionHash;
+    if (this.options.windowMode == WindowMode.REDIRECT)
+      return await new Promise(() => {});
+    else if (res.status === 'SUCCESS')
+      return res.result?.transactionHash;
     else
       throw new Error(res.errors?.join(', '));
   }
@@ -86,21 +88,25 @@ export class VenlyController {
       ...params.nonce && { nonce: BigNumber.from(params.nonce).toString() }
     };
     const res = await signer.sign(transactionData);
-    if (res.status === 'SUCCESS')
-      return res.result.signedTransaction;
+    if (this.options.windowMode == WindowMode.REDIRECT)
+      return await new Promise(() => {});
+    else if (res.status === 'SUCCESS')
+      return res.result?.signedTransaction;
     else
       throw new Error(res.errors?.join(', '));
   }
 
-  async processEthSignMessage(params: any, req: any) {
+  async processEthSignMessage(params: any, req: any): Promise<string>  {
     const signer = this.venlyConnect.createSigner();
     const res = await signer.signMessage({
       walletId: this.getWalletIdFrom(params.from),
       secretType: this.options.secretType!,
       data: params.data
     });
-    if (res.status === 'SUCCESS')
-      return res.result.signature;
+    if (this.options.windowMode == WindowMode.REDIRECT)
+      return await new Promise(() => {});
+    else if (res.status === 'SUCCESS')
+      return res.result?.signature;
     else
       throw new Error(res.errors?.join(', '));
   }
@@ -122,21 +128,25 @@ export class VenlyController {
       secretType: this.options.secretType!,
       data: typedData
     });
-    if (res.status === 'SUCCESS')
-        return res.result.signature;
+    if (this.options.windowMode == WindowMode.REDIRECT)
+      return await new Promise(() => {});
+    else if (res.status === 'SUCCESS')
+        return res.result?.signature;
     else
       throw new Error(res.errors?.join(', '));
   }
 
-  async processPersonalMessage(params: any, req: any) {
+  async processPersonalMessage(params: any, req: any): Promise<string> {
     const signer = this.venlyConnect.createSigner();
     const res = await signer.signMessage({
       walletId: this.getWalletIdFrom(params.from),
       secretType: this.options.secretType!,
       data: params.data
     });
-    if (res.status === 'SUCCESS')
-      return res.result.signature;
+    if (this.options.windowMode == WindowMode.REDIRECT)
+      return await new Promise(() => {});
+    else if (res.status === 'SUCCESS')
+      return res.result?.signature;
     else
       throw new Error(res.errors?.join(', '));
   }
