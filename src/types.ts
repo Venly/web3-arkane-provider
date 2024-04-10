@@ -32,9 +32,9 @@ export const CHAIN_IDS: {
   },
   MATIC: {
     production: '0x89',
-    sandbox: '0x13881',
-    staging: '0x13881',
-    qa: '0x13881'
+    sandbox: '0x13882',
+    staging: '0x13882',
+    qa: '0x13882'
   },
 }
 
