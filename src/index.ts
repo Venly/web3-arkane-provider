@@ -62,7 +62,7 @@ export class VenlyProvider {
   #getRpcUrl(options: VenlyProviderOptions): string {
     let environment = options.environment!.replace('-local', 'qa');
     const chainId = parseInt(CHAIN_IDS[options.secretType!][environment]);
-    return environment.startsWith('prod') ? `https://evm-node.venly.io/${chainId}` : `https://evm-node-${environment}.venly.io/${chainId}`;
+    return environment.startsWith('prod') ? `https://evm-node.venly.io/chains/${chainId}` : `https://evm-node-${environment}.venly.io/chains/${chainId}`;
   }
 
   #createEngine(options: VenlyProviderOptions) {
