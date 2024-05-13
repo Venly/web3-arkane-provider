@@ -36,6 +36,12 @@ export const CHAIN_IDS: {
     staging: '0x13882',
     qa: '0x13882'
   },
+  ARBITRUM: {
+    production: '0xa4b1',
+    sandbox: '0x66eee',
+    staging: '0x66eee',
+    qa: '0x66eee'
+  },
 }
 
 export const CHAIN_CONFIGS: {
@@ -84,6 +90,14 @@ export const CHAIN_CONFIGS: {
     env: 'sandbox',
     secretType: 'MATIC',
   },
+  0xa4b1: {
+    env: 'production',
+    secretType: 'ARBITRUM',
+  },
+  0x66eee: {
+    env: 'sandbox',
+    secretType: 'ARBITRUM',
+  },
 }
 
 export const REQUEST_TYPES: {
@@ -111,6 +125,10 @@ export const REQUEST_TYPES: {
   MATIC: {
     transaction: 'MATIC_TRANSACTION',
     signature: 'MATIC_TRANSACTION',
+  },
+  ARBITRUM: {
+    transaction: 'ARBITRUM_TRANSACTION',
+    signature: 'ARBITRUM_TRANSACTION',
   },
 }
 
