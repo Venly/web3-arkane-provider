@@ -1,6 +1,6 @@
 {
   "name": "@venly/web3-provider",
-  "version": "3.5.2",
+  "version": "3.5.3-SNAPSHOT.0",
   "description": "Venly enabled Web3 Provider for the web",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
