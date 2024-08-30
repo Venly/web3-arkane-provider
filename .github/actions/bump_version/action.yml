@@ -1,0 +1,35 @@
+name: 🔖 Bump Version
+description: "Bump Version"
+
+inputs:
+  token:
+    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    required: true
+
+outputs:
+  new_version:
+    description: "Bumped Version"
+    value: ${{ steps.bump_version.outputs.new_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: oleksiyrudenko/gha-git-credentials@v2.1.1
+      with:
+        global: false
+        name: ${{ github.actor }}
+        email: ${{ github.actor }}@venly.io
+        actor: ${{ github.actor }}
+        token: ${{ inputs.token }}
+
+    - name: 🔖 Bump Version
+      id: bump_version
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+        new_version=$(npm version prerelease --preid=develop)
+        new_version=${new_version#v}
+        echo "Bumped version to $new_version"
+        echo "new_version=$new_version" >> $GITHUB_ENV
+        echo "new_version=$new_version" >> $GITHUB_OUTPUT

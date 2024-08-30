@@ -1,0 +1,50 @@
+name: 🚀 Publish
+description: "Publish To Npm"
+
+inputs:
+  npm_token:
+    description: The npm Token
+    required: true
+  token:
+    description: The Github PAT Token
+    required: true
+outputs:
+  published_version:
+    description: "Published Version from package.json"
+    value: ${{ steps.publish.outputs.published_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: 🚀 Publish to npm
+      id: publish
+      shell: bash
+      env:
+        NPM_KEY: ${{ inputs.npm_token }}
+      run: |
+        #!/bin/bash
+        set -x
+
+        # Authenticate with npm using the token
+        printf '//registry.npmjs.org/:_authToken=${NPM_KEY}\n@venly:registry=https://registry.npmjs.org/' > .npmrc
+
+        # Debug information
+        npm config get registry
+        npm whoami
+
+        # Publish the npm package and capture the output
+        if [ "${GITHUB_REF}" == "refs/heads/master" ]; then
+            npm publish --verbose
+        else
+            npm publish --tag $(echo "${GITHUB_REF}" | sed 's|refs/heads/||') --verbose
+        fi
+
+        # Capture the version from package.json
+        published_version=$(jq -r '.version' package.json)
+
+        # Output the version
+        echo "Published version: $published_version"
+
+        # Export the version to GitHub Actions environment variables
+        echo "published_version=$published_version" >> $GITHUB_ENV
+        echo "published_version=$published_version" >> $GITHUB_OUTPUT
