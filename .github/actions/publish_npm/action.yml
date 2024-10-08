@@ -35,6 +35,8 @@ runs:
             npm publish --tag $(echo "${GITHUB_REF}" | sed 's|refs/heads/||') --verbose
         fi
 
+        git push --tags origin HEAD:${{ github.ref_name }}
+
         # Fetch the published version from the npm registry
         package_name=$(jq -r '.name' package.json)
         published_version=$(npm info $package_name version)
