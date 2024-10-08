@@ -30,6 +30,6 @@ runs:
         set -x
         new_version=$(npm version prerelease --preid=develop)
         new_version=${new_version#v}
-        echo "Bumped version to $new_version"
+        echo "Version after bump: $(jq -r '.version' package.json)"
         echo "new_version=$new_version" >> $GITHUB_ENV
         echo "new_version=$new_version" >> $GITHUB_OUTPUT
