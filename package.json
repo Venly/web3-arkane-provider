@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArkaneNetwork/web3-arkane-provider"
+    "url": "git+https://github.com/Venly/web3-arkane-provider"
   },
   "keywords": [
     "ethereum",
