@@ -1,4 +1,4 @@
-Venly Web3 Provider<img align="right" src="https://github.com/ArkaneNetwork.png?size=30" />
+Venly Web3 Provider<img align="right" src="https://github.com/Venly.png?size=30" />
 ===
 
 > The Venly Web3 provider is a smart wrapper around the existing Web3 Ethereum JavaScript API.
@@ -9,7 +9,7 @@ Your existing infrastructure is just one code block away from being **Venly Wall
 ![Venly Components](https://i.imgur.com/T5sWhZa.png)
 
 # Documentation
-* [Changelog](https://github.com/ArkaneNetwork/web3-arkane-provider/blob/develop/CHANGELOG.md)
+* [Changelog](https://github.com/Venly/web3-arkane-provider/blob/develop/CHANGELOG.md)
 * [Venly Docs](https://docs.venly.io/widget/web3-provider/getting-started)
 
 ## Adding the library
@@ -143,13 +143,13 @@ We've created two examples of the Web3 Provider in our demo application.
 
 One only checks authentication and shows the login form after the user clicks a button:
 * [Web3 Provider Demo](https://demo.arkane.network/pages/web3-provider)
-* [Web3 Provider Demo html source](https://github.com/ArkaneNetwork/Arketype/blob/develop/pages/web3-provider.html)
-* [Web3 Provider JS source](https://github.com/ArkaneNetwork/Arketype/blob/develop/assets/js/web3-provider.js)
+* [Web3 Provider Demo html source](https://github.com/Venly/Arketype/blob/develop/pages/web3-provider.html)
+* [Web3 Provider JS source](https://github.com/Venly/Arketype/blob/develop/assets/js/web3-provider.js)
 
 The other checks if a user is logged in on page load. If not, it shows the login button, otherwise it fetches the users' wallets:
 * [Web3 Provider (skip auth) Demo](https://demo.arkane.network/pages/web3-provider-skip-auth)
-* [Web3 Provider (skip auth) Demo html source](https://github.com/ArkaneNetwork/Arketype/blob/develop/pages/web3-provider-skip-auth.html)
-* [Web3 Provider (skip auth) JS source](https://github.com/ArkaneNetwork/Arketype/blob/develop/assets/js/web3-provider-skip-auth.js)
+* [Web3 Provider (skip auth) Demo html source](https://github.com/Venly/Arketype/blob/develop/pages/web3-provider-skip-auth.html)
+* [Web3 Provider (skip auth) JS source](https://github.com/Venly/Arketype/blob/develop/assets/js/web3-provider-skip-auth.js)
 
 # What is Venly Wallet
 Not sure yet what Venly is all about? Be sure to check out our website: https://www.venly.io/

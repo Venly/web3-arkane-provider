@@ -33,7 +33,7 @@
   "author": "Davy Van Roy <davy.van.roy@venly.io>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ArkaneNetwork/web3-arkane-provider/issues"
+    "url": "https://github.com/Venly/web3-arkane-provider/issues"
   },
   "homepage": "https://venly.io",
   "dependencies": {
