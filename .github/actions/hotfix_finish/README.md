@@ -41,7 +41,7 @@ jobs:
     name: Finish Hotfix Node Application
     steps:
       - name: Hotfix Node App Finish
-        uses: ArkaneNetwork/venly-github-workflows/.github/actions/hotfix_java_start@main
+        uses: Venly/venly-github-workflows/.github/actions/hotfix_java_start@main
         with:
           token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
 ```

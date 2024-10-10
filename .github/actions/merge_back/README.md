@@ -24,7 +24,7 @@ To use this action in your workflow, add the following step:
 
 ```yaml
 - name: Merge Back to Development
-  uses: ArkaneNetwork/venly-github-workflows/.github/actions/merge_back@main
+  uses: Venly/venly-github-workflows/.github/actions/merge_back@main
   with:
     branch: "<branch-name>"
     token: "<github-actions-token>"

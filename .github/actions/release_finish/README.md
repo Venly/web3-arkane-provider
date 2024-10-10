@@ -27,7 +27,7 @@ To use this action in your workflow, add the following step:
 
 ```yaml
 - name: Release Node Application
-  uses: ArkaneNetwork/venly-github-workflows/.github/actions/release_node@main
+  uses: Venly/venly-github-workflows/.github/actions/release_node@main
   with:
     flow: "<start/finish>"
     token: "<github-actions-token>"
