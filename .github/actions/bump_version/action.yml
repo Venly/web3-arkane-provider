@@ -44,7 +44,7 @@ runs:
       run: |
         #!/bin/bash
         set -x
-        git commit -a -m ${{ inputs.commit_message }}
+        git commit -a -m "${{ inputs.commit_message }}"
 
     - name: Push version bump
       id: push_version_bump
