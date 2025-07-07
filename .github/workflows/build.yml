@@ -7,8 +7,6 @@ on:
       - "**"
     paths-ignore:
       - .github/**
-      - "package.json"
-      - "package-lock.json"
   pull_request:
   workflow_dispatch:
 concurrency:
@@ -34,6 +32,7 @@ run-name: 🏗️ Build ${{ github.ref_name	}}
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: ✅ Checkout
         uses: actions/checkout@v4
@@ -44,10 +43,11 @@ jobs:
         uses: ./.github/actions/get_version
 
       - name: ⬆️ Bump Version
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' && (startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
         uses: ./.github/actions/bump_version
         with:
           token: ${{ secrets.VENLY_GITHUB_ACTIONS_TOKEN }}
+          commit_message: "chore: bump version [skip ci]"
 
       - name: 🛠️ Setup Node.js 16.x
         uses: actions/setup-node@v3
@@ -63,6 +63,7 @@ jobs:
           npm run build
 
       - name: 🚀 Publish Npm
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
         uses: ./.github/actions/publish_npm
         with:
           npm_token: ${{ secrets.NPM_KEY }}
