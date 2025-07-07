@@ -1,0 +1,18 @@
+0 verbose cli /opt/hostedtoolcache/node/18.20.8/x64/bin/node /opt/hostedtoolcache/node/18.20.8/x64/bin/npm
+1 info using npm@10.8.2
+2 info using node@v18.20.8
+3 silly config load:file:/opt/hostedtoolcache/node/18.20.8/x64/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/runner/work/web3-arkane-provider/web3-arkane-provider/.npmrc
+5 silly config load:file:/opt/hostedtoolcache/node/18.20.8/x64/etc/npmrc
+6 verbose title npm version preminor
+7 verbose argv "version" "preminor" "--preid" "SNAPSHOT" "--git-tag-version" "false"
+8 verbose logfile logs-max:10 dir:/home/runner/work/web3-arkane-provider/web3-arkane-provider/.npm/_logs/2025-07-07T12_59_14_063Z-
+9 verbose logfile /home/runner/work/web3-arkane-provider/web3-arkane-provider/.npm/_logs/2025-07-07T12_59_14_063Z-debug-0.log
+10 silly logfile done cleaning log files
+11 verbose version Not tagging: not in a git repo or no git cmd
+12 verbose cwd /home/runner/work/web3-arkane-provider/web3-arkane-provider
+13 verbose os Linux 6.11.0-1015-azure
+14 verbose node v18.20.8
+15 verbose npm  v10.8.2
+16 verbose exit 0
+17 info ok
