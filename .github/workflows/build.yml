@@ -1,6 +1,10 @@
 name: 🏗️ Build
 on:
   push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "**"
     paths-ignore:
       - .github/**
       - "package.json"
