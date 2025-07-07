@@ -1,13 +1,13 @@
-import { SecretType, WindowMode, AuthenticationOptions, AuthenticationResult, Account } from '@venly/connect';
-import { VenlyController } from './venlyController';
-import { CHAIN_IDS, CHAIN_CONFIGS } from './types';
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import { providerFromMiddleware } from '@metamask/eth-json-rpc-provider';
-import providerFromEngine from './providerFromEngine';
-import createVenlyMiddleware from './middleware/createVenlyMiddleware';
-import createJsonRpcClient from './createJsonRpcClient';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
+import { Account, AuthenticationOptions, AuthenticationResult, SecretType, WindowMode } from '@venly/connect';
+import { VenlyController }                                                              from './venlyController';
+import { CHAIN_CONFIGS, CHAIN_IDS }                                                     from './types';
+import { JsonRpcEngine }                                                                from '@metamask/json-rpc-engine';
+import { providerFromMiddleware }                                                       from '@metamask/eth-json-rpc-provider';
+import providerFromEngine                                                               from './providerFromEngine';
+import createVenlyMiddleware                                                            from './middleware/createVenlyMiddleware';
+import createJsonRpcClient                                                              from './createJsonRpcClient';
+import createFilterMiddleware                                                           from 'eth-json-rpc-filters';
+import createSubscriptionManager                                                        from 'eth-json-rpc-filters/subscriptionManager';
 
 export { SecretType, WindowMode } from '@venly/connect';
 export { CHAIN_CONFIGS } from './types';
@@ -119,6 +119,7 @@ export class VenlyProvider {
 
   public async createProvider(options: VenlyProviderOptions): Promise<any> {
     options.environment ??= 'production';
+    if (options.environment === 'prod') options.environment = 'production';
     options.windowMode ??= WindowMode.POPUP;
     options.secretType ??= SecretType.ETHEREUM;
     options.skipAuthentication ??= false;
@@ -137,7 +138,7 @@ export class VenlyProvider {
 /**
  * @type {Object}
  * @property {string} clientId - The clientId to connect to Venly
- * @property {string} environment - The environment to which you want to connect, possible values are 'sandbox' and 'prod'. Defaults to 'prod'.
+ * @property {string} environment - The environment to which you want to connect, possible values are 'sandbox' and 'production'. Defaults to 'production'.
  * @property {SecretType} secretType - The secret type to use. Allowed types for web3 provider: ETHEREUM, BSC, MATIC https://docs.venly.io/widget/widget-advanced/object-type-reference/secrettype
  * @property {WindowMode} windowMode - The sign method you want to use, possible values are POPUP or REDIRECT. Defaults to POPUP.
  * @property {function} bearerTokenProvider - You can implement all the authentication handling yourself and provide Venly Connect with your own bearer token provider. The bearer token provider is a function returning the bearer token (access token) to login to Venly. Default the Venly Connect authentication client is used.
