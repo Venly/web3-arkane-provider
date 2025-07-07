@@ -32,7 +32,7 @@ runs:
       run: |
         #!/bin/bash
         set -x
-        new_version=$(npm version prerelease --preid=develop --git-tag-version=false)
+        new_version=$(npm version prerelease --preid=SNAPSHOT --git-tag-version=false)
         new_version=${new_version#v}
         echo "Version after bump: $(jq -r '.version' package.json)"
         echo "new_version=$new_version" >> $GITHUB_ENV
