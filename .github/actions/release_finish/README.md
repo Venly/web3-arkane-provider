@@ -1,34 +1,33 @@
-# Release Node Application Action
+# Release Node Application Finish Action
 
 ## Description
 
-The "Release Node Application" Action automates the release process for Node.js applications. It covers both starting and finishing release flows, incorporating version management, changelog generation, merging, and tagging.
+The "Release Node Application Finish" Action finalizes the release process for Node.js applications. It merges the release branch to main, merges back to develop, and cleans up the release branch.
 
 ## Inputs
 
-| Input       | Description                         | Required |
-| ----------- | ----------------------------------- | -------- |
-| `flow`      | Release flow, can be 'start' or 'finish' | Yes    |
-| `token`     | The VENLY_GITHUB_ACTIONS_TOKEN      | Yes      |
+| Input          | Description                         | Required |
+| -------------- | ----------------------------------- | -------- |
+| `token`        | GitHub token for authentication     | Yes      |
+| `node_version` | Node Version to use (default: 18.x) | No       |
 
 ## Steps
 
-1. **Checkout Code**: Checks out the code from the development branch.
-2. **Setup Node.js**: Sets up the Node.js environment for the build process.
-3. **Release Flow Start**: If the `flow` input is 'start', it initiates the release process by creating a new release branch and bumping the version.
-4. **Release Flow Finish**: If the `flow` input is 'finish', it finalizes the release process, including merging changes to the production branch, creating a release, and updating the development branch.
-5. **Build Changelog**: Generates a changelog for the release using the release-changelog-builder action.
-6. **Publish Release**: Creates a GitHub release with the new version number and the generated changelog.
-7. **Cleanup**: Deletes the release branch after the release is finished.
+1. **Set HOME environment variable**: Configures HOME for tooling.
+2. **Setup Git Credentials**: Configures Git credentials for push operations.
+3. **Setup Node.js**: Sets up the Node.js environment (18.x).
+4. **Get Release Branch**: Identifies the release branch.
+5. **Finalise version**: Bumps the minor version on the release branch.
+6. **Merge to main**: Merges the release branch into main.
+7. **Merge back to develop**: Merges main back into develop with version conflict avoidance.
+8. **Push Changes**: Pushes tags and branches.
+9. **Cleanup**: Deletes the release branch.
 
 ## Usage
 
-To use this action in your workflow, add the following step:
-
 ```yaml
-- name: Release Node Application
-  uses: Venly/venly-github-workflows/.github/actions/release_node@main
+- name: Release Node Application Finish
+  uses: ./.github/actions/release_finish
   with:
-    flow: "<start/finish>"
-    token: "<github-actions-token>"
+    token: ${{ github.token }}
 ```

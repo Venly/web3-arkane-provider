@@ -9,14 +9,13 @@ The "Merge Back to Development" Action automates the process of merging changes 
 | Input     | Description                         | Required |
 | --------- | ----------------------------------- | -------- |
 | `branch`  | The branch to merge into develop    | Yes      |
-| `token`   | The VENLY_GITHUB_ACTIONS_TOKEN      | Yes      |
+| `token`   | GitHub token for authentication     | Yes      |
 
 ## Steps
 
 1. **Branch Identification**: Identifies and echoes the branch to be merged.
-2. **Checkout Code**: Checks out the code from the specified branch.
-3. **Git Credentials Setup**: Configures Git credentials for push operations.
-4. **Merge Operation**: Performs the merge operation from the specified branch to the development branch.
+2. **Git Credentials Setup**: Configures Git credentials for push operations.
+3. **Merge Operation**: Performs the merge operation from the specified branch to the development branch.
 
 ## Usage
 
@@ -24,8 +23,8 @@ To use this action in your workflow, add the following step:
 
 ```yaml
 - name: Merge Back to Development
-  uses: Venly/venly-github-workflows/.github/actions/merge_back@main
+  uses: ./.github/actions/merge_back
   with:
     branch: "<branch-name>"
-    token: "<github-actions-token>"
+    token: ${{ github.token }}
 ```
