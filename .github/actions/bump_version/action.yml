@@ -3,7 +3,7 @@ description: "Bump Build Version"
 
 inputs:
   token:
-    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    description: GitHub token for authentication
     required: true
   commit_message:
     description: The commit message to use

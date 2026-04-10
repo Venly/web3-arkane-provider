@@ -1,0 +1,45 @@
+name: 🧹 Cleanup Old Develop Versions
+description: "Remove old develop pre-release versions from npm where the base version is <= the just-released version"
+
+runs:
+  using: "composite"
+  steps:
+    - name: 🧹 Cleanup old develop versions
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -x
+
+        package_name=$(jq -r '.name' package.json)
+        released_version="$published_version"
+
+        if [[ -z "$released_version" ]]; then
+          echo "No published_version found, skipping cleanup"
+          exit 0
+        fi
+
+        echo "Released version: $released_version"
+
+        # Set registry for @venly scope
+        npm config set @venly:registry https://registry.npmjs.org/
+
+        # Get all versions from npm
+        all_versions=$(npm view "$package_name" versions --json 2>/dev/null | jq -r '.[]')
+
+        unpublished_count=0
+
+        for version in $all_versions; do
+          # Only target develop pre-release versions
+          if [[ "$version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-develop\.[0-9]+$ ]]; then
+            version_base="${BASH_REMATCH[1]}"
+
+            # Check if version_base <= released_version (sort -V puts the higher version last)
+            higher=$(printf '%s\n%s' "$version_base" "$released_version" | sort -V | tail -1)
+            if [[ "$higher" == "$released_version" ]]; then
+              echo "Unpublishing ${package_name}@${version}"
+              npm unpublish "${package_name}@${version}" && ((unpublished_count++)) || echo "Failed to unpublish ${version}, continuing..."
+            fi
+          fi
+        done
+
+        echo "Cleanup complete. Unpublished ${unpublished_count} old develop version(s)."
