@@ -1,0 +1,32 @@
+name: "Check Stable Dependencies"
+description: "Fails if any @venly/* dependency is a prerelease version"
+runs:
+  using: "composite"
+  steps:
+    - name: Validate @venly/* dependencies are stable
+      shell: bash
+      run: |
+        #!/bin/bash
+        set -euo pipefail
+
+        UNSTABLE=""
+
+        for DEP_GROUP in "dependencies" "devDependencies"; do
+          VENLY_DEPS=$(jq -r ".$DEP_GROUP // {} | to_entries[] | select(.key | startswith(\"@venly/\")) | \"\(.key)@\(.value)\"" package.json)
+          for DEP in $VENLY_DEPS; do
+            VERSION=$(echo "$DEP" | cut -d'@' -f3)
+            if echo "$VERSION" | grep -q "-"; then
+              UNSTABLE="${UNSTABLE}  ${DEP}\n"
+            fi
+          done
+        done
+
+        if [ -n "$UNSTABLE" ]; then
+          echo "::error::The following @venly/* dependencies are prereleases and must be released first:"
+          echo -e "$UNSTABLE"
+          echo ""
+          echo "Release the upstream packages before starting this release/hotfix."
+          exit 1
+        fi
+
+        echo "All @venly/* dependencies are stable."

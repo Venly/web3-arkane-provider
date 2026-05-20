@@ -50,6 +50,9 @@ runs:
           echo "Local 'develop' branch is up-to-date with remote."
         fi
 
+    - name: Validate @venly/* dependencies are stable
+      uses: ./.github/actions/check_stable_deps
+
     # Read package.json for version
     - name: Read package version
       uses: ./.github/actions/read_package_version

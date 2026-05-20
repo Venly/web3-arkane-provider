@@ -92,6 +92,9 @@ runs:
         git checkout ${{ env.hotfix_branch }}
         git status
 
+    - name: Validate @venly/* dependencies are stable
+      uses: ./.github/actions/check_stable_deps
+
     # Finalize version
     - name: 🏷️ Bump Version and Create Tag
       shell: bash

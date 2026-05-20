@@ -29,6 +29,7 @@ jobs:
         with:
           app-id: ${{ secrets.CI_BOT_APP_ID }}
           private-key: ${{ secrets.CI_BOT_PRIVATE_KEY }}
+          owner: Venly
 
       - name: ✅ Checkout
         uses: actions/checkout@v4
@@ -58,6 +59,7 @@ jobs:
           npm run build
 
       - name: 🚀 Publish Npm
+        id: publish-npm
         if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
         uses: ./.github/actions/publish_npm
 

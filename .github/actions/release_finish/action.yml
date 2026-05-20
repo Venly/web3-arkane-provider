@@ -46,6 +46,15 @@ runs:
           echo "Release branch found - $RELEASE_BRANCH. Continuing..."
         fi
 
+    - name: Checkout release branch for dependency check
+      shell: bash
+      run: |
+        git stash push -u -m "Stash before dependency check" || true
+        git checkout ${{ env.release_branch }}
+
+    - name: Validate @venly/* dependencies are stable
+      uses: ./.github/actions/check_stable_deps
+
     # Finalize Version
     - name: Finalise version
       shell: bash
