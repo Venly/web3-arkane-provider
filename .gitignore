@@ -6,3 +6,5 @@ dist/
 umd/
 
 yarn-error.log
+
+.npm
