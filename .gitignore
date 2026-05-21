@@ -8,3 +8,4 @@ umd/
 yarn-error.log
 
 .npm
+.DS_Store
