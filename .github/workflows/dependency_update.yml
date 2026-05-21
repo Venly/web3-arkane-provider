@@ -1,0 +1,82 @@
+name: "📦 Dependency Update"
+on:
+  repository_dispatch:
+    types: [dependency-update]
+
+permissions:
+  contents: write
+
+run-name: "📦 Update ${{ github.event.client_payload.package_name }} to ${{ github.event.client_payload.package_version }}"
+
+jobs:
+  update-dependency:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔑 Generate CI token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CI_BOT_APP_ID }}
+          private-key: ${{ secrets.CI_BOT_PRIVATE_KEY }}
+
+      - name: ✅ Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: 🛠️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: 📦 Update dependency version
+        shell: bash
+        run: |
+          #!/bin/bash
+          set -euo pipefail
+
+          PACKAGE_NAME="${{ github.event.client_payload.package_name }}"
+          PACKAGE_VERSION="${{ github.event.client_payload.package_version }}"
+
+          echo "Updating ${PACKAGE_NAME} to ${PACKAGE_VERSION}"
+
+          for DEP_GROUP in "dependencies" "devDependencies"; do
+            CURRENT=$(jq -r ".$DEP_GROUP[\"$PACKAGE_NAME\"] // empty" package.json)
+            if [ -n "$CURRENT" ]; then
+              PREFIX=""
+              if [[ "$CURRENT" == ^* ]]; then
+                PREFIX="^"
+              elif [[ "$CURRENT" == ~* ]]; then
+                PREFIX="~"
+              fi
+              NEW_VERSION="${PREFIX}${PACKAGE_VERSION}"
+              echo "Updating $DEP_GROUP: ${PACKAGE_NAME} from ${CURRENT} to ${NEW_VERSION}"
+              jq ".$DEP_GROUP[\"$PACKAGE_NAME\"] = \"$NEW_VERSION\"" package.json > package.json.tmp
+              mv package.json.tmp package.json
+            fi
+          done
+
+      - name: 📦 Update lockfile
+        run: npm install --package-lock-only
+
+      - name: 📤 Commit and push
+        run: |
+          #!/bin/bash
+          set -euo pipefail
+
+          PACKAGE_NAME="${{ github.event.client_payload.package_name }}"
+          PACKAGE_VERSION="${{ github.event.client_payload.package_version }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add package.json package-lock.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git pull --rebase origin develop
+          git commit -m "chore: update ${PACKAGE_NAME} to ${PACKAGE_VERSION}"
+          git push origin develop

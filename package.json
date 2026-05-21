@@ -1,6 +1,6 @@
 {
   "name": "@venly/web3-provider",
-  "version": "3.7.0",
+  "version": "3.8.1-develop.0",
   "description": "Venly enabled Web3 Provider for the web",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -43,7 +43,7 @@
     "@metamask/json-rpc-engine": "^7.1.1",
     "@metamask/rpc-errors": "^6.0.0",
     "@metamask/utils": "^8.1.0",
-    "@venly/connect": "2.10.0",
+    "@venly/connect": "^2.11.0",
     "eth-block-tracker": "^8.0.0",
     "eth-json-rpc-filters": "^6.0.1"
   },

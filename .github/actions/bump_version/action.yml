@@ -3,12 +3,8 @@ description: "Bump Build Version"
 
 inputs:
   token:
-    description: The VENLY_GITHUB_ACTIONS_TOKEN
+    description: GitHub token for authentication
     required: true
-  commit_message:
-    description: The commit message to use
-    required: false
-    default: "chore() - Bump version [skip ci]"
 
 outputs:
   new_version:
@@ -32,7 +28,7 @@ runs:
       run: |
         #!/bin/bash
         set -x
-        new_version=$(npm version prerelease --preid=SNAPSHOT --git-tag-version=false)
+        new_version=$(npm version prerelease --preid=develop --git-tag-version=false)
         new_version=${new_version#v}
         echo "Version after bump: $(jq -r '.version' package.json)"
         echo "new_version=$new_version" >> $GITHUB_ENV
@@ -44,7 +40,7 @@ runs:
       run: |
         #!/bin/bash
         set -x
-        git commit -a -m "${{ inputs.commit_message }}"
+        git commit -a -m ${{ steps.bump_version.outputs.new_version }}
 
     - name: Push version bump
       id: push_version_bump
